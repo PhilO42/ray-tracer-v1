@@ -1,0 +1,3 @@
+Cameratransform
+EDiffuse, ESpecular etc ersetzetn mit E = I*max(...  graphics_04_lighting.pdf::58
+far und near clipping
