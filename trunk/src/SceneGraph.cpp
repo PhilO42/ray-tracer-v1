@@ -12,6 +12,7 @@
 #include "myUtil.h"
 #include <cmath>
 #include <limits>
+#include "Triangle.h"
 
 using namespace std;
 
@@ -95,6 +96,9 @@ SceneGraph::SceneGraph(){
 		CVector<float> col = myUtil::color(0, 255, 255);
 		Sphere* s = new Sphere(0.2, pos, col);
 		objects.push_back(s);}
+
+		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
+		objects.push_back(tr);
 	}
 }
 
@@ -234,7 +238,7 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = 0;
-		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, cameraMatrix, backgroundColor, false);
+		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false);
 		if(collided){
 			if(distance < t){
 				hit = true;
@@ -283,7 +287,7 @@ bool SceneGraph::lightVisible(CVector<float> light, CVector<float> point){
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = myUtil::epsi;
-		CVector<float> color = objects[i]->collision(point, myUtil::normalize(light-point), &collided, &distance, &collisionPoint, &normal, cameraMatrix, backgroundColor, true);
+		CVector<float> color = objects[i]->collision(point, myUtil::normalize(light-point), &collided, &distance, &collisionPoint, &normal, true);
 		if(collided){
 //			cout << "dist " << distance << endl;
 			if(distance < t){
@@ -381,7 +385,7 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = 0;
-		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, cameraMatrix, backgroundColor, false);
+		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false);
 		if(collided){
 			if(distance < t){
 				hit = true;
