@@ -10,6 +10,9 @@
 
 #include "mathe/CVector.h"
 #include "mathe/CMatrix.h"
+#include <iostream>
+
+using namespace std;
 
 class myUtil {
 public:

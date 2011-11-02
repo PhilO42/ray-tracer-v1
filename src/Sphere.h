@@ -17,7 +17,7 @@ public:
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color);
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight);
 	virtual ~Sphere();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, CMatrix<float> cameraTransformation, CVector<float> bgColor, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay);
 private:
 	float radius;
 	CVector<float> position;

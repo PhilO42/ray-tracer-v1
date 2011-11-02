@@ -36,11 +36,11 @@ Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, CMatrix<float> cameraTransformation, CVector<float> bgColor, bool isLightRay){
+CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
 	if(isLight && isLightRay){
 		*collided = false;
 		*t_value = -1.0f;
-		return bgColor;
+		return myUtil::color(0,0,0);
 	}
 	CVector<float> pos;
 	pos = position;
@@ -60,7 +60,7 @@ CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction
 		//we dont hit the sphere
 		*collided = false;
 		*t_value = -1.0f;
-		return bgColor;
+		return myUtil::color(0,0,0);
 	}
 	//calculate t0,t1
 	float t0 = (-B+sqrt(B*B - 4*A*C))/(2*A);
@@ -74,7 +74,7 @@ CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction
 			//we dont hit the sphere
 			*collided = false;
 			*t_value = -1.0f;
-			return bgColor;
+			return myUtil::color(0,0,0);
 		}
 	}
 	*collided = true;

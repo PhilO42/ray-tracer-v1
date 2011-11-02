@@ -16,7 +16,7 @@ class SceneObject {
 public:
 	SceneObject(){};
 	virtual ~SceneObject(){};
-	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, CMatrix<float> cameraTransformation, CVector<float> bgColor, bool isLightRay){};
+	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){};
 };
 
 #endif /* SCENEOBJECT_H_ */
