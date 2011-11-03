@@ -8,6 +8,7 @@
 #include "kdTree.h"
 #include <limits>
 #include <algorithm>
+#include "myUtil.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ bool ysort (SceneObject* i, SceneObject* j) { return (i->getCenter()(1) < j->get
 bool zsort (SceneObject* i, SceneObject* j) { return (i->getCenter()(2) < j->getCenter()(2)); }
 
 kdTree::kdTree(vector< SceneObject* > objects) {
+	cout << "build" << endl;
 	//build BoundingBox
 	float minX = std::numeric_limits<float>::max();
 	float minY = std::numeric_limits<float>::max();
@@ -26,7 +28,10 @@ kdTree::kdTree(vector< SceneObject* > objects) {
 
 	for(int i = 0; i < objects.size(); i++){
 		CVector<float> min = objects.at(i)->getMin();
+		cout << "min " << min << endl;
 		CVector<float> max = objects.at(i)->getMin();
+		cout << "max " << max << endl;
+
 		//min
 		if(min(0) < minX)
 			minX = min(0);
@@ -35,14 +40,13 @@ kdTree::kdTree(vector< SceneObject* > objects) {
 		if(min(2) < minZ)
 			minZ = min(2);
 		//max
-		if(max(0) < maxX)
+		if(max(0) > maxX)
 			maxX = max(0);
-		if(max(1) < maxY)
+		if(max(1) > maxY)
 			maxY = max(1);
-		if(max(2) < maxZ)
+		if(max(2) > maxZ)
 			maxZ = max(2);
 	}
-
 	isRoot = true;
 	boundingBox = AABB(minX,maxX,minY,maxY,minZ,maxZ);
 
@@ -103,50 +107,75 @@ kdTree::kdTree(vector< SceneObject* > objects, int depth){
 }
 
 CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
-	if(isLeave)
-		return obj->collision(origin,direction,collided,t_value,collisionPoint,normal,isLightRay);
-
-	bool* collidedL;
-	float* t_valueL;
-	CVector<float>* collisionPointL;
-	CVector<float>* normalL;
-	bool* collidedR;
-	float* t_valueR;
-	CVector<float>* collisionPointR;
-	CVector<float>* normalR;
-
-	CVector<float> colL = left->collision(origin,direction,collidedL,t_valueL,collisionPointL,normalL,isLightRay);
-	CVector<float> colR = right->collision(origin,direction,collidedR,t_valueR,collisionPointR,normalR,isLightRay);
-	if(!*collidedL && !*collidedR){
+	if(isRoot && !boundingBox.collision(origin,direction)){
 		*collided = false;
+//		cout << "¬1" << endl;
+		return CVector<float>(3,0);
+	}
+	if(isLeave){
+//		cout << "leav" << endl;
+		float t_val;
+		bool col;
+		CVector<float> colPnt;
+		CVector<float> norm;
+		CVector<float> color =  obj->collision(origin,direction,collided,&t_val,&colPnt,&norm,isLightRay);
+		*collided = col;
+		if(col){
+			*t_value = t_val;
+			*collisionPoint = colPnt;
+			*normal = norm;
+			return color;
+		}
+		return CVector<float>(3,0);
+	}
+
+	bool collidedL;
+	float t_valueL;
+	CVector<float> collisionPointL;
+	CVector<float> normalL;
+	bool collidedR;
+	float t_valueR;
+	CVector<float> collisionPointR;
+	CVector<float> normalR;
+
+	CVector<float> colL = left->collision(origin,direction,&collidedL,&t_valueL,&collisionPointL,&normalL,isLightRay);
+	CVector<float> colR = right->collision(origin,direction,&collidedR,&t_valueR,&collisionPointR,&normalR,isLightRay);
+	if(!collidedL && !collidedR){
+		*collided = false;
+//		cout << "¬2" << endl;
 		return CVector<float>(3,0);
 	}
 	if(collidedL && !collidedR){
 		*collided = true;
-		*t_value = *t_valueL;
-		*collisionPoint = *collisionPointL;
-		*normal = *normalL;
+		*t_value = t_valueL;
+		*collisionPoint = collisionPointL;
+		*normal = normalL;
+//		cout << "1" << endl;
 		return colL;
 	}
 	if(!collidedL && collidedR){
 		*collided = true;
-		*t_value = *t_valueR;
-		*collisionPoint = *collisionPointR;
-		*normal = *normalR;
+		*t_value = t_valueR;
+		*collisionPoint = collisionPointR;
+		*normal = normalR;
+//		cout << "2" << endl;
 		return colR;
 	}
 	if(collidedL && collidedR){
-		if(*t_valueL < *t_valueR){
+		if(t_valueL < t_valueR){
 			*collided = true;
-			*t_value = *t_valueR;
-			*collisionPoint = *collisionPointR;
-			*normal = *normalR;
+			*t_value = t_valueR;
+			*collisionPoint = collisionPointR;
+			*normal = normalR;
+//			cout << "3a" << endl;
 			return colR;
 		}
 		*collided = true;
-		*t_value = *t_valueL;
-		*collisionPoint = *collisionPointL;
-		*normal = *normalL;
+		*t_value = t_valueL;
+		*collisionPoint = collisionPointL;
+		*normal = normalL;
+//		cout << "3b" << endl;
 		return colL;
 	}
+	return myUtil::color(255,0,0);
 }

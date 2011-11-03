@@ -6,6 +6,7 @@
  */
 
 #include "AABB.h"
+#include <iostream>
 
 AABB::AABB() {
 	float x0 = -1;
@@ -23,13 +24,14 @@ AABB::AABB(float _x0, float _x1, float _y0, float _y1, float _z0, float _z1){
 	float y1 = _y1;
 	float z0 = _z0;
 	float z1 = _z1;
+	std::cout << "x: " << _x0 << " -> " << _x1 << " y: " << _y0 << " -> " << _y1 << " z: " << _z0 << " -> " << _z1 << std::endl;
 }
 
 AABB::~AABB() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> AABB::collision(CVector<float> origin, CVector<float> direction){
+bool AABB::collision(CVector<float> origin, CVector<float> direction){
 	float txmin;
 	float txmax;
 	float tymin;
