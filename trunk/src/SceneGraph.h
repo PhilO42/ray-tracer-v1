@@ -11,6 +11,7 @@
 #include "mathe/CMatrix.h"
 #include "Light.h"
 #include "SceneObject.h"
+#include "kdTree.h"
 
 class SceneGraph {
 public:
@@ -24,7 +25,7 @@ public:
 	CVector<float> castRay(CVector<float> origin, CVector<float> direction);
 	CMatrix<float> getCameraMatrix();
 	CVector<float> castLightRay(CVector<float> origin, CVector<float> direction);
-	void loadObj(std::string pathToObj, CVector<float> color);
+	kdTree* loadObj(std::string pathToObj, CVector<float> color);
 private:
 	std::vector<Light> lightSources;
 	CMatrix<float> cameraMatrix;

@@ -58,52 +58,53 @@ SceneGraph::SceneGraph(){
 	//	 pos = inverseCameraMatrix * pos;
 		 CVector<float> col = myUtil::color(0,0,0);
 		 Sphere* s = new Sphere(0.1, pos, col);
-		 objects.push_back(s);}
+		// objects.push_back(s);}
 	//koordinatensystem
 	{CVector<float> pos = myUtil::PosHom(0,0,0);
 //	 pos = inverseCameraMatrix * pos;
 	 CVector<float> col = myUtil::color(255, 255, 255);
 	 Sphere* s = new Sphere(0.4, pos, col);
-	 objects.push_back(s);}
-	for(int i = 1; i < 4; i++){
-		Sphere* s;
-		CVector<float> pos;
-		CVector<float> col;
+	 //objects.push_back(s);
+	 }
+//	for(int i = 1; i < 4; i++){
+//		Sphere* s;
+//		CVector<float> pos;
+//		CVector<float> col;
+//
+//		{pos = myUtil::PosHom(i,0,0);
+////		pos = inverseCameraMatrix * pos;
+//		col = myUtil::color(255, 0, 0);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);}
+//
+//		{CVector<float> pos = myUtil::PosHom(i,i,0);
+//		CVector<float> col = myUtil::color(255, 255, 0);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
+//
+//		{pos = myUtil::PosHom(0, i, 0);
+//		col = myUtil::color(0, 255, 0);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);}
+//
+//		{CVector<float> pos = myUtil::PosHom(i,0,i);
+//		CVector<float> col = myUtil::color(255, 0, 255);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
+//
+//		pos = myUtil::PosHom(0, 0, i);
+////		pos = inverseCameraMatrix * pos;
+//		col = myUtil::color(0, 0, 255);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);
+//
+//		{CVector<float> pos = myUtil::PosHom(0,i,i);
+//		CVector<float> col = myUtil::color(0, 255, 255);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
 
-		{pos = myUtil::PosHom(i,0,0);
-//		pos = inverseCameraMatrix * pos;
-		col = myUtil::color(255, 0, 0);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);}
-
-		{CVector<float> pos = myUtil::PosHom(i,i,0);
-		CVector<float> col = myUtil::color(255, 255, 0);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		{pos = myUtil::PosHom(0, i, 0);
-		col = myUtil::color(0, 255, 0);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);}
-
-		{CVector<float> pos = myUtil::PosHom(i,0,i);
-		CVector<float> col = myUtil::color(255, 0, 255);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		pos = myUtil::PosHom(0, 0, i);
-//		pos = inverseCameraMatrix * pos;
-		col = myUtil::color(0, 0, 255);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);
-
-		{CVector<float> pos = myUtil::PosHom(0,i,i);
-		CVector<float> col = myUtil::color(0, 255, 255);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
-		objects.push_back(tr);
+//		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
+//		objects.push_back(tr);
 	}
 }
 
@@ -415,7 +416,7 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	return bestColor;
 }
 
-void SceneGraph::loadObj(string pathToObj, CVector<float> color){
+kdTree* SceneGraph::loadObj(string pathToObj, CVector<float> color){
 	//file load
 	std::vector<QString> text;
 	ifstream file;
@@ -435,6 +436,7 @@ void SceneGraph::loadObj(string pathToObj, CVector<float> color){
 	vertices.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
 	vector< CVector<float> > normals;
 	normals.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
+	vector< SceneObject* > trinagles;
 
 	for(int i = 0; i < text.size(); i++){
 		if(text.at(i).size() < 2)
@@ -484,16 +486,23 @@ void SceneGraph::loadObj(string pathToObj, CVector<float> color){
 			for(int j = 1; j < list.size() && ind < 3; j++){
 				if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
 					continue;
-				QStringList list2 = text.at(i).split("/");
-				verts[ind] = list2[0].toFloat();
-				norms[ind] = list2[2].toFloat();
+				QStringList list2 = list.at(j).split("/");
+				verts[ind] = list2[0].toInt();
+				norms[ind] = list2[2].toInt();
+//				cout << verts[ind] << " " << norms[ind] << endl;
 				++ind;
 			}
 			CVector<float> normal = normals.at(norms[0]) + normals.at(norms[1]) + normals.at(norms[2]);
+//			cout << normal << endl;
 			normal *= (1.0/3.0);
 			normal *= (1.0/normal.norm());
-			objects.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normal, color));
+			//objects.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normal, color));
+			trinagles.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normal, color));
 		}
 	}
 
+	kdTree* back = new kdTree(trinagles);
+
+	objects.push_back(back);
+	return back;
 }

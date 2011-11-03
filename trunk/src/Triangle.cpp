@@ -34,6 +34,7 @@ Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, C
 
 	normal = _normal;
 	color = _color;
+//	cout << normal << center << p0	<< p1<<p2<<endl;
 }
 
 Triangle::~Triangle() {
@@ -73,10 +74,12 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 }
 
 CVector<float> Triangle::getMin(){
+	cout << "min " << min << endl;
 	return min;
 }
 
 CVector<float> Triangle::getMax(){
+	cout << "max " << max << endl;
 	return max;
 }
 
