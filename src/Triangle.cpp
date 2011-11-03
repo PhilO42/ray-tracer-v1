@@ -12,6 +12,12 @@ Triangle::Triangle() {
 	p0 = myUtil::PosHom(1,0,0);
 	p1 = myUtil::PosHom(0,1,0);
 	p2 = myUtil::PosHom(0,0,1);
+	center = p0+p1+p2;
+	center *= 1.0/3.0;
+
+	min = myUtil::color(0,0,0);
+	max = myUtil::color(1,1,1);
+
 	normal = myUtil::PosHom(1,1,1);
 	color = myUtil::color(255,0,0);
 }
@@ -20,6 +26,12 @@ Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, C
 	p0 = _p0;
 	p1 = _p1;
 	p2 = _p2;
+	center = p0+p1+p2;
+	center *= 1.0/3.0;
+
+	min = myUtil::color(std::min(std::min(p0(0),p1(0)),p2(0)),std::min(std::min(p0(1),p1(1)),p2(1)),std::min(std::min(p0(2),p1(2)),p2(2)));
+	max = myUtil::color(std::max(std::max(p0(0),p1(0)),p2(0)),std::max(std::max(p0(1),p1(1)),p2(1)),std::max(std::max(p0(2),p1(2)),p2(2)));
+
 	normal = _normal;
 	color = _color;
 }
@@ -58,4 +70,16 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 	*collisionpoint = origin + *t_value * direction;
 	*_normal = normal;
 	return color;
+}
+
+CVector<float> Triangle::getMin(){
+	return min;
+}
+
+CVector<float> Triangle::getMax(){
+	return max;
+}
+
+CVector<float> Triangle::getCenter(){
+	return center;
 }
