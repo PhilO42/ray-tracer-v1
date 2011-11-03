@@ -32,7 +32,8 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::debug(){
-	Q_EMIT(seeTheLightMap());
+	//Q_EMIT(seeTheLightMap());
+	graph->loadObj("kleinbottle.obj", myUtil::color(255,255,0));
 	std::cout << "debug" << std::endl;
 }
 

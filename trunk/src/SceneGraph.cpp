@@ -13,6 +13,11 @@
 #include <cmath>
 #include <limits>
 #include "Triangle.h"
+#include <fstream>
+#include <iostream>
+#include <QString>
+#include <QObject>
+#include <QStringList>
 
 using namespace std;
 
@@ -408,4 +413,87 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 		bestColor = col;
 	}
 	return bestColor;
+}
+
+void SceneGraph::loadObj(string pathToObj, CVector<float> color){
+	//file load
+	std::vector<QString> text;
+	ifstream file;
+	file.open(pathToObj.c_str());
+	if (file) {
+		while (!file.eof()) {
+			string buffer;
+			getline(file, buffer);
+			text.push_back(QObject::tr(buffer.c_str()));
+		}
+		file.close();
+	} else {
+		cout << "cant open file \"" << pathToObj << "\"";
+	}
+
+	vector< CVector<float> > vertices;
+	vertices.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
+	vector< CVector<float> > normals;
+	normals.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
+
+	for(int i = 0; i < text.size(); i++){
+		if(text.at(i).size() < 2)
+			continue;//too short
+
+		//vertex
+		if(text.at(i)[0] == 'v' && !(text.at(i)[1] == 't') && !(text.at(i)[1] == 'n')){
+			QStringList list = text.at(i).split(" ");
+			float nums[3];
+			int ind = 0;
+			for(int j = 1; j < list.size() && ind < 3; j++){
+				if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+					continue;
+//				cout << list.at(j).toStdString().c_str() << endl;
+				nums[ind] = list.at(j).toFloat();
+				ind++;
+			}
+			vertices.push_back(myUtil::color(nums[0],nums[1],nums[2]));
+		}
+
+		//texture coordinate
+		if(text.at(i)[0] == 'v' && text.at(i)[1] == 't'){
+			//TODO if needed
+		}
+
+		//normal
+		if(text.at(i)[0] == 'v' && text.at(i)[1] == 'n'){
+			QStringList list = text.at(i).split(" ");
+			float nums[3];
+			int ind = 0;
+			for(int j = 1; j < list.size() && ind < 3; j++){
+				if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+					continue;
+//				cout << list.at(j).toStdString().c_str() << endl;
+				nums[ind] = list.at(j).toFloat();
+				ind++;
+			}
+			normals.push_back(myUtil::color(nums[0],nums[1],nums[2]));
+		}
+
+		//triangle
+		if(text.at(i)[0] == 'f'){
+			QStringList list = text.at(i).split(" ");
+			float verts[3];
+			float norms[3];
+			int ind = 0;
+			for(int j = 1; j < list.size() && ind < 3; j++){
+				if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+					continue;
+				QStringList list2 = text.at(i).split("/");
+				verts[ind] = list2[0].toFloat();
+				norms[ind] = list2[2].toFloat();
+				++ind;
+			}
+			CVector<float> normal = normals.at(norms[0]) + normals.at(norms[1]) + normals.at(norms[2]);
+			normal *= (1.0/3.0);
+			normal *= (1.0/normal.norm());
+			objects.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normal, color));
+		}
+	}
+
 }
