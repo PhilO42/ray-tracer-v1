@@ -17,6 +17,9 @@ public:
 	SceneObject(){};
 	virtual ~SceneObject(){};
 	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){};
+	virtual CVector<float> getMin(){};
+	virtual CVector<float> getMax(){};
+	virtual CVector<float> getCenter(){};
 };
 
 #endif /* SCENEOBJECT_H_ */

@@ -18,11 +18,16 @@ public:
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight);
 	virtual ~Sphere();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay);
+	CVector<float> getMin();
+	CVector<float> getMax();
+	CVector<float> getCenter();
 private:
 	float radius;
 	CVector<float> position;
 	CVector<float> color;
 	bool isLight;
+	CVector<float> min;
+	CVector<float> max;
 };
 
 #endif /* SPHERE_H_ */

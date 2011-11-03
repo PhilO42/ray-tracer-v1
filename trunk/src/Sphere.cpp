@@ -16,6 +16,8 @@ Sphere::Sphere() {
 	radius = 1.0;
 	position = CVector<float>(4,1);
 	color = CVector<float>(3,140);
+	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
+	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
@@ -23,6 +25,8 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
 	position = _position;
 	color = _color;
 	isLight =  false;
+	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
+	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){
@@ -30,6 +34,8 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, b
 	position = _position;
 	color = _color;
 	isLight = _isLight;
+	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
+	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 }
 
 Sphere::~Sphere() {
@@ -83,4 +89,16 @@ CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction
 	*normal = (*collisionPoint) - this->position;
 	*normal = myUtil::normalize(*normal);
 	return this->color;
+}
+
+CVector<float> Sphere::getMin(){
+	return min;
+}
+
+CVector<float> Sphere::getMax(){
+	return max;
+}
+
+CVector<float> Sphere::getCenter(){
+	return position;
 }

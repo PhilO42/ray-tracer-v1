@@ -9,15 +9,25 @@
 #define KDTREE_H_
 
 #include "SceneObject.h"
-#include "Triangle.h"
+#include "mathe/CVector.h"
 #include <vector>
+#include "AABB.h"
 
 class kdTree : public SceneObject{
 public:
-	kdTree();
+	kdTree(std::vector< SceneObject* > objects);
+	kdTree(std::vector< SceneObject* > objects, int depth);
 	virtual ~kdTree();
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
 private:
-	std::vector<Triangle> triangles;//TODO should be exchange by a tree
+	kdTree* left;
+	kdTree* right;
+	bool isLeave;
+	bool isRoot;
+	AABB boundingBox;
+	int depthMod;
+	float partitionValue;
+	SceneObject* obj;
 };
 
 #endif /* KDTREE_H_ */
