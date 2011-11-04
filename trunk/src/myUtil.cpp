@@ -41,6 +41,16 @@ CVector<float> myUtil::PosHom(float x, float y, float z, float w){
 	return vec;
 }
 
+CVector<float> myUtil::Pos5D(float v, float w, float x, float y, float z){
+	CVector<float> vec(5,0);
+	vec(0) = v;
+	vec(1) = w;
+	vec(2) = x;
+	vec(3) = y;
+	vec(3) = z;
+	return vec;
+}
+
 CMatrix<float> myUtil::eye(int dim){
 	CMatrix<float> mat(dim,dim,0);
 	for(int i = 0; i < dim; i++){

@@ -11,6 +11,7 @@
 #include <QtGui>
 #include "Ray.h"
 #include "SceneGraph.h"
+#include "mathe/CVector.h"
 
 class RayTracer : public QObject{
 	Q_OBJECT
@@ -37,6 +38,10 @@ private:
 	static const int width = 640;
 	static const int height = 480;
 	QImage image;
+	CMatrix<float> cameraMatrix;
+	CVector<float> Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist = 0.1);
+	CVector<float> Reconstruct(std::vector< CVector<float> > col, char kindOfReconstruction);
+	float gauss(float dist);
 };
 
 #endif /* RAYTRACER_H_ */

@@ -14,6 +14,7 @@
 #include <math.h>
 #include "myUtil.h"
 #include <cmath>
+#include <time.h>
 
 using namespace std;
 
@@ -25,6 +26,7 @@ RayTracer::RayTracer(QPixmap* _img) {
 	right = 0.64*2.5;
 	near = 1;
 	far = 10;
+	srand ( time(NULL) );
 }
 
 RayTracer::~RayTracer() {
@@ -41,9 +43,7 @@ void RayTracer::draw(){
 	//image = QImage(width,height,QImage::Format_ARGB32);
 	//image.fill(qRgba(200,200,255,255));
 	cout << "Rendering started!" << endl;
-	CMatrix<float> cameraMatrix = graph->getCameraMatrix();
-	CVector<float> origin = myUtil::PosHom(0,0,0);
-	origin = cameraMatrix * origin;
+	cameraMatrix = graph->getCameraMatrix();
 	//origin *= -1;
 	for(int y = 0; y < height; y++){
 		if(y%(height/10) == 0){
@@ -54,24 +54,9 @@ void RayTracer::draw(){
 			}
 		}
 		for(int x = 0; x < width; x++){
-			CVector<float> dir(4,0);
-			//+0.5 damit in mitte des pixels
-//			dir(0) = (((float)x+0.5)/((float)width))*2*abs(right)-abs(right);
-//			dir(1) = -((((float)y+0.5)/((float)height))*2*abs(bottom)-abs(bottom));
-			dir(0) = -abs(right) +(((float)x+0.5)/((float)width)) *2*abs(right);
-			dir(1) = abs(bottom)-(((float)y+0.5)/((float)height))*2*abs(bottom);
-			dir(2) = -near;
-//			if(x == 320 && y == 240)
-//				cout << "dir: " << dir << endl;
-			//dir = myUtil::normalize(dir);
-			dir = cameraMatrix * dir;
-			dir = myUtil::normalize(dir);
-			//dir *= -1.0f;
-//			if(x == 320 && y == 240)
-//				cout << "Mat * dir: " << dir << endl;
-			//cout << dir << endl;
+			//###########
+			CVector<float> col = Sample(x, y, 'p', 2, 'm');
 
-			CVector<float> col = graph->castRay(origin, dir);
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			image.setPixel(x,y,color.rgba());
 		}
@@ -108,3 +93,117 @@ void RayTracer::seeTheLightMap(){
 	image.save("lightMap.png","png");
 	Q_EMIT(repaint());
 }
+
+CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist){
+	CVector<float> origin = myUtil::PosHom(0,0,0);
+	origin = cameraMatrix * origin;
+	vector< CVector<float> > col(sampleCount*sampleCount);
+	CVector<float> dir(4,0);
+	CVector<float> pixelVal;
+	float strataSize;
+
+	float xPix;
+	float yPix;
+
+	switch (kindOfSampling) {
+		case 'n':
+			//standart sampling one ray per center of pixel
+			xPix = ((float)x) + 0.5;
+			yPix = ((float)y) + 0.5;
+			dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+			return graph->castRay(origin, dir);
+			break;
+		case 'r':
+			//random sampling
+			for(int i = 0; i < sampleCount*sampleCount; i++){
+				xPix = ((float)x) + ((rand() % 1000)/1000.0);//value between 0 and 1
+				yPix = ((float)y) + ((rand() % 1000)/1000.0);
+				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+				pixelVal = graph->castRay(origin, dir);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+			}
+			return Reconstruct(col, kindOfReconstruction);
+			break;
+		case 's':
+			//stratified sampling
+			strataSize = 1.0/((float)sampleCount);
+			for(int i = 0; i < sampleCount; i++){//x
+				for(int j = 0; j < sampleCount; j++){//y
+					xPix = x + ((float)i)*strataSize;
+					yPix = y + ((float)j)*strataSize;
+					xPix += (rand() % 1000)/(1000.0*((float)sampleCount));//value between 0 and 1/strataSize
+					yPix += (rand() % 1000)/(1000.0*((float)sampleCount));
+					dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+					pixelVal = graph->castRay(origin, dir);
+					col.at(i*sampleCount+j) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+				}
+			}
+			return Reconstruct(col, kindOfReconstruction);
+			break;
+		case 'p':
+			//poisson sampling it is cheaper
+			for(int i = 0; i < sampleCount*sampleCount;){
+				up:
+				xPix = ((float)x) + ((rand() % 1000)/1000.0);//value between 0 and 1
+				yPix = ((float)y) + ((rand() % 1000)/1000.0);
+				for(int j = 0; j < i; j++){
+					if((xPix - col.at(j)(3))*(xPix - col.at(j)(3)) + (yPix - col.at(j)(4))*(yPix - col.at(j)(4)) < minDist)
+						goto up;//sorry!
+				}
+				//take this sample
+				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+				pixelVal = graph->castRay(origin, dir);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+				i++;
+			}
+			return Reconstruct(col, kindOfReconstruction);
+			break;
+		default:
+			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = hammersley" << endl;
+			break;
+	}
+	return CVector<float>(3,0);
+}
+
+CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfReconstruction){
+	//vectorelements of col are like: [red,green,blue,xpos,ypos]
+	CVector<float> color(3,0);
+	CVector<float> pixValue;
+	float distSum = 0;
+
+	switch (kindOfReconstruction) {
+		case 'b':
+			//boxfilter = mean
+			for(int i = 0; i < col.size(); i++){
+				color += myUtil::PosHom(col.at(i)(0),col.at(i)(1),col.at(i)(2));
+			}
+			color *= (1.0/col.size());
+			return color;
+			break;
+		case 'm':
+			//mitchell = gauß
+			for(int i = 0; i < col.size(); i++){
+				pixValue = myUtil::PosHom(col.at(i)(0),col.at(i)(1),col.at(i)(2));
+				int px = col.at(i)(3);
+				int py = col.at(i)(4);
+				float xDist = (col.at(i)(3) -((float)px))-0.5;//signed
+				float yDist = (col.at(i)(4) -((float)py))-0.5;
+				float weight = gauss(sqrt(xDist*xDist + yDist*yDist));//Gewichtung mit Abstand
+				pixValue *= weight;
+				distSum += weight;
+				color +=  pixValue;
+			}
+			color *= (1.0/distSum);//Normalisierung
+			return color;
+			break;
+		default:
+			cerr << "kindOfReconstruction: \'b\' = box(standart)\n                      \'m\' = mitchell" << endl;
+			break;
+	}
+	return CVector<float>(3,0);
+}
+
+float RayTracer::gauss(float dist){
+	return (1.0/sqrt(2.0*3.14159))*exp(-0.5*dist);
+}
+
