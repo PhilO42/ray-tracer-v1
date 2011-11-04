@@ -65,7 +65,7 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 	//b2
 	float b2 = normalizer * (cross2 * direction);
 
-	if(b1+b2 > 1.0f || b1 < 0.0f || b2 < 0.0f){
+	if(b1+b2 > 1.0f || b1 < 0.0f || b2 < 0.0f || *t_value < myUtil::epsi){
 		*collided = false;
 		return myUtil::color(0,0,0);
 	}

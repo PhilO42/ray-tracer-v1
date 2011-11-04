@@ -32,7 +32,7 @@ SceneGraph::SceneGraph(){
 //	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
 //	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
 	addLightSource(Light(myUtil::PosHom(1,1,1), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-//	addLightSource(Light(myUtil::PosHom(1,1,0), myUtil::PosHom(1,1,1,0), true, myUtil::color(255,255,0)));
+	addLightSource(Light(myUtil::PosHom(1,1,0), myUtil::PosHom(1,1,1,0), true, myUtil::color(255,255,0)));
 
 	intenseAmbient = myUtil::color(100,100,100);
 	intenseDiffuse = myUtil::color(100,100,100);
@@ -55,58 +55,58 @@ SceneGraph::SceneGraph(){
 //	CVector<float> col2 = myUtil::Pos(0,0,255);
 //	Sphere* s2 = new Sphere(2.5,pos2,col2);
 //	objects.push_back(s2);
-	{CVector<float> pos = myUtil::PosHom(1,2,3);
-	//	 pos = inverseCameraMatrix * pos;
-		 CVector<float> col = myUtil::color(0,0,0);
-		 Sphere* s = new Sphere(0.1, pos, col);
-	objects.push_back(s);}
-	//koordinatensystem
-	{CVector<float> pos = myUtil::PosHom(0,0,0);
-//	 pos = inverseCameraMatrix * pos;
-	 CVector<float> col = myUtil::color(255, 255, 255);
-	 Sphere* s = new Sphere(0.7, pos, col);
-	 objects.push_back(s);
-	 }
-	for(int i = 1; i < 4; i++){
-		Sphere* s;
-		CVector<float> pos;
-		CVector<float> col;
-
-		{pos = myUtil::PosHom(i,0,0);
-//		pos = inverseCameraMatrix * pos;
-		col = myUtil::color(255, 0, 0);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);}
-
-		{CVector<float> pos = myUtil::PosHom(i,i,0);
-		CVector<float> col = myUtil::color(255, 255, 0);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		{pos = myUtil::PosHom(0, i, 0);
-		col = myUtil::color(0, 255, 0);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);}
-
-		{CVector<float> pos = myUtil::PosHom(i,0,i);
-		CVector<float> col = myUtil::color(255, 0, 255);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		pos = myUtil::PosHom(0, 0, i);
-//		pos = inverseCameraMatrix * pos;
-		col = myUtil::color(0, 0, 255);
-		s = new Sphere(0.4, pos, col);
-		objects.push_back(s);
-
-		{CVector<float> pos = myUtil::PosHom(0,i,i);
-		CVector<float> col = myUtil::color(0, 255, 255);
-		Sphere* s = new Sphere(0.2, pos, col);
-		objects.push_back(s);}
-
-		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(-1,-1,-1), myUtil::color(255,255,0));
-		objects.push_back(tr);
-	}
+//	{CVector<float> pos = myUtil::PosHom(1,2,3);
+//	//	 pos = inverseCameraMatrix * pos;
+//		 CVector<float> col = myUtil::color(0,0,0);
+//		 Sphere* s = new Sphere(0.1, pos, col);
+//	objects.push_back(s);}
+//	//koordinatensystem
+//	{CVector<float> pos = myUtil::PosHom(0,0,0);
+////	 pos = inverseCameraMatrix * pos;
+//	 CVector<float> col = myUtil::color(255, 255, 255);
+//	 Sphere* s = new Sphere(0.7, pos, col);
+//	 objects.push_back(s);
+//	 }
+//	for(int i = 1; i < 4; i++){
+//		Sphere* s;
+//		CVector<float> pos;
+//		CVector<float> col;
+//
+//		{pos = myUtil::PosHom(i,0,0);
+////		pos = inverseCameraMatrix * pos;
+//		col = myUtil::color(255, 0, 0);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);}
+//
+//		{CVector<float> pos = myUtil::PosHom(i,i,0);
+//		CVector<float> col = myUtil::color(255, 255, 0);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
+//
+//		{pos = myUtil::PosHom(0, i, 0);
+//		col = myUtil::color(0, 255, 0);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);}
+//
+//		{CVector<float> pos = myUtil::PosHom(i,0,i);
+//		CVector<float> col = myUtil::color(255, 0, 255);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
+//
+//		pos = myUtil::PosHom(0, 0, i);
+////		pos = inverseCameraMatrix * pos;
+//		col = myUtil::color(0, 0, 255);
+//		s = new Sphere(0.4, pos, col);
+//		objects.push_back(s);
+//
+//		{CVector<float> pos = myUtil::PosHom(0,i,i);
+//		CVector<float> col = myUtil::color(0, 255, 255);
+//		Sphere* s = new Sphere(0.2, pos, col);
+//		objects.push_back(s);}
+//
+//	}
+	Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
+	objects.push_back(tr);
 }
 
 SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundColor){
@@ -197,7 +197,7 @@ void SceneGraph::addLightSource(Light light){
 	CVector<float> pos = light.position;
 	CVector<float> col = myUtil::color(255,255,0);
 	Sphere* s = new Sphere(0.1,pos,col,true);
-	objects.push_back(s);
+//	objects.push_back(s);
 	lightSources.push_back(light);
 }
 
@@ -266,6 +266,7 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 			if(lightSources.at(i).isDirectionalLight){
 				//directional light
 				lightDir = lightSources[i].direction;
+//				lightDir *= -1.0;
 				lightDir = myUtil::normalize(lightDir);
 				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
 			}else{
@@ -281,8 +282,6 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 				lightDir = myUtil::normalize(lightDir);
 				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightDir, dist), direction, EDiffuse, ESpecular, n);
 			}
-
-
 		}
 		col * (1.0f/lightSources.size());
 		bestColor = myUtil::elementWiseMulti(bestColor,EAmbient);
@@ -301,18 +300,14 @@ bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, flo
 //	CVector<float> bestNormal;
 //	CVector<float> bestCollisionPoint;
 	float t = distToLight;
-//	cout << "t " << t << endl;
 //	bool hit = false;
-//	cout << " pldir " << point << light << myUtil::normalize(light-point) << endl;
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = myUtil::epsi;
 		CVector<float> color;
 		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true);
 		if(collided){
-//			cout << "dist " << distance << endl;
 			if(distance < t){
-//				cout << "false" << endl;
 				return false;
 //				hit = true;
 //				t = distance;
@@ -322,15 +317,6 @@ bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, flo
 			}
 		}
 	}
-//	if(hit){
-//		if(t < myUtil::homogenNorm(light - point)){
-//			//we cant see the light
-//			return false;
-//		}else{
-//			cout << t << " < " << myUtil::homogenNorm(light-point) << endl;
-//		}
-//	}
-//	cout << "true" << endl;
 	return true;
 }
 
@@ -422,7 +408,9 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 		for(int i = 0; i < lightSources.size(); i++){
 			CVector<float> lightDir = lightSources[i].position - bestCollisionPoint;
 			if(lightSources[i].isDirectionalLight){
-				if(lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max())){
+				CVector<float> dir = lightSources[i].direction;
+//				dir *= -1.0;
+				if(lightVisible(bestCollisionPoint,dir,numeric_limits<float>::max())){
 					col += myUtil::color(255,255,255);
 				}
 			}else{
