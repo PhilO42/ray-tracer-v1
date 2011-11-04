@@ -39,7 +39,7 @@ private:
 	CVector<float> EAmbient;
 	float n;
 	CVector<float> Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> EDiffuse, CVector<float> ESpecular, float n);
-	bool lightVisible(CVector<float> light, CVector<float> point);
+	bool lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight);
 	CMatrix<float> InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up);
 
 	//depricated

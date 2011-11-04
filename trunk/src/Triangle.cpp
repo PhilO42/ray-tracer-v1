@@ -42,8 +42,10 @@ Triangle::~Triangle() {
 }
 
 CVector<float> Triangle::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay){
+	direction = myUtil::normalize(direction);
 	if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
 		*collided = false;
+		cout << "90°" << endl;
 		return myUtil::color(0,0,0);
 	}
 

@@ -17,11 +17,11 @@ public:
 	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color, CVector<float> _IDiffuse, CVector<float> _ISpecular);
 	virtual ~Light();
 	CVector<float> position;
+	CVector<float> direction;
 	CVector<float> IDiffuse;
 	CVector<float> ISpecular;
 	bool isDirectionalLight;
 private:
-	CVector<float> direction;
 	CVector<float> color;
 };
 
