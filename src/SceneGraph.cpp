@@ -29,9 +29,10 @@ SceneGraph::SceneGraph(){
 	backgroundColor = myUtil::color(127.0f,219.0f,255.0f);
 	EAmbient = myUtil::color(200,100,50);
 
-	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-	addLightSource(Light(myUtil::PosHom(1,1,0), CVector<float>(4,1), false, myUtil::color(255,255,0)));
+//	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
+//	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
+	addLightSource(Light(myUtil::PosHom(1,1,1), CVector<float>(4,1), false, myUtil::color(255,255,0)));
+//	addLightSource(Light(myUtil::PosHom(1,1,0), myUtil::PosHom(1,1,1,0), true, myUtil::color(255,255,0)));
 
 	intenseAmbient = myUtil::color(100,100,100);
 	intenseDiffuse = myUtil::color(100,100,100);
@@ -63,8 +64,8 @@ SceneGraph::SceneGraph(){
 	{CVector<float> pos = myUtil::PosHom(0,0,0);
 //	 pos = inverseCameraMatrix * pos;
 	 CVector<float> col = myUtil::color(255, 255, 255);
-	 Sphere* s = new Sphere(0.4, pos, col);
-	 //objects.push_back(s);
+	 Sphere* s = new Sphere(0.7, pos, col);
+	 objects.push_back(s);
 	 }
 	for(int i = 1; i < 4; i++){
 		Sphere* s;
@@ -103,7 +104,7 @@ SceneGraph::SceneGraph(){
 		Sphere* s = new Sphere(0.2, pos, col);
 		objects.push_back(s);}
 
-		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
+		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(-1,-1,-1), myUtil::color(255,255,0));
 		objects.push_back(tr);
 	}
 }
@@ -258,19 +259,30 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 	if(hit){
 		CVector<float> col(3,0);
 		for(int i = 0; i < lightSources.size(); i++){
-			CVector<float> lightDir = lightSources[i].position - bestCollisionPoint;
-			float dist = myUtil::homogenNorm(lightDir);
-			lightDir = myUtil::normalize(lightDir);
-
-			//abnahme der helligkeit mit der distanz
 			CVector<float> EDiffuse = lightSources[i].IDiffuse;
-			if(!(lightSources[i].isDirectionalLight)&&dist != 0)
-				EDiffuse *= (1.0/dist*dist);
 			CVector<float> ESpecular = lightSources[i].ISpecular;
-			if(!(lightSources[i].isDirectionalLight)&&dist != 0)
-				ESpecular *= (1.0/dist*dist);
+			CVector<float> lightDir;
 
-			col += Phong(bestNormal,lightDir,lightVisible(lightSources[i].position,bestCollisionPoint), direction, EDiffuse, ESpecular, n);
+			if(lightSources.at(i).isDirectionalLight){
+				//directional light
+				lightDir = lightSources[i].direction;
+				lightDir = myUtil::normalize(lightDir);
+				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
+			}else{
+				//point light
+				lightDir = lightSources[i].position - bestCollisionPoint;
+
+				//abnahme der helligkeit mit der distanz
+				float dist = myUtil::homogenNorm(lightDir);
+				if(dist != 0)
+					EDiffuse *= (1.0/dist*dist);
+				if(dist != 0)
+					ESpecular *= (1.0/dist*dist);
+				lightDir = myUtil::normalize(lightDir);
+				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightDir, dist), direction, EDiffuse, ESpecular, n);
+			}
+
+
 		}
 		col * (1.0f/lightSources.size());
 		bestColor = myUtil::elementWiseMulti(bestColor,EAmbient);
@@ -280,20 +292,23 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 	return bestColor;
 }
 
-bool SceneGraph::lightVisible(CVector<float> light, CVector<float> point){
+bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight){
+//	if(directionalLight)
+//		return true;
 	CVector<float> bestColor = this->backgroundColor;
 	CVector<float> normal;
 	CVector<float> collisionPoint;
 //	CVector<float> bestNormal;
 //	CVector<float> bestCollisionPoint;
-	float t = myUtil::homogenNorm(light - point);//std::numeric_limits<float>::max();
+	float t = distToLight;
 //	cout << "t " << t << endl;
 //	bool hit = false;
 //	cout << " pldir " << point << light << myUtil::normalize(light-point) << endl;
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = myUtil::epsi;
-		CVector<float> color = objects[i]->collision(point, myUtil::normalize(light-point), &collided, &distance, &collisionPoint, &normal, true);
+		CVector<float> color;
+		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true);
 		if(collided){
 //			cout << "dist " << distance << endl;
 			if(distance < t){
@@ -406,8 +421,15 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 		CVector<float> col(3,0);
 		for(int i = 0; i < lightSources.size(); i++){
 			CVector<float> lightDir = lightSources[i].position - bestCollisionPoint;
-			if(lightVisible(lightSources[i].position,bestCollisionPoint)){
-				col += myUtil::color(255,255,255);
+			if(lightSources[i].isDirectionalLight){
+				if(lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max())){
+					col += myUtil::color(255,255,255);
+				}
+			}else{
+				CVector<float> dir = lightSources[i].position - bestCollisionPoint;
+				if(lightVisible(bestCollisionPoint,myUtil::normalize(dir), myUtil::homogenNorm(dir))){
+					col += myUtil::color(255,255,255);
+				}
 			}
 		}
 		col *= (1.0f/lightSources.size());

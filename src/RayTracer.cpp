@@ -34,8 +34,12 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::debug(){
-	//Q_EMIT(seeTheLightMap());
-	graph->loadObj("sphere.obj", myUtil::color(255,255,0));//kleinbottle
+	Q_EMIT(seeTheLightMap());
+	for(int i = 0; i < 10; i++){
+		cout << i << ": " << HammersleyValue(i,5) << "\t\t";
+		cout << endl;
+	}
+	//graph->loadObj("sphere.obj", myUtil::color(255,255,0));//kleinbottle
 	std::cout << "debug" << std::endl;
 }
 
@@ -54,8 +58,8 @@ void RayTracer::draw(){
 			}
 		}
 		for(int x = 0; x < width; x++){
-			//###########
-			CVector<float> col = Sample(x, y, 'p', 2, 'm');
+			//#############################################
+			CVector<float> col = Sample(x, y, 'n', 2, 'm');
 
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			image.setPixel(x,y,color.rgba());
@@ -79,7 +83,7 @@ void RayTracer::seeTheLightMap(){
 //	int y = 334;
 //	int x = 448;
 			CVector<float> dir(4,0);
-			dir(0) = -abs(right) +(((float)x+0.5)/((float)width)) *2*abs(right);
+			dir(0) =-abs(right) +(((float)x+0.5)/((float)width)) *2*abs(right);
 			dir(1) = abs(bottom)-(((float)y+0.5)/((float)height))*2*abs(bottom);
 			dir(2) = -near;
 			dir = cameraMatrix * dir;
@@ -94,7 +98,7 @@ void RayTracer::seeTheLightMap(){
 	Q_EMIT(repaint());
 }
 
-CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist){
+CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist, int p1, int p2){
 	CVector<float> origin = myUtil::PosHom(0,0,0);
 	origin = cameraMatrix * origin;
 	vector< CVector<float> > col(sampleCount*sampleCount);
@@ -158,8 +162,19 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 			}
 			return Reconstruct(col, kindOfReconstruction);
 			break;
+		case 'h':
+			//halton sampling
+			for(int i = 0; i < sampleCount*sampleCount; i++){
+				xPix = ((float)x) + HammersleyValue(i,p1);//value between 0 and 1
+				yPix = ((float)y) + HammersleyValue(i,p2);
+				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+				pixelVal = graph->castRay(origin, dir);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+			}
+			return Reconstruct(col, kindOfReconstruction);
+			break;
 		default:
-			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = hammersley" << endl;
+			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = halton" << endl;
 			break;
 	}
 	return CVector<float>(3,0);
@@ -207,3 +222,15 @@ float RayTracer::gauss(float dist){
 	return (1.0/sqrt(2.0*3.14159))*exp(-0.5*dist);
 }
 
+float RayTracer::HammersleyValue(int k, int p){
+	int p_prime = p;
+	int k_prime = k;
+	float phi = 0;
+	while(k_prime > 0){
+		float a = k_prime % p;
+		phi += a/p_prime;
+		k_prime /= p;
+		p_prime *= p;
+	}
+	return phi;
+}
