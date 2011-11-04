@@ -58,7 +58,7 @@ SceneGraph::SceneGraph(){
 	//	 pos = inverseCameraMatrix * pos;
 		 CVector<float> col = myUtil::color(0,0,0);
 		 Sphere* s = new Sphere(0.1, pos, col);
-		// objects.push_back(s);}
+	objects.push_back(s);}
 	//koordinatensystem
 	{CVector<float> pos = myUtil::PosHom(0,0,0);
 //	 pos = inverseCameraMatrix * pos;
@@ -66,45 +66,45 @@ SceneGraph::SceneGraph(){
 	 Sphere* s = new Sphere(0.4, pos, col);
 	 //objects.push_back(s);
 	 }
-//	for(int i = 1; i < 4; i++){
-//		Sphere* s;
-//		CVector<float> pos;
-//		CVector<float> col;
-//
-//		{pos = myUtil::PosHom(i,0,0);
-////		pos = inverseCameraMatrix * pos;
-//		col = myUtil::color(255, 0, 0);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);}
-//
-//		{CVector<float> pos = myUtil::PosHom(i,i,0);
-//		CVector<float> col = myUtil::color(255, 255, 0);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
-//
-//		{pos = myUtil::PosHom(0, i, 0);
-//		col = myUtil::color(0, 255, 0);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);}
-//
-//		{CVector<float> pos = myUtil::PosHom(i,0,i);
-//		CVector<float> col = myUtil::color(255, 0, 255);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
-//
-//		pos = myUtil::PosHom(0, 0, i);
-////		pos = inverseCameraMatrix * pos;
-//		col = myUtil::color(0, 0, 255);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);
-//
-//		{CVector<float> pos = myUtil::PosHom(0,i,i);
-//		CVector<float> col = myUtil::color(0, 255, 255);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
+	for(int i = 1; i < 4; i++){
+		Sphere* s;
+		CVector<float> pos;
+		CVector<float> col;
 
-//		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
-//		objects.push_back(tr);
+		{pos = myUtil::PosHom(i,0,0);
+//		pos = inverseCameraMatrix * pos;
+		col = myUtil::color(255, 0, 0);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);}
+
+		{CVector<float> pos = myUtil::PosHom(i,i,0);
+		CVector<float> col = myUtil::color(255, 255, 0);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+		{pos = myUtil::PosHom(0, i, 0);
+		col = myUtil::color(0, 255, 0);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);}
+
+		{CVector<float> pos = myUtil::PosHom(i,0,i);
+		CVector<float> col = myUtil::color(255, 0, 255);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+		pos = myUtil::PosHom(0, 0, i);
+//		pos = inverseCameraMatrix * pos;
+		col = myUtil::color(0, 0, 255);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);
+
+		{CVector<float> pos = myUtil::PosHom(0,i,i);
+		CVector<float> col = myUtil::color(0, 255, 255);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+		Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
+		objects.push_back(tr);
 	}
 }
 
