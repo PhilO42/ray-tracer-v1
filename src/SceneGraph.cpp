@@ -29,12 +29,12 @@ SceneGraph::SceneGraph(){
 	backgroundColor = myUtil::color(127.0f,219.0f,255.0f);
 	EAmbient = myUtil::color(200,100,50);
 
-//	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-//	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-	addLightSource(Light(myUtil::PosHom(1,1,1), CVector<float>(4,1), false, myUtil::color(255,255,0)));
-	addLightSource(Light(myUtil::PosHom(1,1,0), myUtil::PosHom(1,1,1,0), true, myUtil::color(255,255,0)));
+	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
+	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
+	addLightSource(Light(myUtil::PosHom(1,1,1), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
+	addLightSource(Light(myUtil::PosHom(1,1,0), myUtil::PosHom(1,1,1,0), true, myUtil::color(0.5,0.5,0)));
 
-	intenseAmbient = myUtil::color(100,100,100);
+	intenseAmbient = myUtil::color(0,100,100);
 	intenseDiffuse = myUtil::color(100,100,100);
 	intenseSpecular = myUtil::color(250,250,250);
 	n = 5;
@@ -55,56 +55,56 @@ SceneGraph::SceneGraph(){
 //	CVector<float> col2 = myUtil::Pos(0,0,255);
 //	Sphere* s2 = new Sphere(2.5,pos2,col2);
 //	objects.push_back(s2);
-//	{CVector<float> pos = myUtil::PosHom(1,2,3);
-//	//	 pos = inverseCameraMatrix * pos;
-//		 CVector<float> col = myUtil::color(0,0,0);
-//		 Sphere* s = new Sphere(0.1, pos, col);
-//	objects.push_back(s);}
-//	//koordinatensystem
-//	{CVector<float> pos = myUtil::PosHom(0,0,0);
-////	 pos = inverseCameraMatrix * pos;
-//	 CVector<float> col = myUtil::color(255, 255, 255);
-//	 Sphere* s = new Sphere(0.7, pos, col);
-//	 objects.push_back(s);
-//	 }
-//	for(int i = 1; i < 4; i++){
-//		Sphere* s;
-//		CVector<float> pos;
-//		CVector<float> col;
-//
-//		{pos = myUtil::PosHom(i,0,0);
-////		pos = inverseCameraMatrix * pos;
-//		col = myUtil::color(255, 0, 0);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);}
-//
-//		{CVector<float> pos = myUtil::PosHom(i,i,0);
-//		CVector<float> col = myUtil::color(255, 255, 0);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
-//
-//		{pos = myUtil::PosHom(0, i, 0);
-//		col = myUtil::color(0, 255, 0);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);}
-//
-//		{CVector<float> pos = myUtil::PosHom(i,0,i);
-//		CVector<float> col = myUtil::color(255, 0, 255);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
-//
-//		pos = myUtil::PosHom(0, 0, i);
-////		pos = inverseCameraMatrix * pos;
-//		col = myUtil::color(0, 0, 255);
-//		s = new Sphere(0.4, pos, col);
-//		objects.push_back(s);
-//
-//		{CVector<float> pos = myUtil::PosHom(0,i,i);
-//		CVector<float> col = myUtil::color(0, 255, 255);
-//		Sphere* s = new Sphere(0.2, pos, col);
-//		objects.push_back(s);}
-//
-//	}
+	{CVector<float> pos = myUtil::PosHom(1,2,3);
+	//	 pos = inverseCameraMatrix * pos;
+		 CVector<float> col = myUtil::color(0,0,0);
+		 Sphere* s = new Sphere(0.1, pos, col);
+	objects.push_back(s);}
+	//koordinatensystem
+	{CVector<float> pos = myUtil::PosHom(0,0,0);
+//	 pos = inverseCameraMatrix * pos;
+	 CVector<float> col = myUtil::color(255, 255, 255);
+	 Sphere* s = new Sphere(0.7, pos, col);
+	 objects.push_back(s);
+	 }
+	for(int i = 1; i < 4; i++){
+		Sphere* s;
+		CVector<float> pos;
+		CVector<float> col;
+
+		{pos = myUtil::PosHom(i,0,0);
+//		pos = inverseCameraMatrix * pos;
+		col = myUtil::color(255, 0, 0);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);}
+
+		{CVector<float> pos = myUtil::PosHom(i,i,0);
+		CVector<float> col = myUtil::color(255, 255, 0);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+		{pos = myUtil::PosHom(0, i, 0);
+		col = myUtil::color(0, 255, 0);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);}
+
+		{CVector<float> pos = myUtil::PosHom(i,0,i);
+		CVector<float> col = myUtil::color(255, 0, 255);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+		pos = myUtil::PosHom(0, 0, i);
+//		pos = inverseCameraMatrix * pos;
+		col = myUtil::color(0, 0, 255);
+		s = new Sphere(0.4, pos, col);
+		objects.push_back(s);
+
+		{CVector<float> pos = myUtil::PosHom(0,i,i);
+		CVector<float> col = myUtil::color(0, 255, 255);
+		Sphere* s = new Sphere(0.2, pos, col);
+		objects.push_back(s);}
+
+	}
 	Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
 	objects.push_back(tr);
 }
@@ -464,7 +464,7 @@ kdTree* SceneGraph::loadObj(string pathToObj, CVector<float> color){
 				nums[ind] = list.at(j).toFloat();
 				ind++;
 			}
-			vertices.push_back(myUtil::color(nums[0],nums[1],nums[2]));
+			vertices.push_back(myUtil::color(nums[0]+1,nums[1],nums[2]));
 		}
 
 		//texture coordinate
