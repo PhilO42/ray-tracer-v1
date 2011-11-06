@@ -1,1 +1,3 @@
 far und near clipping
+triangle: normale interpolieren
+VectorKlasse?
