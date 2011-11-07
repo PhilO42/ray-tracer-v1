@@ -9,25 +9,25 @@
 #define SPHERE_H_
 
 #include "SceneObject.h"
-#include "mathe/CVector.h"
+#include "MyVector.h"
 
 class Sphere : public SceneObject{
 public:
 	Sphere();
-	Sphere(float _radius, CVector<float> _position, CVector<float> _color);
-	Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight);
+	Sphere(float _radius, MyVector _position, MyVector _color);
+	Sphere(float _radius, MyVector _position, MyVector _color, bool _isLight);
 	virtual ~Sphere();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay);
-	CVector<float> getMin();
-	CVector<float> getMax();
-	CVector<float> getCenter();
+	MyVector collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionpoint, MyVector* normal, bool isLightRay);
+	MyVector getMin();
+	MyVector getMax();
+	MyVector getCenter();
 private:
 	float radius;
-	CVector<float> position;
-	CVector<float> color;
+	MyVector position;
+	MyVector color;
 	bool isLight;
-	CVector<float> min;
-	CVector<float> max;
+	MyVector min;
+	MyVector max;
 };
 
 #endif /* SPHERE_H_ */

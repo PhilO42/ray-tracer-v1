@@ -22,7 +22,7 @@ Triangle::Triangle() {
 	color = myUtil::color(255,0,0);
 }
 
-Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color) {
+Triangle::Triangle(MyVector _p0, MyVector _p1, MyVector _p2, MyVector _normal, MyVector _color) {
 	p0 = _p0;
 	p1 = _p1;
 	p2 = _p2;
@@ -41,7 +41,7 @@ Triangle::~Triangle() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> Triangle::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay){
+MyVector Triangle::collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionpoint, MyVector* _normal, bool isLightRay){
 	direction = myUtil::normalize(direction);
 	if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
 		*collided = false;
@@ -49,15 +49,15 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 		return myUtil::color(0,0,0);
 	}
 
-	CVector<float> e1 = p1-p0;
-	CVector<float> e2 = p2-p0;
-	CVector<float> s = origin - p0;
+	MyVector e1 = p1-p0;
+	MyVector e2 = p2-p0;
+	MyVector s = origin - p0;
 
 	//t
-	CVector<float> cross = direction/e2;
+	MyVector cross = direction/e2;
 	cross(3) = 0;//wegen homogenem crossproduct
 	float normalizer = (1.0/(cross*e1));
-	CVector<float> cross2 = s/e1;
+	MyVector cross2 = s/e1;
 	cross2(3) = 0;//wegen homogenem crossproduct
 	*t_value = normalizer * (cross2 * e2);
 	//b1
@@ -75,16 +75,16 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 	return color;
 }
 
-CVector<float> Triangle::getMin(){
+MyVector Triangle::getMin(){
 //	cout << "min " << min << endl;
 	return min;
 }
 
-CVector<float> Triangle::getMax(){
+MyVector Triangle::getMax(){
 //	cout << "max " << max << endl;
 	return max;
 }
 
-CVector<float> Triangle::getCenter(){
+MyVector Triangle::getCenter(){
 	return center;
 }

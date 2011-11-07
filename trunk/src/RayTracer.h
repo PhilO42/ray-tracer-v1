@@ -11,7 +11,7 @@
 #include <QtGui>
 #include "Ray.h"
 #include "SceneGraph.h"
-#include "mathe/CVector.h"
+#include "MyVector.h"
 
 class RayTracer : public QObject{
 	Q_OBJECT
@@ -41,9 +41,9 @@ private:
 	static const int width = 640;
 	static const int height = 480;
 	QImage image;
-	CMatrix<float> cameraMatrix;
-	CVector<float> Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist = 0.1, int p1 = 3, int p2 = 5);
-	CVector<float> Reconstruct(std::vector< CVector<float> > col, char kindOfReconstruction);
+	MyMatrix cameraMatrix;
+	MyVector Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist = 0.1, int p1 = 3, int p2 = 5);
+	MyVector Reconstruct(std::vector< MyVector > col, char kindOfReconstruction);
 	float gauss(float dist);
 	float HammersleyValue(int k, int p);
 };

@@ -16,24 +16,24 @@ myUtil::~myUtil() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> myUtil::color(float x, float y, float z){
-	CVector<float> vec(3,0);
+MyVector myUtil::color(float x, float y, float z){
+	MyVector vec(3,0);
 	vec(0) = x;
 	vec(1) = y;
 	vec(2) = z;
 	return vec;
 }
 
-CVector<float> myUtil::PosHom(float x, float y, float z){
-	CVector<float> vec(4,1);
+MyVector myUtil::PosHom(float x, float y, float z){
+	MyVector vec(4,1);
 	vec(0) = x;
 	vec(1) = y;
 	vec(2) = z;
 	return vec;
 }
 
-CVector<float> myUtil::PosHom(float x, float y, float z, float w){
-	CVector<float> vec(4,0);
+MyVector myUtil::PosHom(float x, float y, float z, float w){
+	MyVector vec(4,0);
 	vec(0) = x;
 	vec(1) = y;
 	vec(2) = z;
@@ -41,8 +41,8 @@ CVector<float> myUtil::PosHom(float x, float y, float z, float w){
 	return vec;
 }
 
-CVector<float> myUtil::Pos5D(float v, float w, float x, float y, float z){
-	CVector<float> vec(5,0);
+MyVector myUtil::Pos5D(float v, float w, float x, float y, float z){
+	MyVector vec(5,0);
 	vec(0) = v;
 	vec(1) = w;
 	vec(2) = x;
@@ -51,40 +51,40 @@ CVector<float> myUtil::Pos5D(float v, float w, float x, float y, float z){
 	return vec;
 }
 
-CMatrix<float> myUtil::eye(int dim){
-	CMatrix<float> mat(dim,dim,0);
+MyMatrix myUtil::eye(int dim){
+	MyMatrix mat(dim,dim,0);
 	for(int i = 0; i < dim; i++){
 		mat(i,i) = 1.0;
 	}
 	return mat;
 }
 
-CVector<float> myUtil::elementWiseMulti(CVector<float> A, CVector<float> B){
+MyVector myUtil::elementWiseMulti(MyVector A, MyVector B){
 	int s = A.size();
 	if(B.size() < s)
 		s = B.size();
-	CVector<float> back(s);
+	MyVector back(s);
 	for(int i = 0; i < s; i++){
 		back(i) = A(i)*B(i);
 	}
 	return back;
 }
 
-float myUtil::homogenNorm(CVector<float> vec){
+float myUtil::homogenNorm(MyVector vec){
 	if(vec(3) == 0){
 		return color(vec(0),vec(1),vec(2)).norm();
 	}//else
-	CVector<float> back = vec;
+	MyVector back = vec;
 	back *= (1.0/back(3));
 	back(3) = 0;
 	return back.norm();
 }
 
-CVector<float> myUtil::normalize(CVector<float> vec){
+MyVector myUtil::normalize(MyVector vec){
 	if(vec(3) == 0){
 		return vec*(1.0f/homogenNorm(vec));
 	}
-	CVector<float> back = vec;
+	MyVector back = vec;
 	back *= (1.0/back(3));
 	back(3) = 1.0;
 	back *= (1.0/homogenNorm(back));

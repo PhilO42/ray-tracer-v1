@@ -9,7 +9,7 @@
 #define KDTREE_H_
 
 #include "SceneObject.h"
-#include "mathe/CVector.h"
+#include "MyVector.h"
 #include <vector>
 #include "AABB.h"
 
@@ -18,7 +18,7 @@ public:
 	kdTree(std::vector< SceneObject* > objects);
 	kdTree(std::vector< SceneObject* > objects, float _minVal, float _maxVal, int depth);
 	virtual ~kdTree();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
+	MyVector collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionPoint, MyVector* normal, bool isLightRay);
 	float minVal;
 	float maxVal;
 private:

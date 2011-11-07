@@ -27,9 +27,9 @@ kdTree::kdTree(vector< SceneObject* > objects) {
 	float maxZ = std::numeric_limits<float>::min();
 
 	for(int i = 0; i < objects.size(); i++){
-		CVector<float> min = objects.at(i)->getMin();
+		MyVector min = objects.at(i)->getMin();
 //		cout << "min " << min << endl;
-		CVector<float> max = objects.at(i)->getMax();
+		MyVector max = objects.at(i)->getMax();
 //		cout << "max " << max << endl;
 
 		//min
@@ -116,7 +116,7 @@ float kdTree::getMinVal(vector< SceneObject* > objects, int dim){//0=x, 1= y, 2=
 	float minimum = std::numeric_limits<float>::max();
 
 	for(int i = 0; i < objects.size(); i++){
-		CVector<float> min = objects.at(i)->getMin();
+		MyVector min = objects.at(i)->getMin();
 		//min
 		if(min(dim) < minimum)
 			minimum = min(dim);
@@ -129,7 +129,7 @@ float kdTree::getMaxVal(vector< SceneObject* > objects, int dim){
 	float maximum = std::numeric_limits<float>::min();
 
 	for(int i = 0; i < objects.size(); i++){
-		CVector<float> max = objects.at(i)->getMax();
+		MyVector max = objects.at(i)->getMax();
 		//max
 		if(max(dim) < maximum)
 			maximum = max(dim);
@@ -137,17 +137,17 @@ float kdTree::getMaxVal(vector< SceneObject* > objects, int dim){
 	return maximum;
 }
 
-CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
+MyVector kdTree::collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionPoint, MyVector* normal, bool isLightRay){
 	if(isRoot && !boundingBox.collision(origin,direction)){
 		*collided = false;
-		return CVector<float>(3,0);
+		return MyVector(3,0);
 	}
 	if(isLeave){
 		float t_val;
 		bool col;
-		CVector<float> colPnt;
-		CVector<float> norm;
-		CVector<float> color = obj->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay);
+		MyVector colPnt;
+		MyVector norm;
+		MyVector color = obj->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay);
 		*collided = col;
 		if(col){
 			cout << "bla" << endl;
@@ -156,7 +156,7 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 			*normal = norm;
 			return color;
 		}
-		return CVector<float>(3,0);
+		return MyVector(3,0);
 	}
 
 	//left intersection Value
@@ -189,9 +189,9 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 	bool collisionLeft;
 	bool collisionRight;
 	float t;
-	CVector<float> colPoint;
-	CVector<float> norm;
-	CVector<float> colo;
+	MyVector colPoint;
+	MyVector norm;
+	MyVector colo;
 	if(IntersectionHappendLeft || IntersectionHappendRight){
 		if(tLeft < tRight){
 			t = cuttingValueLeft;
@@ -261,19 +261,19 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 	return myUtil::color(255,0,0);
 }
 
-//CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
+//MyVector kdTree::collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionPoint, MyVector* normal, bool isLightRay){
 //	if(isRoot && !boundingBox.collision(origin,direction)){
 //		*collided = false;
 ////		cout << "¬1" << endl;
-//		return CVector<float>(3,0);
+//		return MyVector(3,0);
 //	}
 //	if(isLeave){
 ////		cout << "leav" << endl;
 //		float t_val;
 //		bool col;
-//		CVector<float> colPnt;
-//		CVector<float> norm;
-//		CVector<float> color =  obj->collision(origin,direction,collided,&t_val,&colPnt,&norm,isLightRay);
+//		MyVector colPnt;
+//		MyVector norm;
+//		MyVector color =  obj->collision(origin,direction,collided,&t_val,&colPnt,&norm,isLightRay);
 //		*collided = col;
 //		if(col){
 //			*t_value = t_val;
@@ -281,24 +281,24 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 //			*normal = norm;
 //			return color;
 //		}
-//		return CVector<float>(3,0);
+//		return MyVector(3,0);
 //	}
 //
 //	bool collidedL;
 //	float t_valueL;
-//	CVector<float> collisionPointL;
-//	CVector<float> normalL;
+//	MyVector collisionPointL;
+//	MyVector normalL;
 //	bool collidedR;
 //	float t_valueR;
-//	CVector<float> collisionPointR;
-//	CVector<float> normalR;
+//	MyVector collisionPointR;
+//	MyVector normalR;
 //
-//	CVector<float> colL = left->collision(origin,direction,&collidedL,&t_valueL,&collisionPointL,&normalL,isLightRay);
-//	CVector<float> colR = right->collision(origin,direction,&collidedR,&t_valueR,&collisionPointR,&normalR,isLightRay);
+//	MyVector colL = left->collision(origin,direction,&collidedL,&t_valueL,&collisionPointL,&normalL,isLightRay);
+//	MyVector colR = right->collision(origin,direction,&collidedR,&t_valueR,&collisionPointR,&normalR,isLightRay);
 //	if(!collidedL && !collidedR){
 //		*collided = false;
 ////		cout << "¬2" << endl;
-//		return CVector<float>(3,0);
+//		return MyVector(3,0);
 //	}
 //	if(collidedL && !collidedR){
 //		*collided = true;
