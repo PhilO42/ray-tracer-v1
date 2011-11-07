@@ -26,10 +26,16 @@ public Q_SIGNAL:
 private slots:
 	void saveImage();
 	void repaint();
+	char getSamplingMethod();
+	char getReconstructionMethod();
+	int getRayCount();
 
 private:
 	QPixmap img;
 	QLabel imageLabel;
+	QComboBox rayCount;
+	QListWidget listReconstruction;
+	QListWidget listSampling;
 };
 
 #endif /* VIEWER_H_ */
