@@ -8,18 +8,18 @@
 #ifndef RAY_H_
 #define RAY_H_
 
-#include "mathe/CVector.h"
+#include "MyVector.h"
 
 class Ray {
 public:
-	Ray(CVector<float> _origin, CVector<float> _direction);
+	Ray(MyVector _origin, MyVector _direction);
 	virtual ~Ray();
-	//CVector<float> getColor(SceneGraph* graph);
-	CVector<float> origin;
-	CVector<float> direction;
+	//MyVector getColor(SceneGraph* graph);
+	MyVector origin;
+	MyVector direction;
 private:
 	bool calculatedColor;
-	CVector<float> color;
+	MyVector color;
 };
 
 #endif /* RAY_H_ */

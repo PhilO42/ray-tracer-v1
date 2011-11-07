@@ -9,14 +9,14 @@
 #include "myUtil.h"
 
 Light::Light() {
-	position = CVector<float>(4,0);
+	position = MyVector(4,0);
 	position(3) = 1; //wegen homogen
-	direction = CVector<float>(4,1);
+	direction = MyVector(4,1);
 	isDirectionalLight = false;
-	color = CVector<float>(3,0.5);
+	color = MyVector(3,0.5);
 }
 
-Light::Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color) {
+Light::Light(MyVector _position, MyVector _direction, bool _directionalLight, MyVector _color) {
 	position = _position;
 	direction = _direction;
 	isDirectionalLight = _directionalLight;
@@ -25,7 +25,7 @@ Light::Light(CVector<float> _position, CVector<float> _direction, bool _directio
 	ISpecular = color;//myUtil::color(0.5,0.5,0.5)
 }
 
-Light::Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color, CVector<float> _IDiffuse, CVector<float> _ISpecular) {
+Light::Light(MyVector _position, MyVector _direction, bool _directionalLight, MyVector _color, MyVector _IDiffuse, MyVector _ISpecular) {
 	position = _position;
 	direction = _direction;
 	isDirectionalLight = _directionalLight;

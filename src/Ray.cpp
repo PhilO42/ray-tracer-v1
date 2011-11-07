@@ -7,7 +7,7 @@
 
 #include "Ray.h"
 
-Ray::Ray(CVector<float> _origin, CVector<float> _direction) {
+Ray::Ray(MyVector _origin, MyVector _direction) {
 	origin = _origin;
 	direction = _direction;
 	calculatedColor = false;
@@ -17,7 +17,7 @@ Ray::~Ray() {
 	// TODO Auto-generated destructor stub
 }
 
-//CVector<float> Ray::getColor(SceneGraph* graph){
+//MyVector Ray::getColor(SceneGraph* graph){
 //	if(!calculatedColor){
 //		color = graph->getColor();
 //	}

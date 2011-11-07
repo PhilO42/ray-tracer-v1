@@ -31,7 +31,7 @@ AABB::~AABB() {
 	// TODO Auto-generated destructor stub
 }
 
-bool AABB::collision(CVector<float> origin, CVector<float> direction){
+bool AABB::collision(MyVector origin, MyVector direction){
 	float txmin;
 	float txmax;
 	float tymin;
