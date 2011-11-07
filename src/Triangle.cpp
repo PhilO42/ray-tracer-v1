@@ -76,12 +76,12 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 }
 
 CVector<float> Triangle::getMin(){
-	cout << "min " << min << endl;
+//	cout << "min " << min << endl;
 	return min;
 }
 
 CVector<float> Triangle::getMax(){
-	cout << "max " << max << endl;
+//	cout << "max " << max << endl;
 	return max;
 }
 

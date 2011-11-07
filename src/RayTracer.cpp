@@ -50,23 +50,23 @@ void RayTracer::draw(){
 	cameraMatrix = graph->getCameraMatrix();
 	//origin *= -1;
 
-	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
-//	for(int y = 0; y < height; y++){
-//		if(y%(height/10) == 0){
-//			if(y == 0){
-//				cout << "  0% finished" << endl;
-//			}else{
-//				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
-//			}
-//		}
-//		for(int x = 0; x < width; x++){
-//			//#############################################
-//			CVector<float> col = Sample(x, y, 'n', 2, 'm');
-//
-//			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
-//			image.setPixel(x,y,color.rgba());
-//		}
-//	}
+//	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
+	for(int y = 0; y < height; y++){
+		if(y%(height/10) == 0){
+			if(y == 0){
+				cout << "  0% finished" << endl;
+			}else{
+				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
+			}
+		}
+		for(int x = 0; x < width; x++){
+			//#############################################
+			CVector<float> col = Sample(x, y, 'n', 2, 'm');
+
+			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
+			image.setPixel(x,y,color.rgba());
+		}
+	}
 
 
 	cout << "100% finished" << endl;

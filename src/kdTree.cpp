@@ -53,7 +53,7 @@ kdTree::kdTree(vector< SceneObject* > objects) {
 	minVal = minX;
 	maxVal = maxX;
 
-	//build Children
+	//build Childrens
 	sort(objects.begin(), objects.end(), xsort);
 	depthMod = 0;
 
@@ -162,28 +162,28 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 	//left intersection Value
 	float cuttingValueLeft;
 	float tLeft;
-	bool possibleCollidingLeft;
+	bool IntersectionHappendLeft;
 	if(direction((depthMod + 1) % 3) == 0) {//value is zero into the desired direction
 		cuttingValueLeft = origin(depthMod);
 	} else {
 		float tLeft = (left->maxVal - origin((depthMod + 1) % 3)) / direction((depthMod + 1) % 3);
 		cuttingValueLeft = origin(depthMod) + tLeft * direction(depthMod);
 	}
-	if(!(cuttingValueLeft < left->minVal))
-		possibleCollidingLeft = true;
+	if(left->minVal <= cuttingValueLeft && left->maxVal >= cuttingValueLeft)
+		IntersectionHappendLeft = true;
 
 	//right intersection Value
 	float cuttingValueRight;
 	float tRight;
-	bool possibleCollidingRight;
+	bool IntersectionHappendRight;
 	if (direction((depthMod + 1) % 3) == 0) {//value is zero into the desired direction
 		cuttingValueRight = origin(depthMod);
 	} else {
 		float tRight = (right->minVal - origin((depthMod + 1) % 3)) / direction((depthMod + 1) % 3);
 		cuttingValueRight = origin(depthMod) + tRight * direction(depthMod);
 	}
-	if(!(cuttingValueRight > right->maxVal))
-		possibleCollidingRight = true;
+	if(right->minVal <= cuttingValueRight && right->maxVal >= cuttingValueRight)
+		IntersectionHappendRight = true;
 
 	//front to back manner
 	bool collisionLeft;
@@ -192,10 +192,12 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 	CVector<float> colPoint;
 	CVector<float> norm;
 	CVector<float> colo;
-	if(possibleCollidingLeft && possibleCollidingRight){
+	if(IntersectionHappendLeft || IntersectionHappendRight){
 		if(tLeft < tRight){
+			t = cuttingValueLeft;
 			colo = left->collision(origin,direction,&collisionLeft,&t,&colPoint,&norm,isLightRay);
 			if(!collisionLeft){
+				t = cuttingValueRight;
 				colo = right->collision(origin,direction,&collisionLeft,&t,&colPoint,&norm,isLightRay);
 			}
 			*collided = collisionLeft;
@@ -204,9 +206,11 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 			*normal = norm;
 			return colo;
 		}else{
+			t = cuttingValueRight;
 			colo = right->collision(origin,direction,&collisionRight,&t,&colPoint,&norm,isLightRay);
 			if(!collisionRight){
-				colo = right->collision(origin,direction,&collisionRight,&t,&colPoint,&norm,isLightRay);
+				t = cuttingValueLeft;
+				colo = left->collision(origin,direction,&collisionRight,&t,&colPoint,&norm,isLightRay);
 			}
 			*collided = collisionRight;
 			*t_value = t;
@@ -214,16 +218,10 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 			*normal = norm;
 			return colo;
 		}
-	}else{//not both //truncating one or both sides
-		if(possibleCollidingLeft){
-			colo = left->collision(origin,direction,&collisionLeft,&t,&colPoint,&norm,isLightRay);
-			*collided = collisionLeft;
-			*t_value = t;
-			*collisionPoint = colPoint;
-			*normal = norm;
-			return colo;
-		}
-		if(possibleCollidingRight){
+	}else{
+		if(*t_value < right->minVal){
+			//check right side
+			t = cuttingValueRight;
 			colo = right->collision(origin,direction,&collisionRight,&t,&colPoint,&norm,isLightRay);
 			*collided = collisionRight;
 			*t_value = t;
@@ -231,7 +229,34 @@ CVector<float> kdTree::collision(CVector<float> origin, CVector<float> direction
 			*normal = norm;
 			return colo;
 		}
+		if(*t_value > left->maxVal){//&t_value = oldvalue entrypoint
+			//check left side
+			t = cuttingValueLeft;
+			colo = left->collision(origin,direction,&collisionLeft,&t,&colPoint,&norm,isLightRay);
+			*collided = collisionLeft;
+			*t_value = t;
+			*collisionPoint = colPoint;
+			*normal = norm;
+			return colo;
+		}
 	}
+//	else{//not both //truncating one or both sides
+//		if(IntersectionHappendLeft){
+//			colo = left->collision(origin,direction,&collisionLeft,&t,&colPoint,&norm,isLightRay);
+//			*collided = collisionLeft;
+//			*t_value = t;
+//			*collisionPoint = colPoint;
+//			*normal = norm;
+//			return colo;
+//		}
+//		if(IntersectionHappendRight){
+//			colo = right->collision(origin,direction,&collisionRight,&t,&colPoint,&norm,isLightRay);
+//			*collided = collisionRight;
+//			*t_value = t;
+//			*collisionPoint = colPoint;
+//			*normal = norm;
+//			return colo;
+//		}
 	*collided = false;
 	return myUtil::color(255,0,0);
 }
