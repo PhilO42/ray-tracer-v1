@@ -39,6 +39,7 @@ void RayTracer::debug(){
 //		cout << i << ": " << HammersleyValue(i,5) << "\t\t";
 //		cout << endl;
 //	}
+	Q_EMIT(getSamplingMethod());
 	graph->loadObj("sphere.obj", myUtil::color(255,255,0));//kleinbottle
 	std::cout << "debug" << std::endl;
 }
@@ -51,6 +52,10 @@ void RayTracer::draw(){
 	//origin *= -1;
 
 //	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
+	char sampling = Q_EMIT(getSamplingMethod());
+	char reconstruction = Q_EMIT(getReconstructionMethod());
+	int rayCount = Q_EMIT(getRayCount());
+	cout << "Drawing image with " << sampling << " " << reconstruction << " and " << rayCount*rayCount << " rays per pixel" << endl;
 	for(int y = 0; y < height; y++){
 		if(y%(height/10) == 0){
 			if(y == 0){
@@ -61,7 +66,7 @@ void RayTracer::draw(){
 		}
 		for(int x = 0; x < width; x++){
 			//#############################################
-			CVector<float> col = Sample(x, y, 'n', 2, 'm');
+			CVector<float> col = Sample(x, y, sampling, rayCount, reconstruction);
 
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			image.setPixel(x,y,color.rgba());

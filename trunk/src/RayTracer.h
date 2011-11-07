@@ -22,6 +22,9 @@ public slots:
 public:
 	Q_SIGNALS:
 	void repaint();
+	char getSamplingMethod();
+	char getReconstructionMethod();
+	int getRayCount();
 
 public:
 	RayTracer(QPixmap* _img);
