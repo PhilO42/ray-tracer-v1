@@ -1,3 +1,4 @@
 far und near clipping
 triangle: normale interpolieren
 VectorKlasse?
+front to back manner prüfen
