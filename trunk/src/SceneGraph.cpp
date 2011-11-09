@@ -321,9 +321,8 @@ bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, flo
 
 CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> EDiffuse, CVector<float> ESpecular, float n){
 	normal = myUtil::normalize(normal);
-	if(myUtil::homogenNorm(normal)-1.0 > myUtil::epsi){
+	if(normal(0) != normal(0)){//nan
 		return CVector<float>(3,0);
-//		cout << normal << endl;
 	}
 	lightdirection = myUtil::normalize(lightdirection);
 	viewingRay = myUtil::normalize(viewingRay);
@@ -336,7 +335,6 @@ CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdire
 		color += myUtil::elementWiseMulti(intenseDiffuse, EDiffuse) * abs(normal * lightdirection);
 		color += myUtil::elementWiseMulti(intenseSpecular, ESpecular) * (float)pow(abs(R * viewingRay), n);
 	}
-//	cout << color <<endl;
 	return color;
 }
 
