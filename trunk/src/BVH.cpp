@@ -41,6 +41,7 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 			maxZ = max(2);
 	}
 
+	cout << minX << " " << maxX << " " << minY << " " << maxY << " " << minZ << " " << maxZ << endl;
 	isLeaf = false;
 	boundingBox = AABB(minX, maxX, minY, maxY, minZ, maxZ);
 	depth = 0;
@@ -136,6 +137,7 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 			if(col){
 				*collided = true;
 				if(t_val < t_val_last){
+					t_val_last = t_val;
 					*t_value = t_val;
 					*collisionPoint = colPnt;
 					*normal = norm;

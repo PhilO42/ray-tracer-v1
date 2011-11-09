@@ -10,6 +10,7 @@
 
 #include <QtGui>
 #include <QPixmap>
+#include <QProgressBar>
 
 class Viewer : public QObject{
 	Q_OBJECT
@@ -26,6 +27,7 @@ public Q_SIGNAL:
 private slots:
 	void saveImage();
 	void repaint();
+	void setProgress(int val);
 	char getSamplingMethod();
 	char getReconstructionMethod();
 	int getRayCount();
@@ -36,6 +38,7 @@ private:
 	QComboBox rayCount;
 	QListWidget listReconstruction;
 	QListWidget listSampling;
+	QProgressBar progress;
 };
 
 #endif /* VIEWER_H_ */

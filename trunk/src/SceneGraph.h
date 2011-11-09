@@ -25,7 +25,7 @@ public:
 	CVector<float> castRay(CVector<float> origin, CVector<float> direction);
 	CMatrix<float> getCameraMatrix();
 	CVector<float> castLightRay(CVector<float> origin, CVector<float> direction);
-	BVH* loadObj(std::string pathToObj, CVector<float> color);
+	BVH* loadObj(std::string pathToObj, CVector<float> color, CVector<float> origin);
 private:
 	std::vector<Light> lightSources;
 	CMatrix<float> cameraMatrix;

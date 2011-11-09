@@ -40,7 +40,7 @@ void RayTracer::debug(){
 //		cout << endl;
 //	}
 	Q_EMIT(getSamplingMethod());
-	graph->loadObj("models/sphere.obj", myUtil::color(255,255,0));//kleinbottle
+	graph->loadObj("models/ducky2.obj", myUtil::color(255,255,0), myUtil::PosHom(-0.5,0.25,-1));//kleinbottle
 	std::cout << "debug" << std::endl;
 }
 
@@ -62,6 +62,7 @@ void RayTracer::draw(){
 				cout << "  0% finished" << endl;
 			}else{
 				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
+				Q_EMIT(setProgress((int)(y/(height/10))*10));
 			}
 		}
 		for(int x = 0; x < width; x++){
@@ -75,6 +76,7 @@ void RayTracer::draw(){
 
 
 	cout << "100% finished" << endl;
+	Q_EMIT(100);
 	cout << "Rendering finised!" << endl;
 	//img->fill(QColor(0,0,255,255));
 	img->convertFromImage(image);

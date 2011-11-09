@@ -22,6 +22,7 @@ public slots:
 public:
 	Q_SIGNALS:
 	void repaint();
+	void setProgress(int val);
 	char getSamplingMethod();
 	char getReconstructionMethod();
 	int getRayCount();

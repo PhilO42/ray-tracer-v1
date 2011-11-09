@@ -78,16 +78,20 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 	*collided = true;
 	*collisionpoint = origin + *t_value * direction;
 	CVector<float> a = normalp0;
-	if(myUtil::homogenNorm(*collisionpoint - p0) != 0)
+//	a *= -1.0;
+//	if(myUtil::homogenNorm(*collisionpoint - p0) != 0)
 		a *= 1.0/myUtil::homogenNorm(*collisionpoint - p0);
 	CVector<float> b = normalp1;
-	if(myUtil::homogenNorm(*collisionpoint - p1) != 0)
+//	b *= -1.0;
+//	if(myUtil::homogenNorm(*collisionpoint - p1) != 0)
 		b *= 1.0/myUtil::homogenNorm(*collisionpoint - p1);
 	CVector<float> c = normalp2;
-	if(myUtil::homogenNorm(*collisionpoint - p2) != 0)
+//	c *= -1.0;
+//	if(myUtil::homogenNorm(*collisionpoint - p2) != 0)
 		c *= 1.0/myUtil::homogenNorm(*collisionpoint - p2);
 
-	*_normal = myUtil::normalize(a+b+c);
+	*_normal = myUtil::normalize(a+b+c);//a+b+c
+//	*_normal = CVector<float>(4,1);
 	return color;
 }
 
