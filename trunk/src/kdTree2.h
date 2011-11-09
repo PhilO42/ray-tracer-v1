@@ -16,19 +16,17 @@
 class kdTree2 : public SceneObject {
 public:
 	kdTree2(std::vector< SceneObject* > objects);
-	kdTree2(std::vector< SceneObject* > objects, float minWidth, float maxWidth, float _minHeight, float _maxHeight, int _depth);
+	kdTree2(std::vector< SceneObject* > objects, float _leftVal, float _rightVal, float _downVal, float _upVal, int _depth);
 	virtual ~kdTree2();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
+	float leftVal;
+	float rightVal;
 private:
 	AABB* boundingBox;
 	SceneObject* object;
 	int depth;
-	float minimum;
-	float centerMin;//centerMax <= centerMin
-	float centerMax;
-	float maximum;
-	float maxHeight;
-	float minHeight;
+	float upVal;
+	float downVal;
 	kdTree2* left;
 	kdTree2* right;
 	bool isLeaf;

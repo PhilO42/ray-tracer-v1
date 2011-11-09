@@ -8,36 +8,38 @@
 #include "AABB.h"
 #include <iostream>
 
+using namespace std;
+
 AABB::AABB() {
-	float x0 = -1;
-	float x1 = 1;
-	float y0 = -1;
-	float y1 = 1;
-	float z0 = -1;
-	float z1 = 1;
+	x0 = -1;
+	x1 = 1;
+	y0 = -1;
+	y1 = 1;
+	z0 = -1;
+	z1 = 1;
 }
 
 AABB::AABB(float _x0, float _x1, float _y0, float _y1, float _z0, float _z1){
-	float x0 = _x0;
-	float x1 = _x1;
-	float y0 = _y0;
-	float y1 = _y1;
-	float z0 = _z0;
-	float z1 = _z1;
-	std::cout << "x: " << _x0 << " -> " << _x1 << " y: " << _y0 << " -> " << _y1 << " z: " << _z0 << " -> " << _z1 << std::endl;
+	x0 = _x0;
+	x1 = _x1;
+	y0 = _y0;
+	y1 = _y1;
+	z0 = _z0;
+	z1 = _z1;
 }
 
 AABB::~AABB() {
 	// TODO Auto-generated destructor stub
 }
 
-bool AABB::collision(MyVector origin, MyVector direction){
+bool AABB::collision(CVector<float> origin, CVector<float> direction){
 	float txmin;
 	float txmax;
 	float tymin;
 	float tymax;
 	float tzmin;
 	float tzmax;
+
 	float t0 = (x0 - origin(0))/direction(0);
 	float t1 = (x1 - origin(0))/direction(0);
 	if(t0 < t1){
@@ -68,8 +70,13 @@ bool AABB::collision(MyVector origin, MyVector direction){
 		tzmax = t0;
 	}
 
-	if(((txmax < tymin)||(tymax < txmin)) && ((txmax < tzmin)||(tzmax < txmin)) && ((tymax < tzmin)||(tzmax < tymin))){//AABB || BBAA
-		return false;
+	if(((tymax > txmin) &&
+		(txmax > tymin) &&
+		(tymax > tzmin) &&
+		(tzmax > tymin) &&
+		(txmax > tzmin) &&
+		(tzmax > txmin))){
+			return true;
 	}
-	return true;
+	return false;
 }

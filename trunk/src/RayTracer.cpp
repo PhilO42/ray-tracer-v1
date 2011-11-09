@@ -8,7 +8,7 @@
 #include "RayTracer.h"
 #include <qpixmap.h>
 #include <iostream>
-#include "MyMatrix.h"
+#include "mathe/CMatrix.h"
 #include "SceneGraph.h"
 #include <limits>
 #include <math.h>
@@ -34,15 +34,24 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::debug(){
+//	Q_EMIT(seeTheLightMap());
+//	for(int i = 0; i < 10; i++){
+//		cout << i << ": " << HammersleyValue(i,5) << "\t\t";
+//		cout << endl;
+//	}
+	Q_EMIT(getSamplingMethod());
 	graph->loadObj("sphere.obj", myUtil::color(255,255,0));//kleinbottle
 	std::cout << "debug" << std::endl;
 }
 
 void RayTracer::draw(){
+	//image = QImage(width,height,QImage::Format_ARGB32);
+	//image.fill(qRgba(200,200,255,255));
 	cout << "Rendering started!" << endl;
 	cameraMatrix = graph->getCameraMatrix();
+	//origin *= -1;
 
-//	MyVector col = Sample(378, 250, 'n', 2, 'm');
+//	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
 	char sampling = Q_EMIT(getSamplingMethod());
 	char reconstruction = Q_EMIT(getReconstructionMethod());
 	int rayCount = Q_EMIT(getRayCount());
@@ -57,12 +66,13 @@ void RayTracer::draw(){
 		}
 		for(int x = 0; x < width; x++){
 			//#############################################
-			MyVector col = Sample(x, y, sampling, rayCount, reconstruction);
+			CVector<float> col = Sample(x, y, sampling, rayCount, reconstruction);
 
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			image.setPixel(x,y,color.rgba());
 		}
 	}
+
 
 	cout << "100% finished" << endl;
 	cout << "Rendering finised!" << endl;
@@ -74,20 +84,20 @@ void RayTracer::draw(){
 }
 
 void RayTracer::seeTheLightMap(){
-	MyMatrix cameraMatrix = graph->getCameraMatrix();
-	MyVector origin = myUtil::PosHom(0,0,0);
+	CMatrix<float> cameraMatrix = graph->getCameraMatrix();
+	CVector<float> origin = myUtil::PosHom(0,0,0);
 	origin = cameraMatrix * origin;
 	for(int y = 0; y < height; y++){
 		for(int x = 0; x < width; x++){
 //	int y = 334;
 //	int x = 448;
-			MyVector dir(4,0);
+			CVector<float> dir(4,0);
 			dir(0) =-abs(right) +(((float)x+0.5)/((float)width)) *2*abs(right);
 			dir(1) = abs(bottom)-(((float)y+0.5)/((float)height))*2*abs(bottom);
 			dir(2) = -near;
 			dir = cameraMatrix * dir;
 			dir = myUtil::normalize(dir);
-			MyVector col = graph->castLightRay(origin, dir);
+			CVector<float> col = graph->castLightRay(origin, dir);
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			image.setPixel(x,y,color.rgba());
 		}
@@ -97,12 +107,12 @@ void RayTracer::seeTheLightMap(){
 	Q_EMIT(repaint());
 }
 
-MyVector RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist, int p1, int p2){
-	MyVector origin = myUtil::PosHom(0,0,0);
+CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist, int p1, int p2){
+	CVector<float> origin = myUtil::PosHom(0,0,0);
 	origin = cameraMatrix * origin;
-	vector< MyVector > col(sampleCount*sampleCount);
-	MyVector dir(4,0);
-	MyVector pixelVal;
+	vector< CVector<float> > col(sampleCount*sampleCount);
+	CVector<float> dir(4,0);
+	CVector<float> pixelVal;
 	float strataSize;
 
 	float xPix;
@@ -150,7 +160,7 @@ MyVector RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, c
 				xPix = ((float)x) + ((rand() % 1000)/1000.0);//value between 0 and 1
 				yPix = ((float)y) + ((rand() % 1000)/1000.0);
 				for(int j = 0; j < i; j++){
-					if((xPix - col.at(j)(3))*(xPix - col.at(j)(3)) + (yPix - col.at(j)(4))*(yPix - col.at(j)(4)) < minDist)
+					if((xPix - col.at(j)(3))*(xPix - col.at(j)(3)) + (yPix - col.at(j)(4))*(yPix - col.at(j)(4)) < (1.0/(sampleCount*sampleCount*sampleCount)))
 						goto up;//sorry!
 				}
 				//take this sample
@@ -176,14 +186,19 @@ MyVector RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCount, c
 			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = halton" << endl;
 			break;
 	}
-	return MyVector(3,0);
+	return CVector<float>(3,0);
 }
 
-MyVector RayTracer::Reconstruct(vector< MyVector > col, char kindOfReconstruction){
+CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfReconstruction){
 	//vectorelements of col are like: [red,green,blue,xpos,ypos]
-	MyVector color(3,0);
-	MyVector pixValue;
+	CVector<float> color(3,0);
+	CVector<float> pixValue;
 	float distSum = 0;
+
+//	for(int i = 0; i < col.size(); i++){
+//		cout << col[i](3) << "\t" << col[i](4) << endl;
+//	}
+//	cout << endl;
 
 	switch (kindOfReconstruction) {
 		case 'b':
@@ -214,7 +229,7 @@ MyVector RayTracer::Reconstruct(vector< MyVector > col, char kindOfReconstructio
 			cerr << "kindOfReconstruction: \'b\' = box(standart)\n                      \'m\' = mitchell" << endl;
 			break;
 	}
-	return MyVector(3,0);
+	return CVector<float>(3,0);
 }
 
 float RayTracer::gauss(float dist){

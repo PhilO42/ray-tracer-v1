@@ -9,28 +9,31 @@
 #define TRIANGLE_H_
 
 #include "SceneObject.h"
-#include "MyVector.h"
+#include "mathe/CVector.h"
 
 class Triangle : public SceneObject {
 public:
 	Triangle();
-	Triangle(MyVector _p0, MyVector _p1, MyVector _p2, MyVector _normal, MyVector _color);
+	Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normalp0, CVector<float> _normalp1, CVector<float> _normalp2, CVector<float> _color);
 	virtual ~Triangle();
-	MyVector collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionpoint, MyVector* _normal, bool isLightRay);
-	MyVector getMin();
-	MyVector getMax();
-	MyVector getCenter();
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay);
+	CVector<float> getMin();
+	CVector<float> getMax();
+	CVector<float> getCenter();
 private:
 	//corners
-	MyVector p0;
-	MyVector p1;
-	MyVector p2;
+	CVector<float> p0;
+	CVector<float> p1;
+	CVector<float> p2;
 	//normal & color
-	MyVector normal;
-	MyVector color;
-	MyVector min;
-	MyVector max;
-	MyVector center;
+	CVector<float> normal;
+	CVector<float> normalp0;
+	CVector<float> normalp1;
+	CVector<float> normalp2;
+	CVector<float> color;
+	CVector<float> min;
+	CVector<float> max;
+	CVector<float> center;
 };
 
 #endif /* TRIANGLE_H_ */

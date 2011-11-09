@@ -14,13 +14,13 @@ using namespace std;
 
 Sphere::Sphere() {
 	radius = 1.0;
-	position = MyVector(4,1);
-	color = MyVector(3,140);
+	position = CVector<float>(4,1);
+	color = CVector<float>(3,140);
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 }
 
-Sphere::Sphere(float _radius, MyVector _position, MyVector _color){
+Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
 	radius = _radius;
 	position = _position;
 	color = _color;
@@ -29,7 +29,7 @@ Sphere::Sphere(float _radius, MyVector _position, MyVector _color){
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 }
 
-Sphere::Sphere(float _radius, MyVector _position, MyVector _color, bool _isLight){
+Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){
 	radius = _radius;
 	position = _position;
 	color = _color;
@@ -42,13 +42,13 @@ Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 
-MyVector Sphere::collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionPoint, MyVector* normal, bool isLightRay){
+CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
 	if(isLight && isLightRay){
 		*collided = false;
 		*t_value = -1.0f;
 		return myUtil::color(0,0,0);
 	}
-	MyVector pos;
+	CVector<float> pos;
 	pos = position;
 
 	float A = direction(0) * direction(0)
@@ -91,14 +91,14 @@ MyVector Sphere::collision(MyVector origin, MyVector direction, bool* collided, 
 	return this->color;
 }
 
-MyVector Sphere::getMin(){
+CVector<float> Sphere::getMin(){
 	return min;
 }
 
-MyVector Sphere::getMax(){
+CVector<float> Sphere::getMax(){
 	return max;
 }
 
-MyVector Sphere::getCenter(){
+CVector<float> Sphere::getCenter(){
 	return position;
 }

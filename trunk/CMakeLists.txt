@@ -10,8 +10,8 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ray_tracer_SOURCE_DIR}/bin)
 
 #qt
 FIND_PACKAGE(Qt4 REQUIRED)
-SET(ray_tracer_SOURCES ${SRC_PATH}/Main.cpp ${SRC_PATH}/RayTracer.cpp ${SRC_PATH}/Viewer.cpp ${SRC_PATH}/AABB.cpp ${SRC_PATH}/kdTree.cpp ${SRC_PATH}/Light.cpp ${SRC_PATH}/Ray.cpp ${SRC_PATH}/SceneGraph.cpp ${SRC_PATH}/Sphere.cpp ${SRC_PATH}/Triangle.cpp ${SRC_PATH}/MyVector.cpp ${SRC_PATH}/myUtil.cpp ${SRC_PATH}/MyVector.cpp ${SRC_PATH}/MyMatrix.cpp)
-SET(ray_tracer_HEADERS ${SRC_PATH}/RayTracer.h ${SRC_PATH}/Viewer.h ${SRC_PATH}/AABB.h ${SRC_PATH}/kdTree.h ${SRC_PATH}/Light.h ${SRC_PATH}/Ray.h ${SRC_PATH}/SceneGraph.h ${SRC_PATH}/SceneObject.h ${SRC_PATH}/Sphere.h ${SRC_PATH}/Triangle.h ${SRC_PATH}/myUtil.h ${SRC_PATH}/MyVector.h ${SRC_PATH}/MyMatrix.h)
+SET(ray_tracer_SOURCES ${SRC_PATH}/Main.cpp ${SRC_PATH}/RayTracer.cpp ${SRC_PATH}/Viewer.cpp ${SRC_PATH}/mathe/NMath.cpp ${SRC_PATH}/AABB.cpp ${SRC_PATH}/BVH.cpp ${SRC_PATH}/Light.cpp ${SRC_PATH}/Ray.cpp ${SRC_PATH}/SceneGraph.cpp ${SRC_PATH}/Sphere.cpp ${SRC_PATH}/Triangle.cpp ${SRC_PATH}/myUtil.cpp ${SRC_PATH}/Box.cpp)
+SET(ray_tracer_HEADERS ${SRC_PATH}/RayTracer.h ${SRC_PATH}/Viewer.h ${SRC_PATH}/mathe/CMatrix.h ${SRC_PATH}/mathe/CTensor.h ${SRC_PATH}/mathe/CTensor4D.h ${SRC_PATH}/mathe/CVector.h ${SRC_PATH}/mathe/NMath.h ${SRC_PATH}/AABB.h ${SRC_PATH}/BVH.h ${SRC_PATH}/Light.h ${SRC_PATH}/Ray.h ${SRC_PATH}/SceneGraph.h ${SRC_PATH}/SceneObject.h ${SRC_PATH}/Sphere.h ${SRC_PATH}/Triangle.h ${SRC_PATH}/myUtil.h ${SRC_PATH}/Box.h)
 QT4_WRAP_CPP(ray_tracer_HEADERS_MOC ${ray_tracer_HEADERS})
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})

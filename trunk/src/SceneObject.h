@@ -8,17 +8,18 @@
 #ifndef SCENEOBJECT_H_
 #define SCENEOBJECT_H_
 
-#include "MyVector.h"
+#include "mathe/CVector.h"
 #include <vector>
+#include "mathe/CMatrix.h"
 
 class SceneObject {
 public:
 	SceneObject(){};
 	virtual ~SceneObject(){};
-	virtual MyVector collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionPoint, MyVector* normal, bool isLightRay){};
-	virtual MyVector getMin(){};
-	virtual MyVector getMax(){};
-	virtual MyVector getCenter(){};
+	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){};
+	virtual CVector<float> getMin(){};
+	virtual CVector<float> getMax(){};
+	virtual CVector<float> getCenter(){};
 };
 
 #endif /* SCENEOBJECT_H_ */

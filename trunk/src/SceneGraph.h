@@ -8,45 +8,45 @@
 #ifndef SCENEGRAPH_H_
 #define SCENEGRAPH_H_
 
-#include "MyMatrix.h"
+#include "mathe/CMatrix.h"
 #include "Light.h"
 #include "SceneObject.h"
-#include "kdTree.h"
+#include "BVH.h"
 
 class SceneGraph {
 public:
 	SceneGraph();
-	SceneGraph(MyMatrix _cameraMatrix, MyVector _backgroundColor);
+	SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundColor);
 	virtual ~SceneGraph();
 	void addLightSource(Light light);
 	void addSceneObject(SceneObject* object);
-	void setCameraMatrix(MyMatrix _cameraMatrix);
-	MyMatrix ProjectionMatrix(MyVector _origin, float near, float far, float width, float height);
-	MyVector castRay(MyVector origin, MyVector direction);
-	MyMatrix getCameraMatrix();
-	MyVector castLightRay(MyVector origin, MyVector direction);
-	kdTree* loadObj(std::string pathToObj, MyVector color);
+	void setCameraMatrix(CMatrix<float> _cameraMatrix);
+	CMatrix<float> ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height);
+	CVector<float> castRay(CVector<float> origin, CVector<float> direction);
+	CMatrix<float> getCameraMatrix();
+	CVector<float> castLightRay(CVector<float> origin, CVector<float> direction);
+	BVH* loadObj(std::string pathToObj, CVector<float> color);
 private:
 	std::vector<Light> lightSources;
-	MyMatrix cameraMatrix;
-	MyMatrix inverseCameraMatrix;
-	MyMatrix origin;
+	CMatrix<float> cameraMatrix;
+	CMatrix<float> inverseCameraMatrix;
+	CMatrix<float> origin;
 	std::vector<SceneObject*> objects;
-	MyVector backgroundColor;
-	MyVector intenseAmbient;
-	MyVector intenseDiffuse;
-	MyVector intenseSpecular;
-	MyVector EAmbient;
+	CVector<float> backgroundColor;
+	CVector<float> intenseAmbient;
+	CVector<float> intenseDiffuse;
+	CVector<float> intenseSpecular;
+	CVector<float> EAmbient;
 	float n;
-	MyVector Phong(MyVector normal, MyVector lightdirection, bool seeTheLight, MyVector viewingRay, MyVector EDiffuse, MyVector ESpecular, float n);
-	bool lightVisible(MyVector point, MyVector lightDir, float distToLight);
-	MyMatrix InverseCameraMatrix(MyVector cameraPos, MyVector lookAt, MyVector up);
+	CVector<float> Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> EDiffuse, CVector<float> ESpecular, float n);
+	bool lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight);
+	CMatrix<float> InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up);
 
 	//depricated
-	MyMatrix Rx(float angle);
-	MyMatrix Ry(float angle);
-	MyMatrix Rz(float angle);
-	MyVector getColor(MyVector _origin, MyVector direction);
+	CMatrix<float> Rx(float angle);
+	CMatrix<float> Ry(float angle);
+	CMatrix<float> Rz(float angle);
+	CVector<float> getColor(CVector<float> _origin, CVector<float> direction);
 };
 
 #endif /* SCENEGRAPH_H_ */

@@ -9,15 +9,15 @@
 #define AABB_H_
 
 #include "SceneObject.h"
-#include "MyVector.h"
+#include "mathe/CVector.h"
 
 class AABB {
 public:
 	AABB();
 	AABB(float _x0, float _x1, float _y0, float _y1, float _z0, float _z1);
 	virtual ~AABB();
-	bool collision(MyVector origin, MyVector direction);
-//	MyVector collision(MyVector origin, MyVector direction, bool* collided, float* t_value, MyVector* collisionpoint, MyVector* normal, CMatrix<float> cameraTransformation, MyVector bgColor, bool isLightRay);
+	bool collision(CVector<float> origin, CVector<float> direction);
+//	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, CMatrix<float> cameraTransformation, CVector<float> bgColor, bool isLightRay);
 private:
 	float x0;
 	float x1;
@@ -25,7 +25,7 @@ private:
 	float y1;
 	float z0;
 	float z1;
-//	MyVector color;
+//	CVector<float> color;
 };
 
 #endif /* AABB_H_ */
