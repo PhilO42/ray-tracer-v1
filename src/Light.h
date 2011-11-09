@@ -8,21 +8,21 @@
 #ifndef LIGHT_H_
 #define LIGHT_H_
 
-#include "MyMatrix.h"
+#include "mathe/CMatrix.h"
 
 class Light {
 public:
 	Light();
-	Light(MyVector _position, MyVector _direction, bool _directionalLight, MyVector _color);
-	Light(MyVector _position, MyVector _direction, bool _directionalLight, MyVector _color, MyVector _IDiffuse, MyVector _ISpecular);
+	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color);
+	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color, CVector<float> _IDiffuse, CVector<float> _ISpecular);
 	virtual ~Light();
-	MyVector position;
-	MyVector direction;
-	MyVector IDiffuse;
-	MyVector ISpecular;
+	CVector<float> position;
+	CVector<float> direction;
+	CVector<float> IDiffuse;
+	CVector<float> ISpecular;
 	bool isDirectionalLight;
 private:
-	MyVector color;
+	CVector<float> color;
 };
 
 #endif /* LIGHT_H_ */
