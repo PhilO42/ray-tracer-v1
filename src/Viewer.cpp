@@ -39,6 +39,7 @@ Viewer::Viewer(QApplication* app) {
     QObject::connect(&button3, SIGNAL(clicked()), &core, SLOT(debug()));
     QObject::connect(&button4, SIGNAL(clicked()), &core, SLOT(seeTheLightMap()));
     QObject::connect(&core, SIGNAL(getSamplingMethod()), this, SLOT(getSamplingMethod()));
+    QObject::connect(&core, SIGNAL(setProgress(int)), this, SLOT(setProgress(int)));
     QObject::connect(&core, SIGNAL(getReconstructionMethod()), this, SLOT(getReconstructionMethod()));
     QObject::connect(&core, SIGNAL(getRayCount()), this, SLOT(getRayCount()));
     //ButtonGrid
@@ -82,7 +83,11 @@ Viewer::Viewer(QApplication* app) {
     buttonGrid.addItem(new QSpacerItem(5,5),11,0);
     buttonGrid.addWidget(&textRayCount);
     buttonGrid.addWidget(&rayCount);
-    buttonGrid.addItem(new QSpacerItem(20,20),14,0);
+//    progress = QProgressBar();
+    progress.setRange(0,100);
+    progress.setValue(0);
+    buttonGrid.addWidget(&progress);
+    buttonGrid.addItem(new QSpacerItem(21,20),14,0);
 
     //MainGrid
     QGridLayout grid;
@@ -107,6 +112,10 @@ void Viewer::saveImage(){
 
 void Viewer::repaint(){
 	imageLabel.setPixmap(img);
+}
+
+void Viewer::setProgress(int val){
+	progress.setValue(val);
 }
 
 char Viewer::getSamplingMethod(){

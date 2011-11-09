@@ -10,15 +10,16 @@
 
 #include "SceneObject.h"
 #include "AABB.h"
+#include "Plane.h"
+#include <vector>
 
 class Box : public SceneObject{
 public:
-	Box(float _x0, float _x1, float _y0, float _y1, float _z0, float _z1, CVector<float> color);
+	Box(CVector<float> center, CVector<float> _sizes, CVector<float> color);
 	virtual ~Box();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
 private:
-	AABB boundingBox;
-	CVector<float> col;
+	std::vector< Plane* > planes;
 };
 
 #endif /* BOX_H_ */
