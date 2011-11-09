@@ -40,7 +40,7 @@ void RayTracer::debug(){
 //		cout << endl;
 //	}
 	Q_EMIT(getSamplingMethod());
-	graph->loadObj("sphere.obj", myUtil::color(255,255,0));//kleinbottle
+	graph->loadObj("models/sphere.obj", myUtil::color(255,255,0));//kleinbottle
 	std::cout << "debug" << std::endl;
 }
 
