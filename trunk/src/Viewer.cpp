@@ -19,7 +19,7 @@ Viewer::Viewer(QApplication* app) {
 
     //Image
     img = QPixmap(640,480+1);
-    img.fill(QColor(255,0,0,255));
+    img.load("bg.png");
     //ImageLabel
     //imageLabel = QLabel();
     imageLabel.setGeometry(0,0,640,480);

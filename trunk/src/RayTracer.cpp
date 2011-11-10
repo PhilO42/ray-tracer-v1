@@ -57,15 +57,15 @@ void RayTracer::run(){
 //	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
 	cout << "Drawing image with " << sampling << " " << reconstruction << " and " << rayCount*rayCount << " rays per pixel" << endl;
 	for(int y = 0; y < height-1; y++){
+		mutex.lock();
+		image2 = image;
+		mutex.unlock();
+		Q_EMIT(repaint());
 		if(y%(height/10) == 0){
 			if(y == 0){
 				Q_EMIT(setProgress(0));
 				cout << "  0% finished" << endl;
 			}else{
-				mutex.lock();
-				image2 = image;
-				mutex.unlock();
-				Q_EMIT(repaint());
 				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
 				Q_EMIT(setProgress((int)(y/(height/10))*10));
 			}
