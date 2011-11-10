@@ -7,33 +7,34 @@
 
 #include "SceneGraph.h"
 #include <iostream>
-#include "mathe/CVector.h"
-#include "Sphere.h"
-#include "myUtil.h"
 #include <cmath>
 #include <limits>
-#include "Triangle.h"
 #include <fstream>
 #include <iostream>
 #include <QString>
 #include <QObject>
 #include <QStringList>
+#include "myUtil.h"
+#include "mathe/CVector.h"
+#include "Sphere.h"
+#include "Triangle.h"
 #include "Box.h"
+#include "Cylinder.h"
 
 using namespace std;
 
 SceneGraph::SceneGraph(){
 	lightSources = std::vector<Light>(0);
 	objects = std::vector<SceneObject*>(0);
-	inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(3,3,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+	inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 	//setCameraMatrix(CVector<float>(3,0),1,10,4,6);
 	backgroundColor = myUtil::color(127.0f,219.0f,255.0f);
-	EAmbient = myUtil::color(0.8,0.8,0.8);
+	EAmbient = myUtil::color(0.6,0.6,0.6);
 
 //	addLightSource(Light(myUtil::PosHom(2,4,-3), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
 //	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
 //	addLightSource(Light(myUtil::PosHom(6,0,0), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
-	addLightSource(Light(myUtil::PosHom(-1,3,0), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0.9)));
+//	addLightSource(Light(myUtil::PosHom(-1,3,0), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0.9)));
 	addLightSource(Light(myUtil::PosHom(1,1,1), myUtil::PosHom(0,1,1,0), true, myUtil::color(0.8,0.8,0.8)));
 
 	intenseAmbient = myUtil::color(0,0,0);
@@ -63,11 +64,6 @@ SceneGraph::SceneGraph(){
 ////	objects.push_back(s);
 //	}
 //	//koordinatensystem
-	{CVector<float> pos = myUtil::PosHom(-1,1,1.3);
-	 CVector<float> col = myUtil::color(255, 255, 0);
-	 Sphere* s = new Sphere(0.4, pos, col);
-	 objects.push_back(s);
-	 }
 //	for(int i = 1; i < 4; i++){
 //		Sphere* s;
 //		CVector<float> pos;
@@ -106,10 +102,18 @@ SceneGraph::SceneGraph(){
 //	}
 //	Triangle* tr = new Triangle(myUtil::PosHom(1,0,0), myUtil::PosHom(0,1,0), myUtil::PosHom(0,0,1), myUtil::PosHom(1,1,1), myUtil::color(255,255,0));
 //	objects.push_back(tr);
-	Box* b = new Box(myUtil::PosHom(-1,0,0), myUtil::PosHom(3.5,0.5,6), myUtil::color(0,255,255));
-	objects.push_back(b);
 //		Plane* p = new Plane(myUtil::PosHom(0,0,0),myUtil::PosHom(1,0,0), myUtil::PosHom(0,0,1), myUtil::PosHom(0,1,0),myUtil::color(255,0,255));
 //		objects.push_back(p);
+
+	objects.push_back(new Sphere(0.4, myUtil::PosHom(0,1.5,1), myUtil::color(255, 255, 0)));
+	loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
+	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(0, 0, 0), true));
+	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255)));
+	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
+	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
+	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
+	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
 }
 
 SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundColor){
