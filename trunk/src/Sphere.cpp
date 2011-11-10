@@ -22,15 +22,15 @@ Sphere::Sphere() {
 	trancparencyValue = 0.3;
 }
 
-Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
+Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl, float trans){
 	radius = _radius;
 	position = _position;
 	color = _color;
 	isLight =  false;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = refl;
+	trancparencyValue = trans;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){

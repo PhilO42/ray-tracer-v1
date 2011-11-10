@@ -57,15 +57,15 @@ void RayTracer::run(){
 //	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
 	cout << "Drawing image with " << sampling << " " << reconstruction << " and " << rayCount*rayCount << " rays per pixel" << endl;
 	for(int y = 0; y < height-1; y++){
-		mutex.lock();
-		image2 = image;
-		mutex.unlock();
-		Q_EMIT(repaint());
 		if(y%(height/10) == 0){
 			if(y == 0){
 				Q_EMIT(setProgress(0));
 				cout << "  0% finished" << endl;
 			}else{
+				mutex.lock();
+				image2 = image;
+				mutex.unlock();
+				Q_EMIT(repaint());
 				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
 				Q_EMIT(setProgress((int)(y/(height/10))*10));
 			}
@@ -134,7 +134,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 			xPix = ((float)x) + 0.5;
 			yPix = ((float)y) + 0.5;
 			dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-			return graph->castRay(origin, dir, 5);
+			return graph->castRay(origin, dir, 3);
 			break;
 		case 'r':
 			//random sampling
@@ -142,7 +142,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				xPix = ((float)x) + ((rand() % 1000)/1000.0);//value between 0 and 1
 				yPix = ((float)y) + ((rand() % 1000)/1000.0);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir);
+				pixelVal = graph->castRay(origin, dir, 3);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 			}
 			return Reconstruct(col, kindOfReconstruction);
@@ -157,7 +157,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 					xPix += (rand() % 1000)/(1000.0*((float)sampleCount));//value between 0 and 1/strataSize
 					yPix += (rand() % 1000)/(1000.0*((float)sampleCount));
 					dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-					pixelVal = graph->castRay(origin, dir);
+					pixelVal = graph->castRay(origin, dir, 3);
 					col.at(i*sampleCount+j) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 				}
 			}
@@ -175,7 +175,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				}
 				//take this sample
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir);
+				pixelVal = graph->castRay(origin, dir, 3);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 				i++;
 			}
@@ -187,7 +187,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				xPix = ((float)x) + HammersleyValue(i,p1);//value between 0 and 1
 				yPix = ((float)y) + HammersleyValue(i,p2);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir);
+				pixelVal = graph->castRay(origin, dir, 3);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 			}
 			return Reconstruct(col, kindOfReconstruction);

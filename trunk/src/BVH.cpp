@@ -61,8 +61,8 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 	left = new BVH(vecL, depth+1);
 	right = new BVH(vecR, depth+1);
 
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0;
+	trancparencyValue = 0;
 }
 
 BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
@@ -121,12 +121,19 @@ BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
 		right = new BVH(vecR, depth+1);
 	}
 
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0;
+	trancparencyValue = 0;
 }
 
 BVH::~BVH() {
-	// TODO Auto-generated destructor stub
+	if(isLeaf){
+		for(int i = 0; i < obj.size(); i++){
+			delete obj[i];
+		}
+	}else{
+		delete right;
+		delete left;
+	}
 }
 
 CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){

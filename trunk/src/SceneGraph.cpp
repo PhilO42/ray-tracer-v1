@@ -105,12 +105,14 @@ SceneGraph::SceneGraph(){
 //		Plane* p = new Plane(myUtil::PosHom(0,0,0),myUtil::PosHom(1,0,0), myUtil::PosHom(0,0,1), myUtil::PosHom(0,1,0),myUtil::color(255,0,255));
 //		objects.push_back(p);
 
-	objects.push_back(new Sphere(0.4, myUtil::PosHom(0,1.5,1), myUtil::color(255, 255, 0)));
+	objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0.8));
+	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
+	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(0, 0, 0),0.8,0));
 	loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
 	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
 	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(10000000, 10000000, 10000000), true));
-	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255)));
-	objects.push_back(new Box(myUtil::PosHom(0,-4.25,0), myUtil::PosHom(5.5,0.5,7.5), myUtil::color(0,255,255),1,0));
+	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255),0,0,"wood.jpg"));
+	objects.push_back(new Plane(myUtil::PosHom(4,-4.25,-7), myUtil::PosHom(-4,-4.25,-7), myUtil::PosHom(4,-4.25,7),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0.7,0,"white.png"));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
@@ -125,7 +127,9 @@ SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundC
 }
 
 SceneGraph::~SceneGraph() {
-
+	for(int i = 0; i < objects.size(); i++){
+		delete objects[i];
+	}
 }
 
 CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up){
@@ -203,9 +207,9 @@ CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector
 
 void SceneGraph::addLightSource(Light light){
 	CVector<float> pos = light.position;
-	CVector<float> col = myUtil::color(255,255,0);
+	CVector<float> col = myUtil::color(100000,100000,100000);
 	Sphere* s = new Sphere(0.1,pos,col,true);
-//	objects.push_back(s);
+	objects.push_back(s);
 	lightSources.push_back(light);
 }
 
@@ -323,7 +327,8 @@ bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, flo
 		bool collided = false;
 		float distance = myUtil::epsi;
 		CVector<float> color;
-		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true, new float, new float);
+		float a;
+		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true, &a, &a);
 		if(collided){
 			if(distance < t){
 				return false;
@@ -411,7 +416,8 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = 0;
-		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false, new float, new float);
+		float a;
+		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false, &a, &a);
 		if(collided){
 			if(distance < t){
 				hit = true;

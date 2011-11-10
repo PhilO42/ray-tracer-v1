@@ -102,7 +102,7 @@ Viewer::Viewer(QApplication* app) {
 }
 
 Viewer::~Viewer() {
-	core->terminate();
+	core->quit();
 	delete core;
 }
 
