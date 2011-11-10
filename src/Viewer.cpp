@@ -6,7 +6,6 @@
  */
 
 #include "Viewer.h"
-#include "RayTracer.h"
 #include <iostream>
 
 using namespace std;
@@ -19,7 +18,7 @@ Viewer::Viewer(QApplication* app) {
     window.setWindowTitle(QObject::tr("RayTracer v1.0"));
 
     //Image
-    img = QPixmap(640,480);
+    img = QPixmap(640,480+1);
     img.fill(QColor(255,0,0,255));
     //ImageLabel
     //imageLabel = QLabel();
@@ -27,7 +26,7 @@ Viewer::Viewer(QApplication* app) {
     imageLabel.setPixmap(img);
 
     //Core
-    RayTracer core(&img);
+    core = new RayTracer(&img);
 
     //Buttons
     QPushButton button1("Save Image",0);
@@ -35,13 +34,13 @@ Viewer::Viewer(QApplication* app) {
     QPushButton button4("Draw Lightvisibility",0);
     QPushButton button3("Debug",0);
     QObject::connect(&button1, SIGNAL(clicked()), this, SLOT(saveImage()));
-    QObject::connect(&button2, SIGNAL(clicked()), &core, SLOT(draw()));
-    QObject::connect(&button3, SIGNAL(clicked()), &core, SLOT(debug()));
-    QObject::connect(&button4, SIGNAL(clicked()), &core, SLOT(seeTheLightMap()));
-    QObject::connect(&core, SIGNAL(getSamplingMethod()), this, SLOT(getSamplingMethod()));
-    QObject::connect(&core, SIGNAL(setProgress(int)), this, SLOT(setProgress(int)));
-    QObject::connect(&core, SIGNAL(getReconstructionMethod()), this, SLOT(getReconstructionMethod()));
-    QObject::connect(&core, SIGNAL(getRayCount()), this, SLOT(getRayCount()));
+    QObject::connect(&button2, SIGNAL(clicked()), this, SLOT(draw()));
+    QObject::connect(&button3, SIGNAL(clicked()), core, SLOT(debug()));
+    QObject::connect(&button4, SIGNAL(clicked()), core, SLOT(seeTheLightMap()));
+    QObject::connect(core, SIGNAL(getSamplingMethod()), this, SLOT(getSamplingMethod()));
+    QObject::connect(core, SIGNAL(setProgress(int)), this, SLOT(setProgress(int)));
+    QObject::connect(core, SIGNAL(getReconstructionMethod()), this, SLOT(getReconstructionMethod()));
+    QObject::connect(core, SIGNAL(getRayCount()), this, SLOT(getRayCount()));
     //ButtonGrid
     QGridLayout buttonGrid;
     buttonGrid.addItem(new QSpacerItem(10,10),0,0);
@@ -97,24 +96,34 @@ Viewer::Viewer(QApplication* app) {
     grid.addLayout(&buttonGrid,0,1);
     window.setLayout(&grid);
 
-    QObject::connect(&core, SIGNAL(repaint()), this, SLOT(repaint()));
+    QObject::connect(core, SIGNAL(repaint()), this, SLOT(repaint()));
 
     app->exec();
 }
 
 Viewer::~Viewer() {
+	core->terminate();
+	delete core;
 }
 
 
 void Viewer::saveImage(){
-	img.save("out/picture.png","png");
+	QImage image = core->getImage();
+	QImage img2 = image.copy(QRect(0,0,640,480));
+	img2.save("out/picture.png","png");
 }
 
 void Viewer::repaint(){
+	core->mutex.lock();
+	QImage image = core->getImage();
+	core->mutex.unlock();
+	img.convertFromImage(image);
 	imageLabel.setPixmap(img);
 }
 
 void Viewer::setProgress(int val){
+	if(val == 0)
+		progress.reset();
 	progress.setValue(val);
 }
 
@@ -166,4 +175,9 @@ char Viewer::getReconstructionMethod(){
 
 int Viewer::getRayCount(){
 	return rayCount.currentIndex()+1;
+}
+
+void Viewer::draw(){
+	core->setParams(getRayCount(),getReconstructionMethod(),getSamplingMethod());
+	core->start();
 }
