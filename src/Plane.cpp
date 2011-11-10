@@ -9,7 +9,7 @@
 #include "myUtil.h"
 #include <QColor>
 
-Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color, float trans, float refl) {
+Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color, float trans, float refl, std::string path) {
 	p0 = _p0;
 	p1 = _p1;
 	p2 = _p2;
@@ -22,8 +22,8 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	normal = myUtil::normalize(_normal);
 	xSize = myUtil::homogenNorm(p1-p0);
 	ySize = myUtil::homogenNorm(p2-p0);
-	image.load("wood.jpg");
-
+	image.load(QString(path.c_str()));
+	cout << refl << " " << trans << endl;
 	reflectionValue = trans;
 	trancparencyValue = refl;
 }

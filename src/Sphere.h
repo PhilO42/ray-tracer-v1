@@ -14,7 +14,7 @@
 class Sphere : public SceneObject{
 public:
 	Sphere();
-	Sphere(float _radius, CVector<float> _position, CVector<float> _color);
+	Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl=0.3, float trans=0.3);
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight);
 	virtual ~Sphere();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
