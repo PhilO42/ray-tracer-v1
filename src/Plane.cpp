@@ -9,7 +9,7 @@
 #include "myUtil.h"
 #include <QColor>
 
-Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color) {
+Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color, float trans, float refl) {
 	p0 = _p0;
 	p1 = _p1;
 	p2 = _p2;
@@ -23,13 +23,15 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	xSize = myUtil::homogenNorm(p1-p0);
 	ySize = myUtil::homogenNorm(p2-p0);
 	image.load("wood.jpg");
+
+	reflectionValue = trans;
+	trancparencyValue = refl;
 }
 
 Plane::~Plane() {
 	// TODO Auto-generated destructor stub
 }
-
-CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay){
+CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay, float* refl, float* trans){
 	direction = myUtil::normalize(direction);
 		if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
 			*collided = false;
@@ -58,6 +60,8 @@ CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction,
 			return CVector<float>(3,0);
 		}
 		*collided = true;
+		*trans = trancparencyValue;
+		*refl = reflectionValue;
 		*collisionpoint = origin + *t_value * direction;
 		*_normal = normal;
 		return getColor(b1,b2);

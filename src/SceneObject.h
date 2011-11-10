@@ -16,10 +16,12 @@ class SceneObject {
 public:
 	SceneObject(){};
 	virtual ~SceneObject(){};
-	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){};
+	virtual CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){};
 	virtual CVector<float> getMin(){};
 	virtual CVector<float> getMax(){};
 	virtual CVector<float> getCenter(){};
+	float reflectionValue;
+	float trancparencyValue;
 };
 
 #endif /* SCENEOBJECT_H_ */

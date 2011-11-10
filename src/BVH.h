@@ -18,7 +18,7 @@ class BVH: public SceneObject {
 public:
 	BVH(std::vector< SceneObject* > objects);
 	BVH(std::vector< SceneObject* > objects, int _depth);
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 	virtual ~BVH();
 private:
 	AABB boundingBox;

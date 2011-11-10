@@ -24,6 +24,9 @@ Triangle::Triangle() {
 	normal = normalp0 + normalp1 + normalp2;
 	normal *= (1.0/3.0);
 	color = myUtil::color(255,0,0);
+
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normalp0, CVector<float> _normalp1, CVector<float> _normalp2, CVector<float> _color) {
@@ -41,13 +44,16 @@ Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, C
 	normal *= (1.0/3.0);
 	color = _color;
 //	cout << normal << center << p0	<< p1<<p2<<endl;
+
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 Triangle::~Triangle() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> Triangle::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay){
+CVector<float> Triangle::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay, float* refl, float* trans){
 	direction = myUtil::normalize(direction);
 	if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
 		*collided = false;
@@ -76,6 +82,8 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 		return CVector<float>(3,0);
 	}
 	*collided = true;
+	*refl = reflectionValue;
+	*trans = trancparencyValue;
 	*collisionpoint = origin + *t_value * direction;
 	CVector<float> a = normalp0;
 //	a *= -1.0;

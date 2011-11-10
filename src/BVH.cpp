@@ -60,6 +60,9 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 
 	left = new BVH(vecL, depth+1);
 	right = new BVH(vecR, depth+1);
+
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
@@ -117,13 +120,18 @@ BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
 		left = new BVH(vecL, depth+1);
 		right = new BVH(vecR, depth+1);
 	}
+
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 BVH::~BVH() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
+CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
+	*refl = reflectionValue;
+	*trans = trancparencyValue;
 	if(isLeaf){
 		*collided = false;
 		float t_val;
@@ -133,12 +141,14 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 		CVector<float> norm;
 		CVector<float> color_best(3,0);
 		for(int i = 0; i < obj.size(); i++){
-			CVector<float> color = obj[i]->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay);
+			CVector<float> color = obj[i]->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay, new float, new float);
 			if(col){
 				*collided = true;
 				if(t_val < t_val_last){
 					t_val_last = t_val;
 					*t_value = t_val;
+					*refl = obj[i]->reflectionValue;
+					*trans = obj[i]->trancparencyValue;
 					*collisionPoint = colPnt;
 					*normal = norm;
 					color_best = color;
@@ -155,22 +165,30 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 		bool colL = false;
 		CVector<float> colPntL;
 		CVector<float> normL;
-		CVector<float> colorL = left->collision(origin,direction,&colL,&t_valL,&colPntL,&normL,isLightRay);
+		float reflL;
+		float transL;
+		CVector<float> colorL = left->collision(origin,direction,&colL,&t_valL,&colPntL,&normL,isLightRay,&reflL,&transL);
 		float t_valR;
 		bool colR = false;
 		CVector<float> colPntR;
 		CVector<float> normR;
-		CVector<float> colorR = right->collision(origin,direction,&colR,&t_valR,&colPntR,&normR,isLightRay);
+		float reflR;
+		float transR;
+		CVector<float> colorR = right->collision(origin,direction,&colR,&t_valR,&colPntR,&normR,isLightRay,&reflR,&transR);
 		if(colL && colR){
 			*collided = true;
 			if(t_valL < t_valR){
 				*t_value = t_valL;
 				*normal = normL;
+				*refl = reflL;
+				*trans = transL;
 				*collisionPoint = colPntL;
 				return colorL;
 			}else{
 				*t_value = t_valR;
 				*normal = normR;
+				*refl = reflR;
+				*trans = transR;
 				*collisionPoint = colPntR;
 				return colorR;
 			}

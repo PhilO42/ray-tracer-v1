@@ -110,6 +110,7 @@ SceneGraph::SceneGraph(){
 	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
 	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(10000000, 10000000, 10000000), true));
 	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255)));
+	objects.push_back(new Box(myUtil::PosHom(0,-4.25,0), myUtil::PosHom(5.5,0.5,7.5), myUtil::color(0,255,255),1,0));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
@@ -240,23 +241,29 @@ CVector<float> SceneGraph::getColor(CVector<float> _origin, CVector<float> direc
 	//TODO get collisions und ersetzte Farbe wenn collision
 }
 
-CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> direction){
+CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> direction, int recursionDepth, float reflection, float transparency){
 	CVector<float> bestColor = this->backgroundColor;
 	CVector<float> normal;
 	CVector<float> collisionPoint;
 	CVector<float> bestNormal;
 	CVector<float> bestCollisionPoint;
+	float refl;
+	float trans;
+	float bestRefl;
+	float bestTrans;
 	float t = std::numeric_limits<float>::max();
 	bool hit = false;
 
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = 0;
-		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false);
+		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false, &refl, &trans);
 		if(collided){
 			if(distance < t){
 				hit = true;
 				t = distance;
+				bestRefl = refl;
+				bestTrans = trans;
 				bestColor = color;
 				bestNormal = normal;
 				bestCollisionPoint = collisionPoint;
@@ -264,36 +271,40 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 		}
 	}
 	if(hit){
-		CVector<float> col(3,0);
-		for(int i = 0; i < lightSources.size(); i++){
-			CVector<float> EDiffuse = lightSources[i].IDiffuse;
-			CVector<float> ESpecular = lightSources[i].ISpecular;
-			CVector<float> lightDir;
+		if(recursionDepth != 1){
+			bestColor = Recursion(bestColor, origin, direction, bestNormal, recursionDepth, bestRefl, bestTrans);
+		}else{
+			CVector<float> col(3,0);
+			for(int i = 0; i < lightSources.size(); i++){
+				CVector<float> EDiffuse = lightSources[i].IDiffuse;
+				CVector<float> ESpecular = lightSources[i].ISpecular;
+				CVector<float> lightDir;
 
-			if(lightSources.at(i).isDirectionalLight){
-				//directional light
-				lightDir = lightSources[i].direction;
-//				lightDir *= -1.0;
-				lightDir = myUtil::normalize(lightDir);
-				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
-			}else{
-				//point light
-				lightDir = lightSources[i].position - bestCollisionPoint;
+				if(lightSources.at(i).isDirectionalLight){
+					//directional light
+					lightDir = lightSources[i].direction;
+	//				lightDir *= -1.0;
+					lightDir = myUtil::normalize(lightDir);
+					col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
+				}else{
+					//point light
+					lightDir = lightSources[i].position - bestCollisionPoint;
 
-				//abnahme der helligkeit mit der distanz
-				float dist = myUtil::homogenNorm(lightDir);
-				if(dist != 0)
-					EDiffuse *= (1.0/dist*dist);
-				if(dist != 0)
-					ESpecular *= (1.0/dist*dist);
-				lightDir = myUtil::normalize(lightDir);
-				col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightDir, dist), direction, EDiffuse, ESpecular, n);
+					//abnahme der helligkeit mit der distanz
+					float dist = myUtil::homogenNorm(lightDir);
+					if(dist != 0)
+						EDiffuse *= (1.0/dist*dist);
+					if(dist != 0)
+						ESpecular *= (1.0/dist*dist);
+					lightDir = myUtil::normalize(lightDir);
+					col += Phong(bestNormal,lightDir,lightVisible(bestCollisionPoint, lightDir, dist), direction, EDiffuse, ESpecular, n);
+				}
 			}
+			col *= (1.0f/lightSources.size());
+			bestColor = myUtil::elementWiseMulti(bestColor,EAmbient);
+			bestColor += col;
+	//		cout << bestColor << endl;
 		}
-		col *= (1.0f/lightSources.size());
-		bestColor = myUtil::elementWiseMulti(bestColor,EAmbient);
-		bestColor += col;
-//		cout << bestColor << endl;
 	}
 	return bestColor;
 }
@@ -312,7 +323,7 @@ bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, flo
 		bool collided = false;
 		float distance = myUtil::epsi;
 		CVector<float> color;
-		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true);
+		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true, new float, new float);
 		if(collided){
 			if(distance < t){
 				return false;
@@ -400,7 +411,7 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = 0;
-		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false);
+		CVector<float> color = objects[i]->collision(origin, direction, &collided, &distance, &collisionPoint, &normal, false, new float, new float);
 		if(collided){
 			if(distance < t){
 				hit = true;
@@ -514,4 +525,122 @@ BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> 
 	BVH* bvh = new BVH(triangles);
 	objects.push_back(bvh);
 	return bvh;
+}
+
+CVector<float> SceneGraph::Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency){
+	if(recursionDepth == 0)
+		return PhongOnPoint(color, originPoint, normal, oldViewingDirection);
+	CVector<float> invView = oldViewingDirection;
+	invView *= -1.0;
+	CVector<float> R = myUtil::normalize((2.0f * (normal * invView) * normal) - invView);
+	CVector<float> normT;
+	CVector<float> colPntT;
+	float reflT;
+	float transT;
+	CVector<float> normR;
+	CVector<float> colPntR;
+	CVector<float> colorR;
+	CVector<float> colorT;
+	float reflR;
+	float transR;
+	bool hitT = castRay(originPoint, oldViewingDirection, &normT, &colPntT, &reflT, &transT, &colorT);
+	bool hitR = castRay(originPoint, R, &normR, &colPntR, &reflR, &transR, &colorR);
+	CVector<float> colT = CVector<float>(3,0);
+	CVector<float> colR = CVector<float>(3,0);
+	if(!hitR){
+		colR = backgroundColor;
+	}else{
+		if(reflection != 0)
+			colR = Recursion(colorR, colPntR, R, normR, recursionDepth-1, reflR, transR);
+	}
+	if (!hitT) {
+		colT = backgroundColor;
+	} else {
+		if(transparency != 0)
+			colT = Recursion(colorT, colPntT, oldViewingDirection, normT, recursionDepth - 1, reflT, transT);
+	}
+	return (1-transparency-reflection) * PhongOnPoint(color, originPoint, normal, oldViewingDirection) + reflection * colR + transparency * colT;
+}
+
+CVector<float> SceneGraph::getColorForRay(CVector<float> color, CVector<float> origin, CVector<float> direction, int recurionDepth, float reflection, float transparency){
+	CVector<float> norm;
+	CVector<float> colPnt;
+	CVector<float> col;
+	float refl;
+	float trans;
+	bool hit = castRay(origin, direction, &norm, &colPnt, &refl, &trans, &col);
+	if(!hit){
+		return backgroundColor;
+	}else{
+		return Recursion(col, colPnt, direction, norm, recurionDepth-1, refl, trans);
+	}
+}
+
+bool SceneGraph::castRay(CVector<float> origin, CVector<float> direction, CVector<float>* normal, CVector<float>* collisionPoint, float* refl, float* trans, CVector<float>* color){
+	CVector<float> norm;
+	CVector<float> colPoint;
+	float reflect;
+	float transp;
+	float bestReflect;
+	float bestTransp;
+	CVector<float> col;
+	CVector<float> bestCol;
+	CVector<float> bestNormal;
+	CVector<float> bestCollisionPoint;
+	float t = std::numeric_limits<float>::max();
+	bool hit = false;
+
+	for(int i = 0; i < objects.size(); i++){
+		bool collided = false;
+		float distance = 0;
+		col = objects[i]->collision(origin, direction, &collided, &distance, &colPoint, &norm, false, &reflect, &transp);
+		if(collided){
+			if(distance < t){
+				hit = true;
+				t = distance;
+				bestNormal = norm;
+				bestCol = col;
+				bestReflect = reflect;
+				bestTransp = transp;
+				bestCollisionPoint = colPoint;
+			}
+		}
+	}
+	if(hit){
+		*color = bestCol;
+		*trans = bestTransp;
+		*refl = bestReflect;
+		*collisionPoint = bestCollisionPoint;
+		*normal = bestNormal;
+		return true;
+	}
+	return false;
+}
+
+CVector<float> SceneGraph::PhongOnPoint(CVector<float> col, CVector<float> pointToEvaluate, CVector<float> normal, CVector<float> direction){
+	for(int i = 0; i < lightSources.size(); i++){
+		CVector<float> EDiffuse = lightSources[i].IDiffuse;
+		CVector<float> ESpecular = lightSources[i].ISpecular;
+		CVector<float> lightDir;
+
+		if(lightSources.at(i).isDirectionalLight){
+			//directional light
+			lightDir = lightSources[i].direction;
+			lightDir = myUtil::normalize(lightDir);
+			col += Phong(normal,lightDir,lightVisible(pointToEvaluate, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
+		}else{
+			//point light
+			lightDir = lightSources[i].position - pointToEvaluate;
+
+			//abnahme der helligkeit mit der distanz
+			float dist = myUtil::homogenNorm(lightDir);
+			if(dist != 0)
+				EDiffuse *= (1.0/dist*dist);
+			if(dist != 0)
+				ESpecular *= (1.0/dist*dist);
+			lightDir = myUtil::normalize(lightDir);
+			col += Phong(normal,lightDir,lightVisible(pointToEvaluate, lightDir, dist), direction, EDiffuse, ESpecular, n);
+		}
+	}
+	return col;
 }

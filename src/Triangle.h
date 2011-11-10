@@ -16,7 +16,7 @@ public:
 	Triangle();
 	Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normalp0, CVector<float> _normalp1, CVector<float> _normalp2, CVector<float> _color);
 	virtual ~Triangle();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay, float* refl, float* trans);
 	CVector<float> getMin();
 	CVector<float> getMax();
 	CVector<float> getCenter();
