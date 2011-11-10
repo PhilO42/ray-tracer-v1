@@ -13,13 +13,17 @@ Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, 
 	length = _lenght;
 	color = _color;
 	radius = _r;
+	reflectionValue = 0.7;
+	trancparencyValue = 0.0;
 }
 
 Cylinder::~Cylinder() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> Cylinder::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
+CVector<float> Cylinder::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
+	*refl = reflectionValue;
+	*trans = trancparencyValue;
 	float A = direction(0) * direction(0) + direction(2) * direction(2);
 	float B = 2.0 * (direction(0) * (origin(0) - this->start(0))	+ direction(2) * (origin(2) - this->start(2)));
 	float C = (origin(0) - this->start(0)) * (origin(0) - this->start(0))

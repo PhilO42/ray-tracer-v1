@@ -15,7 +15,7 @@ class Cylinder: public SceneObject {
 public:
 	Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, float _r);
 	virtual ~Cylinder();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 private:
 	CVector<float> start;
 	CVector<float> color;

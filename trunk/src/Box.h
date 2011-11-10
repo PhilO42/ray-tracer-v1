@@ -15,9 +15,9 @@
 
 class Box : public SceneObject{
 public:
-	Box(CVector<float> center, CVector<float> _sizes, CVector<float> color);
+	Box(CVector<float> center, CVector<float> _sizes, CVector<float> color, float trans=0, float refl=0.7);
 	virtual ~Box();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 private:
 	std::vector< Plane* > planes;
 };

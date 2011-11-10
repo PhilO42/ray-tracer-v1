@@ -17,7 +17,7 @@ public:
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color);
 	Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight);
 	virtual ~Sphere();
-	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay);
+	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 	CVector<float> getMin();
 	CVector<float> getMax();
 	CVector<float> getCenter();

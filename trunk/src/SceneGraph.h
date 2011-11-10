@@ -22,10 +22,15 @@ public:
 	void addSceneObject(SceneObject* object);
 	void setCameraMatrix(CMatrix<float> _cameraMatrix);
 	CMatrix<float> ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height);
-	CVector<float> castRay(CVector<float> origin, CVector<float> direction);
-	CMatrix<float> getCameraMatrix();
 	CVector<float> castLightRay(CVector<float> origin, CVector<float> direction);
+	CVector<float> castRay(CVector<float> origin, CVector<float> direction, int recursionDepth = 2, float reflection = 0.3, float transparency = 0.3);
+	CMatrix<float> getCameraMatrix();
 	BVH* loadObj(std::string pathToObj, CVector<float> color, CVector<float> origin);
+
+	CVector<float> getColorForRay(CVector<float> color, CVector<float> origin, CVector<float> direction, int recurionDepth, float reflection, float transparency);
+	CVector<float> Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency);
+	bool castRay(CVector<float> origin, CVector<float> direction, CVector<float>* normal, CVector<float>* collisionPoint, float* refl, float* trans, CVector<float>* color);
+	CVector<float> PhongOnPoint(CVector<float> col, CVector<float> pointToEvaluate, CVector<float> normal, CVector<float> direction);
 private:
 	std::vector<Light> lightSources;
 	CMatrix<float> cameraMatrix;

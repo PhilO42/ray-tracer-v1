@@ -18,6 +18,8 @@ Sphere::Sphere() {
 	color = CVector<float>(3,140);
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
@@ -27,6 +29,8 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color){
 	isLight =  false;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){
@@ -36,13 +40,15 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, b
 	isLight = _isLight;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
+	reflectionValue = 0.3;
+	trancparencyValue = 0.3;
 }
 
 Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 
-CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay){
+CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
 	if(isLight && isLightRay){
 		*collided = false;
 		*t_value = -1.0f;
@@ -83,6 +89,8 @@ CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction
 			return myUtil::color(0,0,0);
 		}
 	}
+	*trans = trancparencyValue;
+	*refl = reflectionValue;
 	*collided = true;
 	*collisionPoint = origin + direction * (*t_value);
 	(*collisionPoint)(3) = 1.0;
