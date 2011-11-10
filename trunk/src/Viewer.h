@@ -11,6 +11,7 @@
 #include <QtGui>
 #include <QPixmap>
 #include <QProgressBar>
+#include "RayTracer.h"
 
 class Viewer : public QObject{
 	Q_OBJECT
@@ -20,11 +21,11 @@ public:
 	void setImage(QImage image);
 
 public Q_SIGNAL:
-    void draw();
     void debug();
     void seeTheLightMap();
 
 private slots:
+	void draw();
 	void saveImage();
 	void repaint();
 	void setProgress(int val);
@@ -39,6 +40,9 @@ private:
 	QListWidget listReconstruction;
 	QListWidget listSampling;
 	QProgressBar progress;
+	RayTracer* core;
+
+//	void draw();
 };
 
 #endif /* VIEWER_H_ */

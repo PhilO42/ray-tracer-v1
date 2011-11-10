@@ -18,8 +18,11 @@
 
 using namespace std;
 
+RayTracer::RayTracer() {
+}
+
 RayTracer::RayTracer(QPixmap* _img) {
-	img = _img;
+//	mutex = QMutex();
 	graph = new SceneGraph();
 	image = QImage(width,height,QImage::Format_ARGB32);
 	bottom = 0.48*2.5;
@@ -30,6 +33,7 @@ RayTracer::RayTracer(QPixmap* _img) {
 }
 
 RayTracer::~RayTracer() {
+	cout << "ich bin am Arsch!" << endl;
 	delete graph;
 }
 
@@ -44,7 +48,7 @@ void RayTracer::debug(){
 	std::cout << "debug" << std::endl;
 }
 
-void RayTracer::draw(){
+void RayTracer::run(){
 	//image = QImage(width,height,QImage::Format_ARGB32);
 	//image.fill(qRgba(200,200,255,255));
 	cout << "Rendering started!" << endl;
@@ -52,11 +56,12 @@ void RayTracer::draw(){
 	//origin *= -1;
 
 //	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
-	char sampling = Q_EMIT(getSamplingMethod());
-	char reconstruction = Q_EMIT(getReconstructionMethod());
-	int rayCount = Q_EMIT(getRayCount());
 	cout << "Drawing image with " << sampling << " " << reconstruction << " and " << rayCount*rayCount << " rays per pixel" << endl;
-	for(int y = 0; y < height; y++){
+	for(int y = 0; y < height-1; y++){
+		mutex.lock();
+		image2 = image;
+		mutex.unlock();
+		Q_EMIT(repaint());
 		if(y%(height/10) == 0){
 			if(y == 0){
 				Q_EMIT(setProgress(0));
@@ -79,10 +84,11 @@ void RayTracer::draw(){
 	cout << "100% finished" << endl;
 	Q_EMIT(setProgress(100));
 	cout << "Rendering finised!" << endl;
-	//img->fill(QColor(0,0,255,255));
-	img->convertFromImage(image);
-	image.save("test3.png","png");
-	//img->fill(QColor(0,0,255,255))
+//	image.fill(283);
+//	image.save("test3.png","png");
+	mutex.lock();
+	image2 = image;
+	mutex.unlock();
 	Q_EMIT(repaint());
 }
 
@@ -105,8 +111,10 @@ void RayTracer::seeTheLightMap(){
 			image.setPixel(x,y,color.rgba());
 		}
 	}
-	img->convertFromImage(image);
 	image.save("lightMap.png","png");
+	mutex.lock();
+	image2 = image;
+	mutex.unlock();
 	Q_EMIT(repaint());
 }
 
@@ -250,4 +258,14 @@ float RayTracer::HammersleyValue(int k, int p){
 		p_prime *= p;
 	}
 	return phi;
+}
+
+void RayTracer::setParams(int count, char reconst, char sample){
+	rayCount = count;
+	reconstruction = reconst;
+	sampling = sample;
+}
+
+QImage RayTracer::getImage(){
+	return image2;
 }

@@ -108,7 +108,7 @@ SceneGraph::SceneGraph(){
 	objects.push_back(new Sphere(0.4, myUtil::PosHom(0,1.5,1), myUtil::color(255, 255, 0)));
 	loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
 	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
-	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(0, 0, 0), true));
+	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(10000000, 10000000, 10000000), true));
 	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255)));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
