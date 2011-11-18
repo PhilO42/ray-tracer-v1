@@ -138,9 +138,9 @@ SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundC
 }
 
 SceneGraph::~SceneGraph() {
-	for(int i = 0; i < objects.size(); i++){
-		delete objects[i];
-	}
+//	for(int i = 0; i < objects.size(); i++){
+//		delete objects[i];
+//	}
 }
 
 CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up){
@@ -423,7 +423,7 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	CVector<float> collisionPoint;
 	CVector<float> bestNormal;
 	CVector<float> bestCollisionPoint;
-	float t = 9999999999999;
+	float t = numeric_limits<float>::max();
 	bool hit = false;
 
 	for(int i = 0; i < objects.size(); i++){

@@ -34,7 +34,7 @@ RayTracer::RayTracer(QPixmap* _img) {
 }
 
 RayTracer::~RayTracer() {
-	delete graph;
+//	delete graph;
 }
 
 void RayTracer::debug(){

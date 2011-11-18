@@ -17,8 +17,10 @@ class Plane : public SceneObject{
 //p0 p2
 public:
 	Plane(CVector<float> p0, CVector<float> p1, CVector<float> p2, CVector<float> _normal, CVector<float> _color, float trans, float refl, std::string path);
+	Plane(CVector<float> p0, CVector<float> p1, CVector<float> p2, CVector<float> _normal, CVector<float> _color, float trans, float refl, std::string texture, std::string _bumpmap);
 	virtual ~Plane();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
+	CVector<float> getNormal(float x, float y);
 private:
 	CVector<float> p0;
 	CVector<float> p1;
@@ -26,9 +28,11 @@ private:
 	CVector<float> color;
 	CVector<float> center;
 	CVector<float> normal;
+	bool bumpy;
 	float xSize;
 	float ySize;
 	QImage image;
+	QImage bumpMap;
 	CVector<float> getColor(float x, float y);
 };
 
