@@ -117,7 +117,7 @@ void Viewer::repaint(){
 	core->mutex.lock();
 	QImage image = core->getImage();
 	core->mutex.unlock();
-	img.convertFromImage(image);
+//	img.convertFromImage(image);
 	imageLabel.setPixmap(img);
 }
 
