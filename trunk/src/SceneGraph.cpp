@@ -35,9 +35,9 @@ SceneGraph::SceneGraph(){
 //	addLightSource(Light(myUtil::PosHom(-2,4,-3), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
 //	addLightSource(Light(myUtil::PosHom(6,0,0), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0)));
 //	addLightSource(Light(myUtil::PosHom(-1,3,0), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0.9)));
-	addLightSource(Light(myUtil::PosHom(1,1,1), myUtil::PosHom(0,1,1,0), true, myUtil::color(0.8,0.8,0.8)));
+//	addLightSource(Light(myUtil::PosHom(0,1,0), myUtil::PosHom(0,1,1,0), true, myUtil::color(0.8,0.8,0.8)));
 
-	intenseAmbient = myUtil::color(0,0,0);
+	intenseAmbient = myUtil::color(100,100,100);
 	intenseDiffuse = myUtil::color(100,100,100);
 	intenseSpecular = myUtil::color(250,250,250);
 	n = 5;
@@ -105,18 +105,29 @@ SceneGraph::SceneGraph(){
 //		Plane* p = new Plane(myUtil::PosHom(0,0,0),myUtil::PosHom(1,0,0), myUtil::PosHom(0,0,1), myUtil::PosHom(0,1,0),myUtil::color(255,0,255));
 //		objects.push_back(p);
 
+	//test szene
+
 	objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0.8));
 	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
 	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(0, 0, 0),0.8,0));
 	loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
 	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
 	objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(10000000, 10000000, 10000000), true));
+	objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"floor.jpg"));
 	objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255),0,0,"wood.jpg"));
-	objects.push_back(new Plane(myUtil::PosHom(4,-4.25,-7), myUtil::PosHom(-4,-4.25,-7), myUtil::PosHom(4,-4.25,7),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0.7,0,"white.png"));
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
-	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));
+	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(255,0,0),0.3));http://mayang.com/textures/Fabric/images/Other%20Fabrics/tightly_woven_black_carpet_060293.JPG
 	objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
 	objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,-2.8), 4, myUtil::color(255,0,0),0.3));
+	addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+
+//	objects.push_back(new Plane(myUtil::PosHom(4,-4.25,-7), myUtil::PosHom(-4,-4.25,-7), myUtil::PosHom(4,-4.25,7),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"white.png"));
+//	objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0));
+//	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
+//	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(255, 0, 0),0,0));
+//	objects.push_back(new Sphere(1.5, myUtil::PosHom(-2,1.75,-0.5), myUtil::color(0, 0, 255),0,0));
+//	addLightSource(Light(myUtil::PosHom(-2,4,-1), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0.5)));
+//	addLightSource(Light(myUtil::PosHom(0,1,0), myUtil::PosHom(0,1,0,0), true, myUtil::color(0.5,0.5,0.5)));
 }
 
 SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundColor){
@@ -208,8 +219,10 @@ CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector
 void SceneGraph::addLightSource(Light light){
 	CVector<float> pos = light.position;
 	CVector<float> col = myUtil::color(100000,100000,100000);
-	Sphere* s = new Sphere(0.1,pos,col,true);
-	objects.push_back(s);
+	if(!light.isDirectionalLight){
+		Sphere* s = new Sphere(0.1,pos,col,true);
+		objects.push_back(s);
+	}
 	lightSources.push_back(light);
 }
 
@@ -357,7 +370,7 @@ CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdire
 
 	if(seeTheLight){
 		color += myUtil::elementWiseMulti(intenseDiffuse, EDiffuse) * abs(normal * lightdirection);
-		color += myUtil::elementWiseMulti(intenseSpecular, ESpecular) * (float)pow(abs(R * viewingRay), n);
+		color += myUtil::elementWiseMulti(intenseSpecular, ESpecular) * (float)pow(abs(R * viewingRay), 10);
 	}
 	return color;
 }

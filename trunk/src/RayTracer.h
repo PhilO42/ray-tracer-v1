@@ -58,7 +58,7 @@ private:
 	char sampling;
 	char reconstruction;
 	int rayCount;
-	static const int recursionDepth = 2;
+	static const int recursionDepth = 1;
 };
 
 #endif /* RAYTRACER_H_ */
