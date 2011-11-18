@@ -106,7 +106,7 @@ CVector<float> Plane::getNormal(float x, float y){
 
 		float x = (xPlus-center)-(xMinus-center);
 		float z = (yPlus-center)-(yMinus-center);
-		CVector<float> back = myUtil::color(x,1,z);
+		CVector<float> back = myUtil::color(-x,30,-z);
 		back *= (1.0/back.norm());
 		return myUtil::PosHom(back(0),back(1),back(2));
 	}else{
