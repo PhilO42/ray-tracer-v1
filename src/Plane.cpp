@@ -67,10 +67,12 @@ CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction,
 
 		//t
 		CVector<float> cross = direction/e2;
-		cross(3) = 0;//wegen homogenem crossproduct
+		cross = myUtil::PosHom(cross(0),cross(1),cross(2),0);
+//		cross(3) = 0;//wegen homogenem crossproduct
 		float normalizer = (1.0/(cross*e1));
 		CVector<float> cross2 = s/e1;
-		cross2(3) = 0;//wegen homogenem crossproduct
+		cross = myUtil::PosHom(cross(0),cross(1),cross(2),0);
+//		cross2(3) = 0;//wegen homogenem crossproduct
 		*t_value = normalizer * (cross2 * e2);
 		//b1
 		float b1 = normalizer * (cross * s);
