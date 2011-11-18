@@ -38,9 +38,9 @@ Box::Box(CVector<float> center, CVector<float> _sizes, CVector<float> color, flo
 }
 
 Box::~Box() {
-	for(int i = 0; i < 6; i++){
-		delete planes[i];
-	}
+//	for(int i = 0; i < 6; i++){
+//		delete planes[i];
+//	}
 }
 
 CVector<float> Box::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
