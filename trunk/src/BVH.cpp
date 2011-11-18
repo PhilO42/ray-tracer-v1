@@ -126,14 +126,14 @@ BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
 }
 
 BVH::~BVH() {
-//	if(isLeaf){
-//		for(int i = 0; i < obj.size(); i++){
-//			delete obj[i];
-//		}
-//	}else{
-//		delete right;
-//		delete left;
-//	}
+	if(isLeaf){
+		for(int i = obj.size()-1; i >= 0; i--){
+			delete obj[i];
+		}
+	}else{
+		delete right;
+		delete left;
+	}
 }
 
 CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){

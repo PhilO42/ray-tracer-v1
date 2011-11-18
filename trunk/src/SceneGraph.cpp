@@ -108,7 +108,7 @@ SceneGraph::SceneGraph(){
 	//test szene
 
 	objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0.8));
-	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
+	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.7), myUtil::color(0, 255, 30),0,0));
 	objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(0, 0, 0),0.8,0));
 	loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
 	addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
@@ -138,9 +138,9 @@ SceneGraph::SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundC
 }
 
 SceneGraph::~SceneGraph() {
-//	for(int i = 0; i < objects.size(); i++){
-//		delete objects[i];
-//	}
+	for(int i = objects.size()-1; i >= 0; i--){
+		delete objects[i];
+	}
 }
 
 CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up){
