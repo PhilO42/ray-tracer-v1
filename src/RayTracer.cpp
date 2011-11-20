@@ -20,11 +20,13 @@
 using namespace std;
 
 RayTracer::RayTracer() {
+	presentation = true;
 }
 
-RayTracer::RayTracer(QPixmap* _img) {
+RayTracer::RayTracer(QPixmap* _img, bool pres) {
+	presentation = pres;
 //	mutex = QMutex();
-	graph = new SceneGraph();
+	graph = new SceneGraph(presentation);
 	image = QImage(width,height,QImage::Format_ARGB32);
 	bottom = 0.48*2.5;
 	right = 0.64*2.5;

@@ -15,7 +15,7 @@
 
 class SceneGraph {
 public:
-	SceneGraph();
+	SceneGraph(bool pres);
 	SceneGraph(CMatrix<float> _cameraMatrix, CVector<float> _backgroundColor);
 	virtual ~SceneGraph();
 	void addLightSource(Light light);
@@ -48,7 +48,7 @@ private:
 	CVector<float> Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> EDiffuse, CVector<float> ESpecular, float n);
 	bool lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight);
 	CMatrix<float> InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up);
-
+	bool presentation;
 	//depricated
 	CMatrix<float> Rx(float angle);
 	CMatrix<float> Ry(float angle);
