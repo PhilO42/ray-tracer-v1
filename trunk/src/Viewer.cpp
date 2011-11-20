@@ -19,14 +19,16 @@ Viewer::Viewer(QApplication* app) {
 
     //Image
     img = QPixmap(640,480+1);
-    img.load("bg.png");
+    if(!presentation){
+        img.load("bg.png");
+    }
     //ImageLabel
     //imageLabel = QLabel();
     imageLabel.setGeometry(0,0,640,480);
     imageLabel.setPixmap(img);
 
     //Core
-    core = new RayTracer(&img);
+    core = new RayTracer(&img, presentation);
 
     //Buttons
     QPushButton button1("Save Image",0);
@@ -59,8 +61,12 @@ Viewer::Viewer(QApplication* app) {
     listSampling.setCurrentRow(0);
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
     buttonGrid.addItem(new QSpacerItem(10,10),5,0);
-    buttonGrid.addWidget(&textSampling);
-    buttonGrid.addWidget(&listSampling);
+    if(!presentation){
+        buttonGrid.addWidget(&textSampling);
+        buttonGrid.addWidget(&listSampling);
+    }else{
+        buttonGrid.addItem(new QSpacerItem(10,300),5,0);
+    }
 
     //ReconstructionOptions
     QLabel textReconstruction("Choose a reconstruction method:");
@@ -69,8 +75,10 @@ Viewer::Viewer(QApplication* app) {
     listReconstruction.setCurrentRow(0);
     listReconstruction.setSelectionMode(QAbstractItemView::SingleSelection);
     buttonGrid.addItem(new QSpacerItem(5,5),8,0);
-    buttonGrid.addWidget(&textReconstruction);
-    buttonGrid.addWidget(&listReconstruction);
+    if(!presentation){
+        buttonGrid.addWidget(&textReconstruction);
+        buttonGrid.addWidget(&listReconstruction);
+    }
 
     //RayCountPerPixel
     QLabel textRayCount("Number of rays per pixel:");
@@ -80,8 +88,10 @@ Viewer::Viewer(QApplication* app) {
     rayCount.addItem("16");
     rayCount.addItem("25");
     buttonGrid.addItem(new QSpacerItem(5,5),11,0);
-    buttonGrid.addWidget(&textRayCount);
-    buttonGrid.addWidget(&rayCount);
+    if(!presentation){
+        buttonGrid.addWidget(&textRayCount);
+        buttonGrid.addWidget(&rayCount);
+    }
 //    progress = QProgressBar();
     progress.setRange(0,100);
     progress.setValue(0);
@@ -115,9 +125,9 @@ void Viewer::saveImage(){
 
 void Viewer::repaint(){
 	core->mutex.lock();
-	QImage image = core->getImage();
+	image = core->getImage();
 	core->mutex.unlock();
-//	img.convertFromImage(image);
+	img.fromImage(image);
 	imageLabel.setPixmap(img);
 }
 

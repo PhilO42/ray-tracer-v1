@@ -41,6 +41,8 @@ private:
 	QListWidget listSampling;
 	QProgressBar progress;
 	RayTracer* core;
+	QImage image;
+	static const bool presentation = true;
 
 //	void draw();
 };
