@@ -35,6 +35,7 @@ public:
 	QMutex mutex;
 	void setParams(int count, char reconst, char sample);
 	QImage getImage();
+	void setScene(int i);
 
 protected:
 	void run();

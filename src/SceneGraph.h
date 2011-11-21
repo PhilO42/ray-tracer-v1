@@ -31,11 +31,11 @@ public:
 	CVector<float> Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency);
 	bool castRay(CVector<float> origin, CVector<float> direction, CVector<float>* normal, CVector<float>* collisionPoint, float* refl, float* trans, CVector<float>* color);
 	CVector<float> PhongOnPoint(CVector<float> col, CVector<float> pointToEvaluate, CVector<float> normal, CVector<float> direction);
-
-	std::vector<SceneObject*> objects;
+	void loadScene(int scene);
 
 private:
 	std::vector<Light> lightSources;
+	std::vector<SceneObject*> objects;
 	CMatrix<float> cameraMatrix;
 	CMatrix<float> inverseCameraMatrix;
 	CMatrix<float> origin;
