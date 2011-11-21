@@ -144,7 +144,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				xPix = ((float)x) + ((rand() % 1000)/1000.0);//value between 0 and 1
 				yPix = ((float)y) + ((rand() % 1000)/1000.0);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir, recursionDepth);
+				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 			}
 			return Reconstruct(col, kindOfReconstruction);
@@ -159,7 +159,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 					xPix += (rand() % 1000)/(1000.0*((float)sampleCount));//value between 0 and 1/strataSize
 					yPix += (rand() % 1000)/(1000.0*((float)sampleCount));
 					dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-					pixelVal = graph->castRay(origin, dir, recursionDepth);
+					pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
 					col.at(i*sampleCount+j) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 				}
 			}
@@ -177,7 +177,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				}
 				//take this sample
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir, recursionDepth);
+				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 				i++;
 			}
@@ -189,7 +189,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				xPix = ((float)x) + HammersleyValue(i,p1);//value between 0 and 1
 				yPix = ((float)y) + HammersleyValue(i,p2);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-				pixelVal = graph->castRay(origin, dir, recursionDepth);
+				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
 				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
 			}
 			return Reconstruct(col, kindOfReconstruction);
@@ -241,6 +241,7 @@ CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfR
 			cerr << "kindOfReconstruction: \'b\' = box(standart)\n                      \'m\' = mitchell" << endl;
 			break;
 	}
+	col.clear();
 	return CVector<float>(3,0);
 }
 
