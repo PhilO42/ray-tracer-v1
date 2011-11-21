@@ -55,11 +55,11 @@ Plane::~Plane() {
 }
 CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionpoint, CVector<float>* _normal, bool isLightRay, float* refl, float* trans){
 	direction = myUtil::normalize(direction);
-		if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
-			*collided = false;
+//		if((direction*normal) == 0){ //ray and normal orthogonal -> no hit
+//			*collided = false;
 //			cout << "90°" << endl;
-			return CVector<float>(3,0);
-		}
+//			return CVector<float>(3,0);
+//		}
 
 		CVector<float> e1 = p1-p0;
 		CVector<float> e2 = p2-p0;

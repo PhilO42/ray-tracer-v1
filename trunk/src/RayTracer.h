@@ -33,7 +33,7 @@ public:
 	RayTracer(QPixmap* _img, bool pres);
 	virtual ~RayTracer();
 	QMutex mutex;
-	void setParams(int count, char reconst, char sample);
+	void setParams(int count, char reconst, char sample, int recursion);
 	QImage getImage();
 	void setScene(int i);
 
@@ -59,7 +59,7 @@ private:
 	char sampling;
 	char reconstruction;
 	int rayCount;
-	static const int recursionDepth = 1;
+	int recursionDepth;
 	bool presentation;
 };
 
