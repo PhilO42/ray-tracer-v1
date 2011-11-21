@@ -45,10 +45,6 @@ void RayTracer::debug(){
 //		cout << i << ": " << HammersleyValue(i,5) << "\t\t";
 //		cout << endl;
 //	}
-	Q_EMIT(getSamplingMethod());
-	graph->loadObj("models/ducky2.obj", myUtil::color(255,255,0), myUtil::PosHom(0.5,0.25,-1));
-	graph->objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662,2.10338,-0.498035), myUtil::color(0,0,0)));
-	graph->objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002,2.10338,-0.498035), myUtil::color(0,0,0)));
 	std::cout << "debug" << std::endl;
 }
 
@@ -65,8 +61,9 @@ void RayTracer::run(){
 		mutex.lock();
 		image2 = image;
 		mutex.unlock();
-		Q_EMIT(repaint());
+		
 		if(y%(height/10) == 0){
+			Q_EMIT(repaint());
 			if(y == 0){
 				Q_EMIT(setProgress(0));
 				cout << "  0% finished" << endl;
@@ -272,4 +269,8 @@ void RayTracer::setParams(int count, char reconst, char sample){
 
 QImage RayTracer::getImage(){
 	return image2;
+}
+
+void RayTracer::setScene(int i){
+	graph->loadScene(i);
 }

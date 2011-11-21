@@ -37,12 +37,13 @@ private:
 	QPixmap img;
 	QLabel imageLabel;
 	QComboBox rayCount;
+	QComboBox scene;
 	QListWidget listReconstruction;
 	QListWidget listSampling;
 	QProgressBar progress;
 	RayTracer* core;
 	QImage image;
-	static const bool presentation = true;
+	static const bool presentation = false;
 
 //	void draw();
 };

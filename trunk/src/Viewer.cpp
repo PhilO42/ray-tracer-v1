@@ -19,6 +19,7 @@ Viewer::Viewer(QApplication* app) {
 
     //Image
     img = QPixmap(640,480+1);
+    img.fill((uint)0);
     if(!presentation){
         img.load("bg.png");
     }
@@ -64,8 +65,18 @@ Viewer::Viewer(QApplication* app) {
     if(!presentation){
         buttonGrid.addWidget(&textSampling);
         buttonGrid.addWidget(&listSampling);
-    }else{
-        buttonGrid.addItem(new QSpacerItem(10,300),5,0);
+    }
+    QLabel textScene("Choose scene:");
+    scene.addItem("4 spheres");
+    scene.addItem("axis");
+    if(!presentation){
+        scene.addItem("table scene");
+        scene.addItem("table scene with duck");
+    }
+    buttonGrid.addWidget(&textScene);
+    buttonGrid.addWidget(&scene);
+    if(presentation){
+        buttonGrid.addItem(new QSpacerItem(10,200),5,0);
     }
 
     //ReconstructionOptions
@@ -87,7 +98,7 @@ Viewer::Viewer(QApplication* app) {
     rayCount.addItem("9");
     rayCount.addItem("16");
     rayCount.addItem("25");
-    buttonGrid.addItem(new QSpacerItem(5,5),11,0);
+    buttonGrid.addItem(new QSpacerItem(5,5),13,0);
     if(!presentation){
         buttonGrid.addWidget(&textRayCount);
         buttonGrid.addWidget(&rayCount);
@@ -96,7 +107,7 @@ Viewer::Viewer(QApplication* app) {
     progress.setRange(0,100);
     progress.setValue(0);
     buttonGrid.addWidget(&progress);
-    buttonGrid.addItem(new QSpacerItem(21,20),14,0);
+    buttonGrid.addItem(new QSpacerItem(21,20),16,0);
 
     //MainGrid
     QGridLayout grid;
@@ -127,7 +138,7 @@ void Viewer::repaint(){
 	core->mutex.lock();
 	image = core->getImage();
 	core->mutex.unlock();
-	img.fromImage(image);
+	img = img.fromImage(image);
 	imageLabel.setPixmap(img);
 }
 
@@ -189,5 +200,6 @@ int Viewer::getRayCount(){
 
 void Viewer::draw(){
 	core->setParams(getRayCount(),getReconstructionMethod(),getSamplingMethod());
+	core->setScene(scene.currentIndex());
 	core->start();
 }
