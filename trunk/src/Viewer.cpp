@@ -72,6 +72,7 @@ Viewer::Viewer(QApplication* app) {
     if(!presentation){
         scene.addItem("table scene");
         scene.addItem("table scene with duck");
+        scene.addItem("ground only");
 	scene.setCurrentIndex(2);
         buttonGrid.addWidget(&textSampling);
         buttonGrid.addWidget(&listSampling);
@@ -182,7 +183,7 @@ char Viewer::getSamplingMethod(){
 			return 'h';
 			break;
 		default:
-			cout << "Standart Sampling (sorry)" << endl;
+			cout << "Default Sampling (sorry)" << endl;
 			break;
 	}
 	return 'n';
@@ -199,7 +200,7 @@ char Viewer::getReconstructionMethod(){
 			return 'm';
 			break;
 		default:
-			cout << "Box Reconstruction (sorry)" << endl;
+			cout << "Default Reconstruction (sorry)" << endl;
 			break;
 	}
 	return 'b';

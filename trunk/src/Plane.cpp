@@ -23,7 +23,6 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	xSize = myUtil::homogenNorm(p1-p0);
 	ySize = myUtil::homogenNorm(p2-p0);
 	image.load(QString(path.c_str()));
-	cout << refl << " " << trans << endl;
 	reflectionValue = trans;
 	trancparencyValue = refl;
 	bumpy = false;
@@ -44,7 +43,6 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	ySize = myUtil::homogenNorm(p2-p0);
 	image.load(QString(texture.c_str()));
 	bumpMap.load(QString(_bumpmap.c_str()));
-	cout << refl << " " << trans << endl;
 	reflectionValue = trans;
 	trancparencyValue = refl;
 	bumpy = true;
