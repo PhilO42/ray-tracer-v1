@@ -18,8 +18,8 @@ Sphere::Sphere() {
 	color = CVector<float>(3,140);
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0.0;
+	trancparencyValue = 0.0;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl, float trans){
@@ -40,8 +40,8 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, b
 	isLight = _isLight;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0.0;
+	trancparencyValue = 0.0;
 }
 
 Sphere::~Sphere() {

@@ -25,8 +25,8 @@ Triangle::Triangle() {
 	normal *= (1.0/3.0);
 	color = myUtil::color(255,0,0);
 
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0.0;
+	trancparencyValue = 0.0;
 }
 
 Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normalp0, CVector<float> _normalp1, CVector<float> _normalp2, CVector<float> _color) {
@@ -45,8 +45,8 @@ Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, C
 	color = _color;
 //	cout << normal << center << p0	<< p1<<p2<<endl;
 
-	reflectionValue = 0.3;
-	trancparencyValue = 0.3;
+	reflectionValue = 0.0;
+	trancparencyValue = 0.0;
 }
 
 Triangle::~Triangle() {
