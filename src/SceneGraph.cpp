@@ -154,8 +154,6 @@ CMatrix<float> SceneGraph::InverseCameraMatrix(CVector<float> cameraPos, CVector
 	mat(3,1) = -cameraPos(1);
 	mat(3,2) = -cameraPos(2);
 
-	cout << mat << endl;
-
 	return mat;
 }
 
@@ -270,29 +268,20 @@ CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> directi
 }
 
 bool SceneGraph::lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight){
-//	if(directionalLight)
-//		return true;
 	CVector<float> bestColor = this->backgroundColor;
 	CVector<float> normal;
 	CVector<float> collisionPoint;
-//	CVector<float> bestNormal;
-//	CVector<float> bestCollisionPoint;
 	float t = distToLight;
-//	bool hit = false;
+	lightDir = myUtil::normalize(lightDir);
 	for(int i = 0; i < objects.size(); i++){
 		bool collided = false;
 		float distance = myUtil::epsi;
 		CVector<float> color;
 		float a;
-		color = objects[i]->collision(point, myUtil::normalize(lightDir), &collided, &distance, &collisionPoint, &normal, true, &a, &a);
+		color = objects[i]->collision(point, lightDir, &collided, &distance, &collisionPoint, &normal, true, &a, &a);
 		if(collided){
 			if(distance < t){
 				return false;
-//				hit = true;
-//				t = distance;
-//				bestColor = color;
-//				bestNormal = normal;
-//				bestCollisionPoint = collisionPoint;
 			}
 		}
 	}
@@ -524,7 +513,7 @@ CVector<float> SceneGraph::Recursion(CVector<float> color, CVector<float> origin
 	return (1-transparency-reflection) * PhongOnPoint(color, originPoint, normal, oldViewingDirection) + reflection * colR + transparency * colT;
 }
 
-CVector<float> SceneGraph::getColorForRay(CVector<float> color, CVector<float> origin, CVector<float> direction, int recurionDepth, float reflection, float transparency){
+CVector<float> SceneGraph::getColorForRay(CVector<float> origin, CVector<float> direction, int recurionDepth){
 	CVector<float> norm;
 	CVector<float> colPnt;
 	CVector<float> col;
@@ -580,6 +569,7 @@ bool SceneGraph::castRay(CVector<float> origin, CVector<float> direction, CVecto
 }
 
 CVector<float> SceneGraph::PhongOnPoint(CVector<float> col, CVector<float> pointToEvaluate, CVector<float> normal, CVector<float> direction){
+	CVector<float> color(3,0);
 	for(int i = 0; i < lightSources.size(); i++){
 		CVector<float> EDiffuse = lightSources[i].IDiffuse;
 		CVector<float> ESpecular = lightSources[i].ISpecular;
@@ -589,7 +579,8 @@ CVector<float> SceneGraph::PhongOnPoint(CVector<float> col, CVector<float> point
 			//directional light
 			lightDir = lightSources[i].direction;
 			lightDir = myUtil::normalize(lightDir);
-			col += Phong(normal,lightDir,lightVisible(pointToEvaluate, lightSources[i].direction, numeric_limits<float>::max()), direction, EDiffuse, ESpecular, n);
+			bool seeTheLight = lightVisible(pointToEvaluate, lightSources[i].direction, numeric_limits<float>::max());
+			color += Phong(normal,lightDir,seeTheLight, direction, EDiffuse, ESpecular, n);
 		}else{
 			//point light
 			lightDir = lightSources[i].position - pointToEvaluate;
@@ -601,9 +592,13 @@ CVector<float> SceneGraph::PhongOnPoint(CVector<float> col, CVector<float> point
 			if(dist != 0)
 				ESpecular *= (1.0/dist*dist);
 			lightDir = myUtil::normalize(lightDir);
-			col += Phong(normal,lightDir,lightVisible(pointToEvaluate, lightDir, dist), direction, EDiffuse, ESpecular, n);
+			bool seeTheLight = lightVisible(pointToEvaluate, lightDir, dist);
+			color += Phong(normal,lightDir,seeTheLight, direction, EDiffuse, ESpecular, n);
 		}
 	}
+	color *= (1.0f/lightSources.size());
+	col = myUtil::elementWiseMulti(col,EAmbient);
+	col += color;
 	return col;
 }
 
@@ -674,5 +669,11 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662,2.10338,-0.498035), myUtil::color(0,0,0)));
 			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002,2.10338,-0.498035), myUtil::color(0,0,0)));
 		break;
+		case 4:
+			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+			addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"tile.jpg","tile_bump.jpg"));
+			break;
 	}
 }

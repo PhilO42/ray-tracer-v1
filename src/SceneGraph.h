@@ -27,7 +27,7 @@ public:
 	CMatrix<float> getCameraMatrix();
 	BVH* loadObj(std::string pathToObj, CVector<float> color, CVector<float> origin);
 
-	CVector<float> getColorForRay(CVector<float> color, CVector<float> origin, CVector<float> direction, int recurionDepth, float reflection, float transparency);
+	CVector<float> getColorForRay(CVector<float> origin, CVector<float> direction, int recurionDepth);
 	CVector<float> Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency);
 	bool castRay(CVector<float> origin, CVector<float> direction, CVector<float>* normal, CVector<float>* collisionPoint, float* refl, float* trans, CVector<float>* color);
 	CVector<float> PhongOnPoint(CVector<float> col, CVector<float> pointToEvaluate, CVector<float> normal, CVector<float> direction);

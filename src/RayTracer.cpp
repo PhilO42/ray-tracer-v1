@@ -136,7 +136,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 			xPix = ((float)x) + 0.5;
 			yPix = ((float)y) + 0.5;
 			dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
-			return graph->castRay(origin, dir, recursionDepth);
+			return graph->getColorForRay(origin, dir, recursionDepth);
 			break;
 		case 'r':
 			//random sampling

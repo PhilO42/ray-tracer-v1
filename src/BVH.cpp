@@ -41,7 +41,6 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 			maxZ = max(2);
 	}
 
-	cout << minX << " " << maxX << " " << minY << " " << maxY << " " << minZ << " " << maxZ << endl;
 	isLeaf = false;
 	boundingBox = AABB(minX, maxX, minY, maxY, minZ, maxZ);
 	depth = 0;

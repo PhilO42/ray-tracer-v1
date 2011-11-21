@@ -51,7 +51,7 @@ Sphere::~Sphere() {
 CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
 	if(isLight && isLightRay){
 		*collided = false;
-		*t_value = -1.0f;
+//		*t_value = -1.0f;
 		return myUtil::color(0,0,0);
 	}
 	CVector<float> pos;
