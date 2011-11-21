@@ -38,7 +38,9 @@ private:
 	QLabel imageLabel;
 	QComboBox rayCount;
 	QComboBox scene;
-	QListWidget listReconstruction;
+	QComboBox recurs;
+	QComboBox listReconstruction;
+	QLabel recText;
 	QListWidget listSampling;
 	QProgressBar progress;
 	RayTracer* core;

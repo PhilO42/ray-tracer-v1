@@ -46,7 +46,7 @@ Viewer::Viewer(QApplication* app) {
     QObject::connect(core, SIGNAL(getRayCount()), this, SLOT(getRayCount()));
     //ButtonGrid
     QGridLayout buttonGrid;
-    buttonGrid.addItem(new QSpacerItem(10,10),0,0);
+    //buttonGrid.addItem(new QSpacerItem(10,10),0,0);
     buttonGrid.addWidget(&button2);
     buttonGrid.addWidget(&button1);
     buttonGrid.addWidget(&button4);
@@ -61,31 +61,30 @@ Viewer::Viewer(QApplication* app) {
     listSampling.addItem("Halton Sampling");
     listSampling.setCurrentRow(0);
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
-    buttonGrid.addItem(new QSpacerItem(10,10),5,0);
-    if(!presentation){
-        buttonGrid.addWidget(&textSampling);
-        buttonGrid.addWidget(&listSampling);
+    if(presentation){
+        buttonGrid.addItem(new QSpacerItem(10,270),5,0);
     }
     QLabel textScene("Choose scene:");
     scene.addItem("4 spheres");
     scene.addItem("axis");
+    buttonGrid.addWidget(&textScene);
+    buttonGrid.addWidget(&scene);
     if(!presentation){
         scene.addItem("table scene");
         scene.addItem("table scene with duck");
+	scene.setCurrentIndex(2);
+        buttonGrid.addWidget(&textSampling);
+        buttonGrid.addWidget(&listSampling);
     }
-    buttonGrid.addWidget(&textScene);
-    buttonGrid.addWidget(&scene);
-    if(presentation){
-        buttonGrid.addItem(new QSpacerItem(10,200),5,0);
-    }
+    //if(presentation){
+    //    buttonGrid.addItem(new QSpacerItem(10,200),5,0);
+    //}
 
     //ReconstructionOptions
     QLabel textReconstruction("Choose a reconstruction method:");
     listReconstruction.addItem("Box Rekonstruktion");
     listReconstruction.addItem("Mitchell Rekonstruktion");
-    listReconstruction.setCurrentRow(0);
-    listReconstruction.setSelectionMode(QAbstractItemView::SingleSelection);
-    buttonGrid.addItem(new QSpacerItem(5,5),8,0);
+    //buttonGrid.addItem(new QSpacerItem(5,5),8,0);
     if(!presentation){
         buttonGrid.addWidget(&textReconstruction);
         buttonGrid.addWidget(&listReconstruction);
@@ -98,16 +97,28 @@ Viewer::Viewer(QApplication* app) {
     rayCount.addItem("9");
     rayCount.addItem("16");
     rayCount.addItem("25");
-    buttonGrid.addItem(new QSpacerItem(5,5),13,0);
+    //buttonGrid.addItem(new QSpacerItem(5,5),14,0);
     if(!presentation){
         buttonGrid.addWidget(&textRayCount);
         buttonGrid.addWidget(&rayCount);
+	recurs.addItem("1");
+	recurs.addItem("2");
+	recurs.addItem("3");
+	recurs.addItem("4");
+	recurs.addItem("5");
+	recurs.addItem("6");
+	buttonGrid.addWidget(new QLabel("Recursion Depth:"));
+	buttonGrid.addWidget(&recurs);
     }
 //    progress = QProgressBar();
     progress.setRange(0,100);
     progress.setValue(0);
     buttonGrid.addWidget(&progress);
-    buttonGrid.addItem(new QSpacerItem(21,20),16,0);
+    //if(!presentation){
+    //	  buttonGrid.addItem(new QSpacerItem(21,20),17,0);
+    //}else{
+    //    buttonGrid.addItem(new QSpacerItem(21,20),16,0);
+    //}
 
     //MainGrid
     QGridLayout grid;
@@ -178,7 +189,7 @@ char Viewer::getSamplingMethod(){
 }
 
 char Viewer::getReconstructionMethod(){
-	switch (listReconstruction.currentRow()) {
+	switch (listReconstruction.currentIndex()) {
 		case 0:
 			cout << "Box Reconstruction" << endl;
 			return 'b';
@@ -199,7 +210,11 @@ int Viewer::getRayCount(){
 }
 
 void Viewer::draw(){
-	core->setParams(getRayCount(),getReconstructionMethod(),getSamplingMethod());
+	if(!presentation){
+		core->setParams(getRayCount(),getReconstructionMethod(),getSamplingMethod(),recurs.currentIndex()+1);
+	}else{
+		core->setParams(getRayCount(),getReconstructionMethod(),getSamplingMethod(),1);
+	}
 	core->setScene(scene.currentIndex());
 	core->start();
 }

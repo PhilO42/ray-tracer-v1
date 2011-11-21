@@ -261,10 +261,11 @@ float RayTracer::HammersleyValue(int k, int p){
 	return phi;
 }
 
-void RayTracer::setParams(int count, char reconst, char sample){
+void RayTracer::setParams(int count, char reconst, char sample, int recursion){
 	rayCount = count;
 	reconstruction = reconst;
 	sampling = sample;
+	recursionDepth = recursion;
 }
 
 QImage RayTracer::getImage(){
