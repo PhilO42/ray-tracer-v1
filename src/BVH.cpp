@@ -147,7 +147,8 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 		CVector<float> norm;
 		CVector<float> color_best(3,0);
 		for(int i = 0; i < obj.size(); i++){
-			CVector<float> color = obj[i]->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay, new float, new float);
+			float a;
+			CVector<float> color = obj[i]->collision(origin,direction,&col,&t_val,&colPnt,&norm,isLightRay, &a, &a);
 			if(col){
 				*collided = true;
 				if(t_val < t_val_last){
