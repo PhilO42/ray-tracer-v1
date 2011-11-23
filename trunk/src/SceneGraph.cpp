@@ -301,6 +301,10 @@ CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdire
 	CVector<float> color(3,0);
 
 	if(seeTheLight){
+		//ambientcolor
+		//diffusecolor
+		//specular = white
+		//1color of light
 		color += myUtil::elementWiseMulti(intenseDiffuse, EDiffuse) * abs(normal * lightdirection);
 		color += myUtil::elementWiseMulti(intenseSpecular, ESpecular) * (float)pow(abs(R * viewingRay), 10);
 	}
@@ -608,14 +612,23 @@ void SceneGraph::loadScene(int scene){
 	switch(scene){
 		case 0:
 			//4 balls
+			//phong
+			//triangle
+			//intersetion objects
+			//rotation
+			//aabb
+			//sampling and reconstruction
+			//resulution of the image
+			//bvh
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			objects.push_back(new Plane(myUtil::PosHom(4,-4.25,-7), myUtil::PosHom(-4,-4.25,-7), myUtil::PosHom(4,-4.25,7),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"white.png"));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(255, 0, 0),0,0));
-			objects.push_back(new Sphere(1.5, myUtil::PosHom(-2,1.75,-0.5), myUtil::color(0, 0, 255),0,0));
-			addLightSource(Light(myUtil::PosHom(-2,4,-1), CVector<float>(4,1), false, myUtil::color(0.5,0.5,0.5)));
-			addLightSource(Light(myUtil::PosHom(0,1,0), myUtil::PosHom(0,1,0,0), true, myUtil::color(0.5,0.5,0.5)));
+			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1,1.75,-0.5), myUtil::color(0, 0, 255),0,0));
+			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1,2.75,-0.5), myUtil::color(255, 0, 255),0,0));
+			addLightSource(Light(myUtil::PosHom(-2,4,-1), CVector<float>(4,1), false, myUtil::color(0.8,0.0,0.0)));
+			addLightSource(Light(myUtil::PosHom(0,1,0), myUtil::PosHom(0,1,0,0), true, myUtil::color(0.8,0.0,0.0)));
 			break;
 		case 1:
 			//axis
