@@ -17,6 +17,15 @@ Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, 
 	trancparencyValue = 0.0;
 }
 
+Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, float _r, float trans, float refl) {
+	start = _start;
+	length = _lenght;
+	color = _color;
+	radius = _r;
+	reflectionValue = refl;
+	trancparencyValue = trans;
+}
+
 Cylinder::~Cylinder() {
 	// TODO Auto-generated destructor stub
 }

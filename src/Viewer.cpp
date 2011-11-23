@@ -73,6 +73,7 @@ Viewer::Viewer(QApplication* app) {
         scene.addItem("table scene");
         scene.addItem("table scene with duck");
         scene.addItem("ground only");
+	scene.addItem("empty");
 	scene.setCurrentIndex(2);
         buttonGrid.addWidget(&textSampling);
         buttonGrid.addWidget(&listSampling);
