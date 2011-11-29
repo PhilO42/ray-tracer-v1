@@ -11,7 +11,11 @@
 Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, float _r) {
 	start = _start;
 	length = _lenght;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	radius = _r;
 	reflectionValue = 0.7;
 	trancparencyValue = 0.0;
@@ -20,7 +24,11 @@ Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, 
 Cylinder::Cylinder(CVector<float> _start, float _lenght, CVector<float> _color, float _r, float trans, float refl) {
 	start = _start;
 	length = _lenght;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	radius = _r;
 	reflectionValue = refl;
 	trancparencyValue = trans;

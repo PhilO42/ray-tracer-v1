@@ -24,6 +24,20 @@ CVector<float> myUtil::color(float x, float y, float z){
 	return vec;
 }
 
+CVector<float> myUtil::color9D(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3){
+	CVector<float> vec(9,0);
+	vec(0) = x1;
+	vec(1) = y1;
+	vec(2) = z1;
+	vec(3) = x2;
+	vec(4) = y2;
+	vec(5) = z2;
+	vec(6) = x3;
+	vec(7) = y3;
+	vec(8) = z3;
+	return vec;
+}
+
 CVector<float> myUtil::PosHom(float x, float y, float z){
 	CVector<float> vec(4,1);
 	vec(0) = x;

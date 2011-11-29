@@ -14,12 +14,11 @@ class Light {
 public:
 	Light();
 	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color);
-	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color, CVector<float> _IDiffuse, CVector<float> _ISpecular);
+	Light(CVector<float> _position, CVector<float> _direction, bool _directionalLight, CVector<float> _color, CVector<float> _IAmbient, CVector<float> _IDiffuse, CVector<float> _ISpecular);
 	virtual ~Light();
 	CVector<float> position;
 	CVector<float> direction;
-	CVector<float> IDiffuse;
-	CVector<float> ISpecular;
+	CVector<float> intensities;
 	bool isDirectionalLight;
 private:
 	CVector<float> color;

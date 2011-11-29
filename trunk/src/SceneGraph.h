@@ -40,12 +40,9 @@ private:
 	CMatrix<float> inverseCameraMatrix;
 	CMatrix<float> origin;
 	CVector<float> backgroundColor;
-	CVector<float> intenseAmbient;
-	CVector<float> intenseDiffuse;
-	CVector<float> intenseSpecular;
 	CVector<float> EAmbient;
 	float n;
-	CVector<float> Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> EDiffuse, CVector<float> ESpecular, float n);
+	CVector<float> Phong(CVector<float> normal, CVector<float> lightdirection, bool seeTheLight, CVector<float> viewingRay, CVector<float> colorVec, CVector<float> intensities, float n);
 	bool lightVisible(CVector<float> point, CVector<float> lightDir, float distToLight);
 	CMatrix<float> InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up);
 	bool presentation;
