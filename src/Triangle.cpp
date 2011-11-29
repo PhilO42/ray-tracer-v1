@@ -23,7 +23,7 @@ Triangle::Triangle() {
 	normalp2 = myUtil::PosHom(1,1,1);
 	normal = normalp0 + normalp1 + normalp2;
 	normal *= (1.0/3.0);
-	color = myUtil::color(255,0,0);
+	color = myUtil::color9D(255,0,0,255,0,0,255,0,0);
 
 	reflectionValue = 0.0;
 	trancparencyValue = 0.0;
@@ -42,7 +42,11 @@ Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, C
 	normalp2 = _normalp2;
 	normal = normalp0 + normalp1 + normalp2;
 	normal *= (1.0/3.0);
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 //	cout << normal << center << p0	<< p1<<p2<<endl;
 
 	reflectionValue = 0.0;

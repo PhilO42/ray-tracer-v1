@@ -18,7 +18,11 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	CVector<float> b = (p2-p0);
 	b *= (1.0/2.0);
 	center = p0 + a + b;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	normal = myUtil::normalize(_normal);
 	xSize = myUtil::homogenNorm(p1-p0);
 	ySize = myUtil::homogenNorm(p2-p0);
@@ -37,7 +41,11 @@ Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector
 	CVector<float> b = (p2-p0);
 	b *= (1.0/2.0);
 	center = p0 + a + b;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	normal = myUtil::normalize(_normal);
 	xSize = myUtil::homogenNorm(p1-p0);
 	ySize = myUtil::homogenNorm(p2-p0);
@@ -91,7 +99,7 @@ CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction,
 
 CVector<float> Plane::getColor(float x, float y){
 	QRgb rgb = image.pixel(min((int)(x*image.width()),image.width()-1),min((int)(y*image.height()),image.height()-1));
-	return myUtil::color(qRed(rgb),qGreen(rgb),qBlue(rgb));
+	return myUtil::color9D(qRed(rgb),qGreen(rgb),qBlue(rgb),qRed(rgb),qGreen(rgb),qBlue(rgb),qRed(rgb),qGreen(rgb),qBlue(rgb));
 }
 
 CVector<float> Plane::getNormal(float x, float y){

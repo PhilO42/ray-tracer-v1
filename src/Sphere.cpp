@@ -15,7 +15,7 @@ using namespace std;
 Sphere::Sphere() {
 	radius = 1.0;
 	position = CVector<float>(4,1);
-	color = CVector<float>(3,140);
+	color = CVector<float>(9,140);
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 	reflectionValue = 0.0;
@@ -25,7 +25,11 @@ Sphere::Sphere() {
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl, float trans){
 	radius = _radius;
 	position = _position;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	isLight =  false;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
@@ -36,7 +40,11 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, f
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){
 	radius = _radius;
 	position = _position;
-	color = _color;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
 	isLight = _isLight;
 	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);

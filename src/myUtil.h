@@ -19,6 +19,7 @@ public:
 	myUtil();
 	virtual ~myUtil();
 	static CVector<float> color(float x, float y, float z);
+	static CVector<float> color9D(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3);
 	static CVector<float> PosHom(float x, float y, float z);
 	static CVector<float> PosHom(float x, float y, float z, float w);
 	static CVector<float> Pos5D(float v, float w, float x, float y, float z);
