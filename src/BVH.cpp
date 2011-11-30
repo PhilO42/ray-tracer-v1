@@ -13,7 +13,7 @@ bool xsort (SceneObject* i, SceneObject* j) { return (i->getCenter()(0) < j->get
 bool ysort (SceneObject* i, SceneObject* j) { return (i->getCenter()(1) < j->getCenter()(1)); }
 bool zsort (SceneObject* i, SceneObject* j) { return (i->getCenter()(2) < j->getCenter()(2)); }
 
-BVH::BVH(std::vector< SceneObject* > objects) {
+BVH::BVH(std::vector< Triangle* > objects) {
 	float minX = std::numeric_limits<float>::max();
 	float minY = std::numeric_limits<float>::max();
 	float minZ = std::numeric_limits<float>::max();
@@ -21,10 +21,12 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 	float maxY = std::numeric_limits<float>::min();
 	float maxZ = std::numeric_limits<float>::min();
 
-	for (int i = 0; i < objects.size(); i++) {
-		CVector<float> min = objects.at(i)->getMin();
-		CVector<float> max = objects.at(i)->getMax();
-
+	CVector<float> min;
+	CVector<float> max;
+	int size = objects.size();
+	for (int i = 0; i < size; i++) {
+		min = objects[i]->getMin();
+		max = objects[i]->getMax();
 		//min
 		if (min(0) < minX)
 			minX = min(0);
@@ -47,14 +49,14 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 
 	sort(objects.begin(), objects.end(), xsort);
 
-	std::vector<SceneObject*> vecL;
-	std::vector<SceneObject*> vecR;
-	int i = 0;
-	for (; i < objects.size() / 2; i++) {
-		vecL.push_back(objects[i]);
+	std::vector<Triangle*> vecL;
+	std::vector<Triangle*> vecR;
+	int j = 0;
+	for (; j < objects.size() / 2; j++) {
+		vecL.push_back(objects[j]);
 	}
-	for (; i < objects.size(); i++) {
-		vecR.push_back(objects[i]);
+	for (; j < objects.size(); j++) {
+		vecR.push_back(objects[j]);
 	}
 
 	left = new BVH(vecL, depth+1);
@@ -64,7 +66,7 @@ BVH::BVH(std::vector< SceneObject* > objects) {
 	trancparencyValue = 0;
 }
 
-BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
+BVH::BVH(std::vector< Triangle* > objects, int _depth) {
 	depth = _depth;
 	if(objects.size() <= 3){
 		isLeaf = true;
@@ -106,8 +108,8 @@ BVH::BVH(std::vector< SceneObject* > objects, int _depth) {
 		if(depth % 3 == 2)
 			sort(objects.begin(),objects.end(),zsort);
 
-		std::vector<SceneObject*> vecL;
-		std::vector<SceneObject*> vecR;
+		std::vector<Triangle*> vecL;
+		std::vector<Triangle*> vecR;
 		int i = 0;
 		for (; i < objects.size() / 2; i++) {
 			vecL.push_back(objects[i]);

@@ -8,6 +8,7 @@
 #include "Triangle.h"
 #include "SceneGraph.h"
 #include "myUtil.h"
+#include <iostream>
 
 Triangle::Triangle() {
 	p0 = myUtil::PosHom(1,0,0);
@@ -31,9 +32,21 @@ Triangle::Triangle() {
 }
 
 Triangle::Triangle(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normalp0, CVector<float> _normalp1, CVector<float> _normalp2, CVector<float> _color) {
-	p0 = _p0;
-	p1 = _p1;
-	p2 = _p2;
+	if(_p0.size() == 4){
+		p0 = _p0;
+	}else{
+		p0 = myUtil::PosHom(_p0(0),_p0(1),_p0(2));
+	}
+	if(_p1.size() == 4){
+		p1 = _p1;
+	}else{
+		p1 = myUtil::PosHom(_p1(0),_p1(1),_p1(2));
+	}
+	if(_p2.size() == 4){
+		p2 = _p2;
+	}else{
+		p2 = myUtil::PosHom(_p2(0),_p2(1),_p2(2));
+	}
 	center = p0+p1+p2;
 	center *= 1.0/3.0;
 	min = myUtil::color(std::min(std::min(p0(0),p1(0)),p2(0)),std::min(std::min(p0(1),p1(1)),p2(1)),std::min(std::min(p0(2),p1(2)),p2(2)));
@@ -109,32 +122,47 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 //	*_normal = CVector<float>(4,1);
 	return color;
 }
-//
-//CVector<float> Triangle::getMin(){
-//	return min;
-//}
-//
-//CVector<float> Triangle::getMax(){
-//	return max;
-//}
-//
-//CVector<float> Triangle::getCenter(){
-//	return center;
-//}
 
-void Triangle::rotate(CVector<float> angles, CVector<float> center){
+CVector<float> Triangle::getMin(){
+	return min;
+}
+
+CVector<float> Triangle::getMax(){
+	return max;
+}
+
+CVector<float> Triangle::getCenter(){
+	return center;
+}
+
+void Triangle::rotate(CVector<float> angles, CVector<float> _center){
 	CMatrix<float> Mat = SceneGraph::Rx(angles(0))*SceneGraph::Ry(angles(1))*SceneGraph::Rz(angles(2));
-	p0 -= center;
+	p0 -= _center;
 	p0 = Mat*p0;
-	p0 += center;
-	p1 -= center;
+	p0 += _center;
+	p1 -= _center;
 	p1 = Mat*p1;
-	p1 += center;
-	p2 -= center;
+	p1 += _center;
+	p2 -= _center;
 	p2 = Mat*p2;
-	p2 += center;
+	p2 += _center;
 	normal = Mat * normal;
 	normalp0 = Mat * normalp0;
 	normalp1 = Mat * normalp1;
 	normalp2 = Mat * normalp2;
+	center = p0+p1+p2;
+	center *= 1.0/3.0;
+	min = myUtil::color(std::min(std::min(p0(0),p1(0)),p2(0)),std::min(std::min(p0(1),p1(1)),p2(1)),std::min(std::min(p0(2),p1(2)),p2(2)));
+	max = myUtil::color(std::max(std::max(p0(0),p1(0)),p2(0)),std::max(std::max(p0(1),p1(1)),p2(1)),std::max(std::max(p0(2),p1(2)),p2(2)));
+}
+
+
+void Triangle::translate(CVector<float> movement){
+	p0 += movement;
+	p1 += movement;
+	p2 += movement;
+	center = p0+p1+p2;
+	center *= 1.0/3.0;
+	min = myUtil::color(std::min(std::min(p0(0),p1(0)),p2(0)),std::min(std::min(p0(1),p1(1)),p2(1)),std::min(std::min(p0(2),p1(2)),p2(2)));
+	max = myUtil::color(std::max(std::max(p0(0),p1(0)),p2(0)),std::max(std::max(p0(1),p1(1)),p2(1)),std::max(std::max(p0(2),p1(2)),p2(2)));
 }

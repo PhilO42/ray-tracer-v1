@@ -18,9 +18,6 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     window.show();
     window.setWindowTitle(QObject::tr("RayTracer v1.0"));
 
-    for(int i = 0; i < argc; i++){
-    	cout << i << ": " << argv[i] << endl;
-    }
     automation = false;
     if(argc > 2){
     	if(string(argv[2]) == "-a"){
@@ -191,8 +188,11 @@ void Viewer::saveImage(){
 	str << "out/picture_" << i << ".png";
 	cout << str.str() << endl;
 	img2.save(str.str().c_str(),"png");
-	sleep(10);
-	appPtr->exit(0);
+	if(automation){
+		sleep(10);
+		core->quit();
+		appPtr->exit(0);
+	}
 }
 
 void Viewer::repaint(){
