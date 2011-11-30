@@ -15,7 +15,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     //Widget
     QWidget window;
     window.resize(645, 485);
-    window.show();
+    //window.show();
     window.setWindowTitle(QObject::tr("RayTracer v1.0"));
 
     automation = false;
