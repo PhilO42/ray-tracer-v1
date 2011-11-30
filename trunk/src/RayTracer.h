@@ -47,8 +47,8 @@ private:
 	float right;
 	float near;
 	float far;
-	static const int width = 640;
-	static const int height = 480+1;
+	static const int width = 640;//640
+	static const int height = 480+1;//480
 	QImage image;
 	QImage image2;
 	CMatrix<float> cameraMatrix;

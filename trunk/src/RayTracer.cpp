@@ -216,7 +216,7 @@ CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfR
 		case 'b':
 			//boxfilter = mean
 			for(int i = 0; i < col.size(); i++){
-				color += myUtil::PosHom(col.at(i)(0),col.at(i)(1),col.at(i)(2));
+				color += myUtil::PosHom(min(255.0f,col.at(i)(0)),min(255.0f,col.at(i)(1)),min(255.0f,col.at(i)(2)));
 			}
 			color *= (1.0/col.size());
 			return color;
@@ -224,7 +224,7 @@ CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfR
 		case 'm':
 			//mitchell = gauß
 			for(int i = 0; i < col.size(); i++){
-				pixValue = myUtil::PosHom(col.at(i)(0),col.at(i)(1),col.at(i)(2));
+				pixValue = myUtil::PosHom(min(255.0f,col.at(i)(0)),min(255.0f,col.at(i)(1)),min(255.0f,col.at(i)(2)));
 				int px = col.at(i)(3);
 				int py = col.at(i)(4);
 				float xDist = (col.at(i)(3) -((float)px))-0.5;//signed
