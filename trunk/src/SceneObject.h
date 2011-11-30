@@ -21,6 +21,7 @@ public:
 	virtual CVector<float> getMax(){};
 	virtual CVector<float> getCenter(){};
 	virtual void rotate(CVector<float> angles){};
+	virtual void translate(CVector<float> movement){};
 	virtual void rotate(CVector<float> angles, CVector<float> center){};
 	float reflectionValue;
 	float trancparencyValue;
