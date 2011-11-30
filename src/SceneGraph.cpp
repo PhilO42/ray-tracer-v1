@@ -291,7 +291,7 @@ CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdire
 	if(!colorVec.size() == 9)
 		cerr << "Phong: this color ist not 9d!" << endl;
 	normal = myUtil::normalize(normal);
-//	if(normal(0) != normal(0)){//nan
+//	if(normal(0) != normal(0)){//nanPhong
 //		return CVector<float>(3,0);
 //	}
 	lightdirection = myUtil::normalize(lightdirection);
@@ -311,7 +311,7 @@ CVector<float> SceneGraph::Phong(CVector<float> normal, CVector<float> lightdire
 		CVector<float> intensDiffuse = myUtil::color(intensities(3),intensities(4),intensities(5));
 		CVector<float> intensSpecular = myUtil::color(intensities(6),intensities(7),intensities(8));
 		color += myUtil::elementWiseMulti(intensDiffuse, colorDiffuse) * abs(normal * lightdirection);
-		color += myUtil::elementWiseMulti(intensSpecular, colorSpecular) * (float)pow(abs(R * viewingRay), 10);
+		color += myUtil::elementWiseMulti(intensSpecular, colorSpecular) * (float)pow(abs(R * viewingRay), n);
 	}
 	return color;
 }
@@ -655,28 +655,30 @@ void SceneGraph::loadScene(int scene){
 		case 3:
 			//cool scene
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
-			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0.8));
+			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(127, 219, 255), 0, 0.7));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.7), myUtil::color(0, 255, 30),0,0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(0, 0, 0),0.8,0));
 			loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5));
 			objects.push_back(new Cylinder(myUtil::PosHom(-0.5,3.7,1.5), 1, myUtil::color(0,0,0),0.05,0,0));
 			objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,1.5), myUtil::color(10000000, 10000000, 10000000), true));
-			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.3,"tile.jpg","tile_bump.jpg"));
-			//objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.3,"wall.jpg"));
-			//objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.3,"wall.jpg"));
-			//objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.3,"wall.jpg"));
+			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg","tile_bump.jpg"));
+			objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(-8,6.25,-14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(0,0,1),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//right
+			objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(-8,-4.25,-14),myUtil::PosHom(1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,-4.25,14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//left
+			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+			objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
 			objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255),0,0,"wood.jpg"));
-			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(192,192,192),0.3));
-			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(192,192,192),0.3));
-			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(192,192,192),0.3));
-			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,-2.8), 4, myUtil::color(192,192,192),0.3));
-			addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
-			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
+			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(50,50,50),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(50,50,50),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(50,50,50),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,-2.8), 4, myUtil::color(50,50,50),0.3));
+			addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color9D(0.45,0.45,0.45,1.2,1.2,1.2,0.6,0.6,0.6)));
+			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color9D(0.45,0.45,0.45,1.6,1.6,1.6,1.6,1.6,1.6)));
 			if(scene == 3){
 				//cool scene + duck
 				loadObj("models/ducky2.obj", myUtil::color(255,255,0), myUtil::PosHom(0.5,0.25,-1));
-				objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662,2.10338,-0.498035), myUtil::color(0,0,0)));
-				objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002,2.10338,-0.498035), myUtil::color(0,0,0)));
+				objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662,2.10338,-0.498035), myUtil::color(0,0,0),0,0));
+				objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002,2.10338,-0.498035), myUtil::color(0,0,0),0,0));
 			}
 		break;
 		case 4:
