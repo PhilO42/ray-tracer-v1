@@ -27,10 +27,11 @@ public:
 	char getSamplingMethod();
 	char getReconstructionMethod();
 	int getRayCount();
+	void saveImage();
 
 public:
 	RayTracer();
-	RayTracer(QPixmap* _img, bool pres);
+	RayTracer(QPixmap* _img, bool pres, int argc, char *argv[]);
 	virtual ~RayTracer();
 	QMutex mutex;
 	void setParams(int count, char reconst, char sample, int recursion);

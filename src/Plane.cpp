@@ -8,6 +8,7 @@
 #include "Plane.h"
 #include "myUtil.h"
 #include <QColor>
+#include "SceneGraph.h"
 
 Plane::Plane(CVector<float> _p0, CVector<float> _p1, CVector<float> _p2, CVector<float> _normal, CVector<float> _color, float trans, float refl, std::string path) {
 	p0 = _p0;
@@ -115,9 +116,24 @@ CVector<float> Plane::getNormal(float x, float y){
 		float x = (xPlus-center)-(xMinus-center);
 		float z = (yPlus-center)-(yMinus-center);
 		CVector<float> back = myUtil::color(-x,30,-z);
+		back += normal;
 		back *= (1.0/back.norm());
 		return myUtil::PosHom(back(0),back(1),back(2));
 	}else{
 		return normal;
 	}
+}
+
+void Plane::rotate(CVector<float> angles){
+	CMatrix<float> Mat = SceneGraph::Rx(angles(0))*SceneGraph::Ry(angles(1))*SceneGraph::Rz(angles(2));
+	p0 -= center;
+	p0 = Mat*p0;
+	p0 += center;
+	p1 -= center;
+	p1 = Mat*p1;
+	p1 += center;
+	p2 -= center;
+	p2 = Mat*p2;
+	p2 += center;
+	normal = Mat * normal;
 }

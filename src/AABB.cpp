@@ -6,6 +6,7 @@
  */
 
 #include "AABB.h"
+#include "myUtil.h"
 #include <iostream>
 
 using namespace std;
@@ -79,4 +80,8 @@ bool AABB::collision(CVector<float> origin, CVector<float> direction){
 			return true;
 	}
 	return false;
+}
+
+CVector<float> AABB::getCenter(){
+	return myUtil::color(x1-x0,y1-y0,z1-z0);
 }

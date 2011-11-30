@@ -16,7 +16,7 @@
 class Viewer : public QObject{
 	Q_OBJECT
 public:
-	Viewer(QApplication* app);
+	Viewer(QApplication* app, int argc, char *argv[]);
 	virtual ~Viewer();
 	void setImage(QImage image);
 
@@ -46,7 +46,8 @@ private:
 	RayTracer* core;
 	QImage image;
 	static const bool presentation = false;
-
+	bool automation;
+	QApplication* appPtr;
 //	void draw();
 };
 

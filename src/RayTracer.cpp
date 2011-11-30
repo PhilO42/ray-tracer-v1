@@ -23,10 +23,10 @@ RayTracer::RayTracer() {
 	presentation = true;
 }
 
-RayTracer::RayTracer(QPixmap* _img, bool pres) {
+RayTracer::RayTracer(QPixmap* _img, bool pres, int argc, char *argv[]) {
 	presentation = pres;
 //	mutex = QMutex();
-	graph = new SceneGraph(presentation);
+	graph = new SceneGraph(presentation, argc, argv);
 	image = QImage(width,height,QImage::Format_ARGB32);
 	bottom = 0.48*2.5;
 	right = 0.64*2.5;
@@ -85,6 +85,7 @@ void RayTracer::run(){
 	cout << "100% finished" << endl;
 	Q_EMIT(setProgress(100));
 	cout << "Rendering finised!" << endl;
+	Q_EMIT(saveImage());
 //	image.fill(283);
 //	image.save("test3.png","png");
 	mutex.lock();
