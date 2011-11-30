@@ -6,6 +6,7 @@
  */
 
 #include "Triangle.h"
+#include "SceneGraph.h"
 #include "myUtil.h"
 
 Triangle::Triangle() {
@@ -108,15 +109,32 @@ CVector<float> Triangle::collision(CVector<float> origin, CVector<float> directi
 //	*_normal = CVector<float>(4,1);
 	return color;
 }
+//
+//CVector<float> Triangle::getMin(){
+//	return min;
+//}
+//
+//CVector<float> Triangle::getMax(){
+//	return max;
+//}
+//
+//CVector<float> Triangle::getCenter(){
+//	return center;
+//}
 
-CVector<float> Triangle::getMin(){
-	return min;
-}
-
-CVector<float> Triangle::getMax(){
-	return max;
-}
-
-CVector<float> Triangle::getCenter(){
-	return center;
+void Triangle::rotate(CVector<float> angles, CVector<float> center){
+	CMatrix<float> Mat = SceneGraph::Rx(angles(0))*SceneGraph::Ry(angles(1))*SceneGraph::Rz(angles(2));
+	p0 -= center;
+	p0 = Mat*p0;
+	p0 += center;
+	p1 -= center;
+	p1 = Mat*p1;
+	p1 += center;
+	p2 -= center;
+	p2 = Mat*p2;
+	p2 += center;
+	normal = Mat * normal;
+	normalp0 = Mat * normalp0;
+	normalp1 = Mat * normalp1;
+	normalp2 = Mat * normalp2;
 }

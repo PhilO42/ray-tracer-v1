@@ -118,3 +118,7 @@ CVector<float> Sphere::getMax(){
 CVector<float> Sphere::getCenter(){
 	return position;
 }
+
+void Sphere::rotate(CVector<float> angles){
+
+}

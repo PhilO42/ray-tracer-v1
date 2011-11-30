@@ -23,7 +23,11 @@
 
 using namespace std;
 
-SceneGraph::SceneGraph(bool pres){
+SceneGraph::SceneGraph(bool pres, int argc, char *argv[]){
+	t = 0.0;
+	if(argc > 1){
+		t = atof(argv[1]);
+	}
 	presentation = pres;
 	lightSources = std::vector<Light>(0);
 	objects = std::vector<SceneObject*>(0);
@@ -400,7 +404,7 @@ CVector<float> SceneGraph::castLightRay(CVector<float> origin, CVector<float> di
 	return bestColor;
 }
 
-BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> origin){
+BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> origin, CVector<float> angles){
 	//file load
 	std::vector<QString> text;
 	ifstream file;
@@ -476,11 +480,20 @@ BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> 
 //			objects.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normals.at(norms[0]), normals.at(norms[1]), normals.at(norms[2]), color));
 			triangles.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normals.at(norms[0]), normals.at(norms[1]), normals.at(norms[2]), color));
 		}
+		cout << text.size() << " hjjhj " << i << endl;
 	}
 
-	BVH* bvh = new BVH(triangles);
-	objects.push_back(bvh);
-	return bvh;
+//	BVH* bvh = new BVH(triangles);
+//	CVector<float> center = myUtil::PosHom(bvh->getCenter()(0), bvh->getCenter()(1), bvh->getCenter()(2));
+//	delete bvh;
+//
+//	for(int i = 0; i < triangles.size(); i++){
+//		triangles[i]->rotate(angles, center);
+//	}
+
+	BVH* bvh2 = new BVH(triangles);
+//	objects.push_back(bvh2);
+//	return bvh2;
 }
 
 CVector<float> SceneGraph::Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency){
@@ -668,6 +681,19 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
 			objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
 			objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255),0,0,"wood.jpg"));
+			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(192,192,192),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(192,192,192),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(192,192,192),0.3));
+			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,-2.8), 4, myUtil::color(192,192,192),0.3));
+
+			cout << "sin: " << sin(t) << endl;
+			addLightSource(Light(myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
+			objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), myUtil::color(10000000, 10000000, 10000000), true));
+			//loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5+0.5*sin(t)), myUtil::color(atan((0.5*sin(t))/(2.0)),0,0));
+			objects.push_back(new Box(myUtil::PosHom(-0.5,4.7,0.0), myUtil::PosHom(0.05,3.0,0.05), myUtil::color(0,0,0),0,0,"white.png"));
+			objects[objects.size()-1]->rotate(myUtil::color(atan((0.5*sin(t))/(2.0)),0,0));
+
+			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
 			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,2.8), 4, myUtil::color(50,50,50),0.3));
 			objects.push_back(new Cylinder(myUtil::PosHom(-1.8,-4.25,2.8), 4, myUtil::color(50,50,50),0.3));
 			objects.push_back(new Cylinder(myUtil::PosHom(1.8,-4.25,-2.8), 4, myUtil::color(50,50,50),0.3));
@@ -688,6 +714,13 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"tile.jpg","tile_bump.jpg"));
 			break;
 		case 5:
+			cout << "sin: " << sin(t) << endl;
+			addLightSource(Light(myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
+			objects.push_back(new Sphere(0.4, myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), myUtil::color(10000000, 10000000, 10000000), true));
+			//loadObj("models/lamp.obj", myUtil::color(255,0,0), myUtil::PosHom(-0.5,2.7,1.5+0.5*sin(t)), myUtil::color(atan((0.5*sin(t))/(2.0)),0,0));
+			objects.push_back(new Box(myUtil::PosHom(-0.5,4.7,0.0), myUtil::PosHom(0.05,3.0,0.05), myUtil::color(0,0,0),0,0,"white.png"));
+			objects[objects.size()-1]->rotate(myUtil::color(atan((0.5*sin(t))/(2.0)),0,0));
 		break;
 	}
 }
+

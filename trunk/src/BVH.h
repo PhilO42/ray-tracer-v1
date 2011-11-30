@@ -19,6 +19,7 @@ public:
 	BVH(std::vector< SceneObject* > objects);
 	BVH(std::vector< SceneObject* > objects, int _depth);
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
+	CVector<float> getCenter();
 	virtual ~BVH();
 private:
 	AABB boundingBox;

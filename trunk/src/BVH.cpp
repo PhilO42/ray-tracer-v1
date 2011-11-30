@@ -218,3 +218,7 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 	*collided = false;
 	return CVector<float>(3,0);
 }
+
+CVector<float> BVH::getCenter(){
+	return boundingBox.getCenter();
+}

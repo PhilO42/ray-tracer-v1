@@ -10,12 +10,24 @@
 
 using namespace std;
 
-Viewer::Viewer(QApplication* app) {
+Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
+	appPtr = app;
     //Widget
     QWidget window;
     window.resize(645, 485);
     window.show();
     window.setWindowTitle(QObject::tr("RayTracer v1.0"));
+
+    for(int i = 0; i < argc; i++){
+    	cout << i << ": " << argv[i] << endl;
+    }
+    automation = false;
+    if(argc > 2){
+    	if(string(argv[2]) == "-a"){
+    		automation = true;
+    		cout << "aoutomating" << endl;
+    	}
+    }
 
     //Image
     img = QPixmap(640,480+1);
@@ -29,7 +41,7 @@ Viewer::Viewer(QApplication* app) {
     imageLabel.setPixmap(img);
 
     //Core
-    core = new RayTracer(&img, presentation);
+    core = new RayTracer(&img, presentation, argc, argv);
 
     //Buttons
     QPushButton button1("Save Image",0);
@@ -42,6 +54,7 @@ Viewer::Viewer(QApplication* app) {
     QObject::connect(&button4, SIGNAL(clicked()), core, SLOT(seeTheLightMap()));
     QObject::connect(core, SIGNAL(getSamplingMethod()), this, SLOT(getSamplingMethod()));
     QObject::connect(core, SIGNAL(setProgress(int)), this, SLOT(setProgress(int)));
+    QObject::connect(core, SIGNAL(saveImage()), this, SLOT(saveImage()));
     QObject::connect(core, SIGNAL(getReconstructionMethod()), this, SLOT(getReconstructionMethod()));
     QObject::connect(core, SIGNAL(getRayCount()), this, SLOT(getRayCount()));
     //ButtonGrid
@@ -61,6 +74,8 @@ Viewer::Viewer(QApplication* app) {
     listSampling.addItem("Halton Sampling");
     listSampling.setCurrentRow(0);
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
+    if(automation)
+    	listSampling.setCurrentRow(3);
     if(presentation){
         buttonGrid.addItem(new QSpacerItem(10,270),5,0);
     }
@@ -73,8 +88,12 @@ Viewer::Viewer(QApplication* app) {
         scene.addItem("table scene");
         scene.addItem("table scene with duck");
         scene.addItem("ground only");
-	scene.addItem("empty");
-	scene.setCurrentIndex(2);
+		scene.addItem("empty");
+		if(automation){
+			scene.setCurrentIndex(3);
+		}else{
+			scene.setCurrentIndex(2);
+		}
         buttonGrid.addWidget(&textSampling);
         buttonGrid.addWidget(&listSampling);
     }
@@ -86,6 +105,8 @@ Viewer::Viewer(QApplication* app) {
     QLabel textReconstruction("Choose a reconstruction method:");
     listReconstruction.addItem("Box Rekonstruktion");
     listReconstruction.addItem("Mitchell Rekonstruktion");
+    if(automation)
+    	listReconstruction.setCurrentIndex(1);
     //buttonGrid.addItem(new QSpacerItem(5,5),8,0);
     if(!presentation){
         buttonGrid.addWidget(&textReconstruction);
@@ -100,6 +121,8 @@ Viewer::Viewer(QApplication* app) {
     rayCount.addItem("16");
     rayCount.addItem("25");
     //buttonGrid.addItem(new QSpacerItem(5,5),14,0);
+    if(automation)
+    	rayCount.setCurrentIndex(2);
     if(!presentation){
         buttonGrid.addWidget(&textRayCount);
         buttonGrid.addWidget(&rayCount);
@@ -109,6 +132,8 @@ Viewer::Viewer(QApplication* app) {
 	recurs.addItem("4");
 	recurs.addItem("5");
 	recurs.addItem("6");
+	if(automation)
+		recurs.setCurrentIndex(5);
 	buttonGrid.addWidget(new QLabel("Recursion Depth:"));
 	buttonGrid.addWidget(&recurs);
     }
@@ -132,6 +157,9 @@ Viewer::Viewer(QApplication* app) {
 
     QObject::connect(core, SIGNAL(repaint()), this, SLOT(repaint()));
 
+	if(automation){
+		Q_EMIT(draw());
+	}
     app->exec();
 }
 
@@ -140,11 +168,31 @@ Viewer::~Viewer() {
 	delete core;
 }
 
+bool file_exists(const char *filename)
+{
+  ifstream ifile(filename);
+  return ifile;
+}
 
 void Viewer::saveImage(){
 	QImage image = core->getImage();
 	QImage img2 = image.copy(QRect(0,0,640,480));
-	img2.save("out/picture.png","png");
+	int i = 0;
+	while(true){
+		stringstream str;
+		str << "out/picture_" << i << ".png";
+		if(!file_exists(str.str().c_str())){
+			break;
+		}
+		i++;
+	}
+
+	stringstream str;
+	str << "out/picture_" << i << ".png";
+	cout << str.str() << endl;
+	img2.save(str.str().c_str(),"png");
+	sleep(10);
+	appPtr->exit(0);
 }
 
 void Viewer::repaint(){

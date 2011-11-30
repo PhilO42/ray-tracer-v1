@@ -74,3 +74,9 @@ CVector<float> Box::collision(CVector<float> origin, CVector<float> direction, b
 	*trans = bestTran;
 	return color_best;
 }
+
+void Box::rotate(CVector<float> angles){
+	for(int i = 6-1; i >= 0; i--){
+		planes[i]->rotate(angles);
+	}
+}

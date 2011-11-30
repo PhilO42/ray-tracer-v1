@@ -21,6 +21,7 @@ public:
 	virtual ~Plane();
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 	CVector<float> getNormal(float x, float y);
+	void rotate(CVector<float> angles);
 private:
 	CVector<float> p0;
 	CVector<float> p1;

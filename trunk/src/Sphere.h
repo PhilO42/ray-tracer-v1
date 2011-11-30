@@ -21,6 +21,7 @@ public:
 	CVector<float> getMin();
 	CVector<float> getMax();
 	CVector<float> getCenter();
+	void rotate(CVector<float> angles);
 private:
 	float radius;
 	CVector<float> position;
