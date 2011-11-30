@@ -72,7 +72,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     listSampling.setCurrentRow(0);
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
     if(automation)
-    	listSampling.setCurrentRow(3);
+    	listSampling.setCurrentRow(0);//3
     if(presentation){
         buttonGrid.addItem(new QSpacerItem(10,270),5,0);
     }
@@ -130,7 +130,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	recurs.addItem("5");
 	recurs.addItem("6");
 	if(automation)
-		recurs.setCurrentIndex(5);
+		recurs.setCurrentIndex(0);//5
 	buttonGrid.addWidget(new QLabel("Recursion Depth:"));
 	buttonGrid.addWidget(&recurs);
     }
