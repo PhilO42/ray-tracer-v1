@@ -22,7 +22,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     if(argc > 2){
     	if(string(argv[2]) == "-a"){
     		automation = true;
-    		cout << "aoutomating" << endl;
+    		cout << "automating" << endl;
     	}
     }
 
