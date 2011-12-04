@@ -1,0 +1,2 @@
+N=1; ls -1 *.png | tac | while read file; do cp "$file" "$((N+31))".png; N=$((N+1)); done
+mencoder "mf://*.png" -mf fps=25 -o output.avi -ovc lavc -lavcopts vcodec=mpeg4:vbitrate=9800
