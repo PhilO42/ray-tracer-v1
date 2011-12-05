@@ -23,10 +23,12 @@ RayTracer::RayTracer() {
 	presentation = true;
 }
 
-RayTracer::RayTracer(QPixmap* _img, bool pres, int argc, char *argv[]) {
+RayTracer::RayTracer(QPixmap* _img, bool pres, int _width, int _height, int argc, char *argv[]) {
 	presentation = pres;
 //	mutex = QMutex();
 	graph = new SceneGraph(presentation, argc, argv);
+	height = _height+1;
+	width = _width;
 	image = QImage(width,height,QImage::Format_ARGB32);
 	bottom = 0.48*2.5;
 	right = 0.64*2.5;

@@ -34,6 +34,8 @@ private slots:
 	int getRayCount();
 
 private:
+	static const int width = 640;
+	static const int height = 480;
 	QPixmap img;
 	QLabel imageLabel;
 	QComboBox rayCount;
@@ -45,7 +47,7 @@ private:
 	QProgressBar progress;
 	RayTracer* core;
 	QImage image;
-	static const bool presentation = false;
+	static const bool presentation = true;
 	bool automation;
 	QApplication* appPtr;
 //	void draw();

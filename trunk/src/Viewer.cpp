@@ -14,7 +14,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	appPtr = app;
     //Widget
     QWidget window;
-    window.resize(645, 485);
+    window.resize(width+5, height+5);
     window.show();
     window.setWindowTitle(QObject::tr("RayTracer v1.0"));
 
@@ -27,18 +27,18 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     }
 
     //Image
-    img = QPixmap(640,480+1);
+    img = QPixmap(width,height+1);
     img.fill((uint)0);
     if(!presentation){
         img.load("bg.png");
     }
     //ImageLabel
     //imageLabel = QLabel();
-    imageLabel.setGeometry(0,0,640,480);
+    imageLabel.setGeometry(0,0,width,height);
     imageLabel.setPixmap(img);
 
     //Core
-    core = new RayTracer(&img, presentation, argc, argv);
+    core = new RayTracer(&img, presentation, width, height, argc, argv);
 
     //Buttons
     QPushButton button1("Save Image",0);
@@ -73,30 +73,24 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
     if(automation)
     	listSampling.setCurrentRow(3);//3
-    if(presentation){
-        buttonGrid.addItem(new QSpacerItem(10,270),5,0);
-    }
     QLabel textScene("Choose scene:");
     scene.addItem("4 spheres");
     scene.addItem("axis");
     buttonGrid.addWidget(&textScene);
     buttonGrid.addWidget(&scene);
-    if(!presentation){
-        scene.addItem("table scene");
-        scene.addItem("table scene with duck");
-        scene.addItem("ground only");
-		scene.addItem("empty");
-		if(automation){
-			scene.setCurrentIndex(3);
-		}else{
-			scene.setCurrentIndex(2);
-		}
-        buttonGrid.addWidget(&textSampling);
-        buttonGrid.addWidget(&listSampling);
-    }
-    //if(presentation){
-    //    buttonGrid.addItem(new QSpacerItem(10,200),5,0);
-    //}
+    scene.addItem("table scene");
+	scene.addItem("table scene with duck");
+	scene.addItem("ground only");
+	scene.addItem("empty");
+	if (automation) {
+		scene.setCurrentIndex(3);
+	} else {
+		scene.setCurrentIndex(2);
+	}
+	if(presentation)
+		scene.setCurrentIndex(0);
+	buttonGrid.addWidget(&textSampling);
+	buttonGrid.addWidget(&listSampling);
 
     //ReconstructionOptions
     QLabel textReconstruction("Choose a reconstruction method:");
@@ -105,10 +99,8 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     if(automation)
     	listReconstruction.setCurrentIndex(1);
     //buttonGrid.addItem(new QSpacerItem(5,5),8,0);
-    if(!presentation){
-        buttonGrid.addWidget(&textReconstruction);
-        buttonGrid.addWidget(&listReconstruction);
-    }
+    buttonGrid.addWidget(&textReconstruction);
+    buttonGrid.addWidget(&listReconstruction);
 
     //RayCountPerPixel
     QLabel textRayCount("Number of rays per pixel:");
@@ -117,12 +109,16 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     rayCount.addItem("9");
     rayCount.addItem("16");
     rayCount.addItem("25");
+    rayCount.addItem("36");
+    rayCount.addItem("41");
+    rayCount.addItem("64");
+    rayCount.addItem("81");
+    rayCount.addItem("100");
     //buttonGrid.addItem(new QSpacerItem(5,5),14,0);
     if(automation)
     	rayCount.setCurrentIndex(2);
-    if(!presentation){
-        buttonGrid.addWidget(&textRayCount);
-        buttonGrid.addWidget(&rayCount);
+    buttonGrid.addWidget(&textRayCount);
+    buttonGrid.addWidget(&rayCount);
 	recurs.addItem("1");
 	recurs.addItem("2");
 	recurs.addItem("3");
@@ -131,18 +127,13 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	recurs.addItem("6");
 	if(automation)
 		recurs.setCurrentIndex(5);//5
-	buttonGrid.addWidget(new QLabel("Recursion Depth:"));
-	buttonGrid.addWidget(&recurs);
-    }
-//    progress = QProgressBar();
+	if(!presentation){
+		buttonGrid.addWidget(new QLabel("Recursion Depth:"));
+		buttonGrid.addWidget(&recurs);
+	}
     progress.setRange(0,100);
     progress.setValue(0);
     buttonGrid.addWidget(&progress);
-    //if(!presentation){
-    //	  buttonGrid.addItem(new QSpacerItem(21,20),17,0);
-    //}else{
-    //    buttonGrid.addItem(new QSpacerItem(21,20),16,0);
-    //}
 
     //MainGrid
     QGridLayout grid;
@@ -173,11 +164,15 @@ bool file_exists(const char *filename)
 
 void Viewer::saveImage(){
 	QImage image = core->getImage();
-	QImage img2 = image.copy(QRect(0,0,640,480));
+	QImage img2 = image.copy(QRect(0,0,width,height));
 	int i = 0;
 	while(true){
 		stringstream str;
-		str << "out/picture_" << i << ".png";
+		if(presentation){
+			str << "out2/picture_" << i << ".png";
+		}else{
+			str << "out/picture_" << i << ".png";
+		}
 		if(!file_exists(str.str().c_str())){
 			break;
 		}
@@ -185,7 +180,11 @@ void Viewer::saveImage(){
 	}
 
 	stringstream str;
-	str << "out/picture_" << i << ".png";
+	if(presentation){
+		str << "out2/picture_" << i << ".png";
+	}else{
+		str << "out/picture_" << i << ".png";
+	}
 	cout << str.str() << endl;
 	img2.save(str.str().c_str(),"png");
 	if(automation){
