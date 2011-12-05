@@ -644,8 +644,7 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.7,0.75,0.9), myUtil::color(255, 255, 0), 0, 0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,1.6), myUtil::color(0, 255, 30),0,0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0,0.75,0.5), myUtil::color(255, 0, 0),0,0));
-			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1,1.75,-0.5), myUtil::color(0, 0, 255),0,0));
-			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1,2.75,-0.5), myUtil::color(255, 0, 255),0,0));
+			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1,1.75,-0.5), myUtil::color(255, 0, 255),0,0));
 			addLightSource(Light(myUtil::PosHom(-2,4,-1), CVector<float>(4,1), false, myUtil::color9D(0.6,0.6,0.6,0.54,0.54,0.54,0.93,0.93,0.93)));
 			addLightSource(Light(myUtil::PosHom(0,1,0), myUtil::PosHom(0,1,0,0), true, myUtil::color9D(0.6,0.6,0.6,0.54,0.54,0.54,0.93,0.93,0.93)));
 			break;
@@ -670,13 +669,21 @@ void SceneGraph::loadScene(int scene){
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(1.0,0.75,1.0), myUtil::color(127, 219, 255), 0, 0.7));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.2,0.75,1.7), myUtil::color(0, 255, 30),0,0));
-			objects.push_back(new Sphere(0.8, myUtil::PosHom(-0.3,0.9,0.3), myUtil::color(0, 0, 0),0.8,0));
-			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg","tile_bump.jpg"));
-			objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(-8,6.25,-14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(0,0,1),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//right
-			objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(-8,-4.25,-14),myUtil::PosHom(1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
-			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,-4.25,14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//left
-			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
-			objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
+			if(!presentation){
+				objects.push_back(new Sphere(0.8, myUtil::PosHom(-0.3,0.9,0.3), myUtil::color(0, 0, 0),0.8,0));
+			}else{
+				objects.push_back(new Sphere(0.8, myUtil::PosHom(-0.3,0.9,0.3), myUtil::color(255, 128, 0),0.8,0));
+			}
+			if(!presentation){
+				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg","tile_bump.jpg"));
+				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(-8,6.25,-14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(0,0,1),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//right
+				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(-8,-4.25,-14),myUtil::PosHom(1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,-4.25,14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//left
+				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+				objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
+			}else{
+				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg"));
+			}
 			objects.push_back(new Box(myUtil::PosHom(0,0,0), myUtil::PosHom(4.5,0.5,6.5), myUtil::color(0,255,255),0,0,"wood.jpg"));
 
 			addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));

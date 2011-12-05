@@ -14,6 +14,7 @@ bool ysort (SceneObject* i, SceneObject* j) { return (i->getCenter()(1) < j->get
 bool zsort (SceneObject* i, SceneObject* j) { return (i->getCenter()(2) < j->getCenter()(2)); }
 
 BVH::BVH(std::vector< Triangle* > objects) {
+	cout << "number of faces = " << objects.size() << endl;
 	float minX = std::numeric_limits<float>::max();
 	float minY = std::numeric_limits<float>::max();
 	float minZ = std::numeric_limits<float>::max();

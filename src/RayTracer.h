@@ -31,7 +31,7 @@ public:
 
 public:
 	RayTracer();
-	RayTracer(QPixmap* _img, bool pres, int argc, char *argv[]);
+	RayTracer(QPixmap* _img, bool pres, int _width, int _height, int argc, char *argv[]);
 	virtual ~RayTracer();
 	QMutex mutex;
 	void setParams(int count, char reconst, char sample, int recursion);
@@ -48,8 +48,8 @@ private:
 	float right;
 	float near;
 	float far;
-	static const int width = 640;//640
-	static const int height = 480+1;//480
+	int width;//640
+	int height;//480
 	QImage image;
 	QImage image2;
 	CMatrix<float> cameraMatrix;
