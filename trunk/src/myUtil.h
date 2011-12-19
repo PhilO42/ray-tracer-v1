@@ -24,6 +24,7 @@ public:
 	static CVector<float> PosHom(float x, float y, float z, float w);
 	static CVector<float> Pos5D(float v, float w, float x, float y, float z);
 	static const float epsi = 0.0001;
+	static const float PI = 3.14159265;
 	static CMatrix<float> eye(int dim);
 	static CVector<float> elementWiseMulti(CVector<float> A, CVector<float> B);
 	static float homogenNorm(CVector<float> vec);

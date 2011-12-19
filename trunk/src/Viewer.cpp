@@ -108,12 +108,9 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     rayCount.addItem("4");
     rayCount.addItem("9");
     rayCount.addItem("16");
-    rayCount.addItem("25");
-    rayCount.addItem("36");
-    rayCount.addItem("41");
-    rayCount.addItem("64");
-    rayCount.addItem("81");
     rayCount.addItem("100");
+    rayCount.addItem("2500");
+    rayCount.addItem("10000");
     //buttonGrid.addItem(new QSpacerItem(5,5),14,0);
     if(automation)
     	rayCount.setCurrentIndex(2);
@@ -254,8 +251,33 @@ char Viewer::getReconstructionMethod(){
 	return 'b';
 }
 
-int Viewer::getRayCount(){
-	return rayCount.currentIndex()+1;
+int Viewer::getRayCount() {
+	switch (rayCount.currentIndex()) {
+	case 0:
+		return 1;
+		break;
+	case 1:
+		return 2;
+		break;
+	case 2:
+		return 3;
+		break;
+	case 3:
+		return 4;
+		break;
+	case 4:
+		return 10;
+		break;
+	case 5:
+		return 50;
+		break;
+	case 6:
+		return 100;
+		break;
+	default:
+		return 1;
+		break;
+	}
 }
 
 void Viewer::draw(){

@@ -20,6 +20,7 @@ Sphere::Sphere() {
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 	reflectionValue = 0.0;
 	trancparencyValue = 0.0;
+	textured = false;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl, float trans){
@@ -35,6 +36,24 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, f
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 	reflectionValue = refl;
 	trancparencyValue = trans;
+	textured = false;
+}
+
+Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, float refl, float trans, string path){
+	radius = _radius;
+	position = _position;
+	if(_color.size() == 9){
+		color = _color;
+	}else{
+		color = myUtil::color9D(_color(0),_color(1),_color(2),_color(0),_color(1),_color(2),_color(0),_color(1),_color(2));
+	}
+	isLight =  false;
+	min = myUtil::color(position(0)-radius,position(1)-radius,position(2)-radius);
+	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
+	reflectionValue = refl;
+	trancparencyValue = trans;
+	image.load(QString(path.c_str()));
+	textured = true;
 }
 
 Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, bool _isLight){
@@ -50,6 +69,7 @@ Sphere::Sphere(float _radius, CVector<float> _position, CVector<float> _color, b
 	max = myUtil::color(position(0)+radius,position(1)+radius,position(2)+radius);
 	reflectionValue = 0.0;
 	trancparencyValue = 0.0;
+	textured = false;
 }
 
 Sphere::~Sphere() {
@@ -104,7 +124,8 @@ CVector<float> Sphere::collision(CVector<float> origin, CVector<float> direction
 	(*collisionPoint)(3) = 1.0;
 	*normal = (*collisionPoint) - this->position;
 	*normal = myUtil::normalize(*normal);
-	return this->color;
+	return getColor(*collisionPoint);
+	//return this->color;
 }
 
 CVector<float> Sphere::getMin(){
@@ -121,4 +142,32 @@ CVector<float> Sphere::getCenter(){
 
 void Sphere::rotate(CVector<float> angles){
 
+}
+
+CVector<float> Sphere::getColor(CVector<float> collisionPoint){//in globalen werten
+	if(!textured)
+		return color;
+
+	//http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
+	CVector<float> Vn = myUtil::color(0,1,0);
+	CVector<float> Ve = myUtil::color(1,0,0);
+	CVector<float> Vp = myUtil::color(collisionPoint(0) - position(0),collisionPoint(1) - position(1),collisionPoint(2) - position(2));
+	Vp = myUtil::normalize(collisionPoint - position);
+
+    float phi = acos(-(Vn*Vp));
+    float v = phi/myUtil::PI;
+    float u;
+    float theta = (acos((Vp*Ve) * (1.0/sin(phi))))/(2.0 * myUtil::PI);
+    if((Vn/Ve)*Vp > 0){
+        u = theta;
+    }else{
+        u = 1 - theta;
+    }
+    v = 1-v;
+    int a = (int)(u*image.width());
+    int b = (int)(v*image.height());
+    a += image.width()/2.0;
+    a = a % image.width();
+    QRgb col = image.pixel(a,b);
+	return myUtil::color9D(qRed(col),qGreen(col),qBlue(col),qRed(col),qGreen(col),qBlue(col),qRed(col),qGreen(col),qBlue(col));
 }
