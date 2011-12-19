@@ -34,6 +34,7 @@ public:
 	RayTracer(QPixmap* _img, bool pres, int _width, int _height, int argc, char *argv[]);
 	virtual ~RayTracer();
 	QMutex mutex;
+	QMutex mutexImg;
 	void setParams(int count, char reconst, char sample, int recursion);
 	QImage getImage();
 	void setScene(int i);
@@ -54,6 +55,8 @@ private:
 	QImage image2;
 	CMatrix<float> cameraMatrix;
 	CVector<float> Sample(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, float minDist = 0.1, int p1 = 2, int p2 = 7);
+	CVector<float> SampleFix(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, CVector<float>& dx, CVector<float>& dy, float minDist = 0.1, int p1 = 2, int p2 = 7);
+	void SamplePositions(char kindOfSampling, int sampleCount, CVector<float>* dx, CVector<float>* dy, float minDist = 0.1, int p1 = 2, int p2 = 7);
 	CVector<float> Reconstruct(std::vector< CVector<float> > col, char kindOfReconstruction);
 	float gauss(float dist);
 	float HammersleyValue(int k, int p);

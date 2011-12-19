@@ -16,6 +16,7 @@
 #include "myUtil.h"
 #include <cmath>
 #include <time.h>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -50,7 +51,11 @@ void RayTracer::debug(){
 	std::cout << "debug" << std::endl;
 }
 
+#define CHUNKSIZE 10
+static struct timeval start_time;
+
 void RayTracer::run(){
+	gettimeofday(&start_time, NULL);
 	//image = QImage(width,height,QImage::Format_ARGB32);
 	//image.fill(qRgba(200,200,255,255));
 	cout << "Rendering started!" << endl;
@@ -59,41 +64,68 @@ void RayTracer::run(){
 
 //	CVector<float> col = Sample(378, 250, 'n', 2, 'm');
 	cout << "Drawing image with " << sampling << " " << reconstruction << " and " << rayCount*rayCount << " rays per pixel" << endl;
+
+	CVector<float> dx;
+	CVector<float> dy;
+	SamplePositions(sampling, rayCount, &dx, &dy);
+
+	#pragma omp parallel for schedule(dynamic, CHUNKSIZE)
+
 	for(int y = 0; y < height-1; y++){
-		mutex.lock();
-		image2 = image;
-		mutex.unlock();
+		#pragma omp critical
+		{
+			mutex.lock();
+			image2 = image;
+			mutex.unlock();
+		}
 		
 		if(y%(height/10) == 0){
 			Q_EMIT(repaint());
 			if(y == 0){
-				Q_EMIT(setProgress(0));
-				cout << "  0% finished" << endl;
+				#pragma omp critical
+				{
+					Q_EMIT(setProgress(0));
+					cout << "  0% finished" << endl;
+				}
 			}else{
-				cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
-				Q_EMIT(setProgress((int)(y/(height/10))*10));
+				#pragma omp critical
+				{
+					cout << " " << (int)(y/(height/10))*10 << "% finished" << endl;
+					Q_EMIT(setProgress((int)(y/(height/10))*10));
+				}
 			}
 		}
 		for(int x = 0; x < width; x++){
 			//#############################################
-			CVector<float> col = Sample(x, y, sampling, rayCount, reconstruction);
+			CVector<float> col;
+			if(presentation){
+				col = SampleFix(x, y, sampling, rayCount, reconstruction,dx,dy);
+			}else{
+				col = Sample(x, y, sampling, rayCount, reconstruction);
+			}
 
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
-			image.setPixel(x,y,color.rgba());
+			#pragma omp critical
+				image.setPixel(x,y,color.rgba());
 		}
 	}
 
-
-	cout << "100% finished" << endl;
-	Q_EMIT(setProgress(100));
-	cout << "Rendering finised!" << endl;
-	Q_EMIT(saveImage());
-//	image.fill(283);
-//	image.save("test3.png","png");
-	mutex.lock();
-	image2 = image;
-	mutex.unlock();
-	Q_EMIT(repaint());
+	#pragma omp critical
+	{
+		cout << "100% finished" << endl;
+		Q_EMIT(setProgress(100));
+		cout << "Rendering finised!" << endl;
+		Q_EMIT(saveImage());
+	//	image.fill(283);
+	//	image.save("test3.png","png");
+		mutex.lock();
+		image2 = image;
+		mutex.unlock();
+		Q_EMIT(repaint());
+	}
+	struct timeval t;
+	gettimeofday(&t, NULL);
+	cout << "time needed: " << (t.tv_sec - start_time.tv_sec) << " sec" << endl;;
 }
 
 void RayTracer::seeTheLightMap(){
@@ -202,6 +234,91 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 			break;
 	}
 	return CVector<float>(3,0);
+}
+
+CVector<float> RayTracer::SampleFix(int x, int y, char kindOfSampling, int sampleCount, char kindOfReconstruction, CVector<float>& dx, CVector<float>& dy, float minDist, int p1, int p2){
+	CVector<float> origin = myUtil::PosHom(0,0,0);
+	origin = cameraMatrix * origin;
+	vector< CVector<float> > col(sampleCount*sampleCount);
+	CVector<float> dir(4,0);
+	CVector<float> pixelVal;
+	float strataSize;
+
+	float xPix;
+	float yPix;
+	//sampling
+	for(int i = 0; i < dx.size(); i++){
+		xPix = ((float)x) + dx[i];
+		yPix = ((float)y) + dy[i];
+		dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
+		pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
+		col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+	}
+	return Reconstruct(col, kindOfReconstruction);
+}
+
+void RayTracer::SamplePositions(char kindOfSampling, int sampleCount, CVector<float>* dx, CVector<float>* dy, float minDist, int p1, int p2){
+	float strataSize;
+	vector< CVector<float> > col(sampleCount*sampleCount);
+
+	switch (kindOfSampling) {
+		case 'n':
+			dx->setSize(1);
+			dy->setSize(1);
+			(*dx)[0] = 0.5f;
+			(*dy)[0] = 0.5f;
+			break;
+		case 'r':
+			//random sampling
+			dx->setSize(sampleCount*sampleCount);
+			dy->setSize(sampleCount*sampleCount);
+			for(int i = 0; i < sampleCount*sampleCount; i++){
+				(*dx)[i] = ((rand() % 1000)/1000.0);//value between 0 and 1
+				(*dy)[i] = ((rand() % 1000)/1000.0);
+			}
+			break;
+		case 's':
+			dx->setSize(sampleCount*sampleCount);
+			dy->setSize(sampleCount*sampleCount);
+			//stratified sampling
+			strataSize = 1.0/((float)sampleCount);
+			for(int i = 0; i < sampleCount; i++){//x
+				for(int j = 0; j < sampleCount; j++){//y
+					(*dx)[i] = ((float)i)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
+					(*dy)[i] = ((float)j)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
+				}
+			}
+			break;
+		case 'p':
+			dx->setSize(sampleCount*sampleCount);
+			dy->setSize(sampleCount*sampleCount);
+			//poisson sampling it is cheaper
+			for(int i = 0; i < sampleCount*sampleCount;){
+				up:
+				(*dx)[i] = ((rand() % 1000)/1000.0);//value between 0 and 1
+				(*dy)[i] = ((rand() % 1000)/1000.0);
+				for(int j = 0; j < i; j++){
+					if(((*dx)[i] - col.at(j)(3))*((*dx)[i] - col.at(j)(3)) + ((*dy)[i] - col.at(j)(4))*((*dy)[i] - col.at(j)(4)) < (1.0/(sampleCount*sampleCount*sampleCount)))
+						goto up;//sorry!
+				}
+				//take this sample
+				col.at(i) = myUtil::Pos5D(0.0f,0.0f,0.0f,(*dx)[i], (*dy)[i]);
+				i++;
+			}
+			break;
+		case 'h':
+			dx->setSize(sampleCount*sampleCount);
+			dy->setSize(sampleCount*sampleCount);
+			//halton sampling
+			for(int i = 0; i < sampleCount*sampleCount; i++){
+				(*dx)[i] = HammersleyValue(i,p1);//value between 0 and 1
+				(*dy)[i] = HammersleyValue(i,p2);
+			}
+			break;
+		default:
+			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = halton" << endl;
+			break;
+	}
 }
 
 CVector<float> RayTracer::Reconstruct(vector< CVector<float> > col, char kindOfReconstruction){
