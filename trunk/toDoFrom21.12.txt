@@ -1,0 +1,11 @@
+treffen: 11.1 9:00
+project samples to axis
+adjusent pixels reinnehmen
+final images in normal res (mit und ohne sampling) (line texture?)
+dataStruktur für dreiecke kdtree (mehr freiheiten als octree, drei stufen = 1 octree, teilen nicht in euclydischermitte, jede seite an eigener stelle teilen)
+  scaling, wie geht rendering zeit?
+  welche tiefe
+bilder mit oder ohne hierarchie
+
+report ab 11.1 (3-4 wochen first draft)
+bis ende (mitte feb) final report
