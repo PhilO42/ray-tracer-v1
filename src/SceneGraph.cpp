@@ -174,7 +174,7 @@ void SceneGraph::setCameraMatrix(CMatrix<float> _cameraMatrix){
 	cameraMatrix = _cameraMatrix;
 }
 
-CMatrix<float> SceneGraph::ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height){
+void SceneGraph::ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height){
 //	origin = _origin;
 
 	cameraMatrix = CMatrix<float>(4,4,0);
@@ -190,12 +190,6 @@ CMatrix<float> SceneGraph::ProjectionMatrix(CVector<float> _origin, float near, 
 	cameraMatrix(2,3) = -(2*far*near)/(far-near);
 //	mat(1,2) = -(top+bottom)/(top-bottom);
 //	mat(0,2) = -(right+left)/(right-left);
-}
-
-
-CVector<float> SceneGraph::getColor(CVector<float> _origin, CVector<float> direction){
-	CVector<float> color = backgroundColor;
-	//TODO get collisions und ersetzte Farbe wenn collision
 }
 
 CVector<float> SceneGraph::castRay(CVector<float> origin, CVector<float> direction, int recursionDepth, float reflection, float transparency){
@@ -705,7 +699,7 @@ void SceneGraph::loadScene(int scene){
 		case 5:
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(0.3,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			addLightSource(Light(myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
-			objects.push_back(new Sphere(0.35, myUtil::PosHom(0,0.2,0.2), myUtil::color(255,0,0), false));
+			objects.push_back(new Sphere(0.35, myUtil::PosHom(0,0.2,0.2), myUtil::color(255,0,0),0,0,"lines2.png"));
 		break;
 	}
 }

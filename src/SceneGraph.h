@@ -1,4 +1,4 @@
-/*
+	/*
  * SceneGraph.h
  *
  *  Created on: 27.10.2011
@@ -22,7 +22,7 @@ public:
 	void addLightSource(Light light);
 	void addSceneObject(SceneObject* object);
 	void setCameraMatrix(CMatrix<float> _cameraMatrix);
-	CMatrix<float> ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height);
+	void ProjectionMatrix(CVector<float> _origin, float near, float far, float width, float height);
 	CVector<float> castLightRay(CVector<float> origin, CVector<float> direction);
 	CVector<float> castRay(CVector<float> origin, CVector<float> direction, int recursionDepth = 2, float reflection = 0.3, float transparency = 0.3);
 	CMatrix<float> getCameraMatrix();
@@ -50,8 +50,6 @@ private:
 	CMatrix<float> InverseCameraMatrix(CVector<float> cameraPos, CVector<float> lookAt, CVector<float> up);
 	bool presentation;
 	float t;
-	//depricated
-	CVector<float> getColor(CVector<float> _origin, CVector<float> direction);
 };
 
 #endif /* SCENEGRAPH_H_ */

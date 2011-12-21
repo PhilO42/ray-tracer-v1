@@ -51,10 +51,15 @@ void RayTracer::debug(){
 	std::cout << "debug" << std::endl;
 }
 
-#define CHUNKSIZE 10
+#define CHUNKSIZE 1
 static struct timeval start_time;
 
 void RayTracer::run(){
+	for(int i = 0; i < 5; i++){
+		for(int j = 0; j < 5; j++){
+			cout << HammersleyValue(i,5) << " " << HammersleyValue(j,5) << endl;
+		}
+	}
 	gettimeofday(&start_time, NULL);
 	//image = QImage(width,height,QImage::Format_ARGB32);
 	//image.fill(qRgba(200,200,255,255));
@@ -98,11 +103,11 @@ void RayTracer::run(){
 		for(int x = 0; x < width; x++){
 			//#############################################
 			CVector<float> col;
-			if(presentation){
-				col = SampleFix(x, y, sampling, rayCount, reconstruction,dx,dy);
-			}else{
+//			if(presentation){
+//				col = SampleFix(x, y, sampling, rayCount, reconstruction,dx,dy);
+//			}else{
 				col = Sample(x, y, sampling, rayCount, reconstruction);
-			}
+//			}
 
 			QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 			#pragma omp critical
@@ -284,8 +289,8 @@ void RayTracer::SamplePositions(char kindOfSampling, int sampleCount, CVector<fl
 			strataSize = 1.0/((float)sampleCount);
 			for(int i = 0; i < sampleCount; i++){//x
 				for(int j = 0; j < sampleCount; j++){//y
-					(*dx)[i] = ((float)i)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
-					(*dy)[i] = ((float)j)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
+					(*dx)[i*sampleCount+j] = ((float)i)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
+					(*dy)[i*sampleCount+j] = ((float)j)*strataSize + (rand() % 1000)/(1000.0*((float)sampleCount));
 				}
 			}
 			break;
@@ -314,6 +319,7 @@ void RayTracer::SamplePositions(char kindOfSampling, int sampleCount, CVector<fl
 				(*dx)[i] = HammersleyValue(i,p1);//value between 0 and 1
 				(*dy)[i] = HammersleyValue(i,p2);
 			}
+			cout << endl;
 			break;
 		default:
 			cerr << "kindOfSampling: \'n\' = center of Pixel(standart)\n                \'r\' = random\n                \'s\' = stratified\n                \'p\' = poisson\n                \'h\' = halton" << endl;

@@ -4,65 +4,137 @@ set yrange [0:1]
 set size ratio -1
 
 set output "random.png"
-plot "RandomSamples.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "RandomSamples.txt" using 1:2 pt 7 ps 2 title ''
+plot "RandomSamples.txt" using 1:3 pt 1 ps 3 title ''
+plot "RandomSamples.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "random2.png"
-plot "RandomSamples2.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "RandomSamples2.txt" using 1:2 pt 7 ps 2 title ''
+plot "RandomSamples2.txt" using 1:3 pt 1 ps 3 title ''
+plot "RandomSamples2.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "random3.png"
-plot "RandomSamples3.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "RandomSamples3.txt" using 1:2 pt 7 ps 2 title ''
+plot "RandomSamples3.txt" using 1:3 pt 1 ps 3 title ''
+plot "RandomSamples3.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "random4.png"
-plot "RandomSamples4.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "RandomSamples4.txt" using 1:2 pt 7 ps 2 title ''
+plot "RandomSamples4.txt" using 1:3 pt 1 ps 3 title ''
+plot "RandomSamples4.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "stratified.png"
-plot "StratifiedSamples.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "StratifiedSamples.txt" using 1:2 pt 7 ps 2 title ''
+plot "StratifiedSamples.txt" using 1:3 pt 1 ps 3 title ''
+plot "StratifiedSamples.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "stratified2.png"
-plot "StratifiedSamples2.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "StratifiedSamples2.txt" using 1:2 pt 7 ps 2 title ''
+plot "StratifiedSamples2.txt" using 1:3 pt 1 ps 3 title ''
+plot "StratifiedSamples2.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "stratified3.png"
-plot "StratifiedSamples3.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "StratifiedSamples3.txt" using 1:2 pt 7 ps 2 title ''
+plot "StratifiedSamples3.txt" using 1:3 pt 1 ps 3 title ''
+plot "StratifiedSamples3.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "stratified4.png"
-plot "StratifiedSamples4.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "StratifiedSamples4.txt" using 1:2 pt 7 ps 2 title ''
+plot "StratifiedSamples4.txt" using 1:3 pt 1 ps 3 title ''
+plot "StratifiedSamples4.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "poisson.png"
-plot "PoissonSamples.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "PoissonSamples.txt" using 1:2 pt 7 ps 2 title ''
+plot "PoissonSamples.txt" using 1:3 pt 1 ps 3 title ''
+plot "PoissonSamples.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "poisson2.png"
-plot "PoissonSamples2.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "PoissonSamples2.txt" using 1:2 pt 7 ps 2 title ''
+plot "PoissonSamples2.txt" using 1:3 pt 1 ps 3 title ''
+plot "PoissonSamples2.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "poisson3.png"
-plot "PoissonSamples3.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "PoissonSamples3.txt" using 1:2 pt 7 ps 2 title ''
+plot "PoissonSamples3.txt" using 1:3 pt 1 ps 3 title ''
+plot "PoissonSamples3.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "poisson4.png"
-plot "PoissonSamples4.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "PoissonSamples4.txt" using 1:2 pt 7 ps 2 title ''
+plot "PoissonSamples4.txt" using 1:3 pt 1 ps 3 title ''
+plot "PoissonSamples4.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "halton.png"
-plot "HaltonSamples.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "HaltonSamples.txt" using 1:2 pt 7 ps 2 title ''
+plot "HaltonSamples.txt" using 1:3 pt 1 ps 3 title ''
+plot "HaltonSamples.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "halton2.png"
-plot "HaltonSamples2.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "HaltonSamples2.txt" using 1:2 pt 7 ps 2 title ''
+plot "HaltonSamples2.txt" using 1:3 pt 1 ps 3 title ''
+plot "HaltonSamples2.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "halton3.png"
-plot "HaltonSamples3.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "HaltonSamples3.txt" using 1:2 pt 7 ps 2 title ''
+plot "HaltonSamples3.txt" using 1:3 pt 1 ps 3 title ''
+plot "HaltonSamples3.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
 
 set output "halton4.png"
-plot "HaltonSamples4.txt" using 1:2 pt 7 title ''
+set multiplot
+plot "HaltonSamples4.txt" using 1:2 pt 7 ps 2 title ''
+plot "HaltonSamples4.txt" using 1:3 pt 1 ps 3 title ''
+plot "HaltonSamples4.txt" using 3:2 pt 1 ps 3 title ''
 replot
+unset multiplot
+
+set output "halton(2,7).png"
+set multiplot
+plot "HaltonSamples5.txt" using 1:2 pt 7 ps 2 title ''
+plot "HaltonSamples5.txt" using 1:3 pt 1 ps 3 title ''
+plot "HaltonSamples5.txt" using 3:2 pt 1 ps 3 title ''
+replot
+unset multiplot
