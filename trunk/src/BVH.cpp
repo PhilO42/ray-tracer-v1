@@ -125,7 +125,6 @@ BVH::BVH(std::vector< Triangle* > objects, int _depth) {
 
 	reflectionValue = 0;
 	trancparencyValue = 0;
-	cout << depth << " ";
 }
 
 BVH::~BVH() {

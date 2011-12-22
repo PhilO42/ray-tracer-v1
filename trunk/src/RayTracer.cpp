@@ -482,8 +482,10 @@ QImage RayTracer::Reconstruct2(char kindOfReconstruction, int sampleSize){
 						color *= (1.0/col.size());
 					qcolor = QColor(min((int)color(0),255),min((int)color(1),255),min((int)color(2),255),255);
 
-					#pragma omp critical
-						image.setPixel(x,y,qcolor.rgba());
+					//#pragma omp critical
+					mutex.lock();
+					image.setPixel(x,y,qcolor.rgba());
+					mutex.unlock();
 
 					break;
 				case 'm':
@@ -494,7 +496,7 @@ QImage RayTracer::Reconstruct2(char kindOfReconstruction, int sampleSize){
 						int py = sqrt((((float)y) - col.at(i)(4))*(((float)y) - col.at(i)(4)));
 						float xDist = px - 0.5;//signed
 						float yDist = py - 0.5;
-						float weight = gauss(sqrt(xDist*xDist + yDist*yDist));//Gewichtung mit Abstand
+						float weight = gauss(sqrt(xDist*xDist + yDist*yDist),0.6);//Gewichtung mit Abstand
 						pixValue *= weight;
 						distSum += weight;
 						color +=  pixValue;
@@ -503,8 +505,10 @@ QImage RayTracer::Reconstruct2(char kindOfReconstruction, int sampleSize){
 						color *= (1.0/distSum);//Normalisierung
 					qcolor = QColor(min((int)color(0),255),min((int)color(1),255),min((int)color(2),255),255);
 
-					#pragma omp critical
-						image.setPixel(x,y,qcolor.rgba());
+					//#pragma omp critical
+					mutex.lock();
+					image.setPixel(x,y,qcolor.rgba());
+					mutex.unlock();
 
 					break;
 				default:

@@ -70,7 +70,7 @@ private:
 	int rayCount;
 	int recursionDepth;
 	bool presentation;
-	static const int sampleSize = 10;
+	static const int sampleSize = 1;
 	std::vector< CVector<float> >** colors;
 };
 
