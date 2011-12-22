@@ -263,7 +263,7 @@ int Viewer::getRayCount() {
 		return 3;
 		break;
 	case 3:
-		return 5;
+		return 4;
 		break;
 	case 4:
 		return 10;

@@ -486,6 +486,7 @@ BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> 
 	}
 
 	BVH* bvh2 = new BVH(triangles);
+	cout << endl;
 	objects.push_back(bvh2);
 	return bvh2;
 }
