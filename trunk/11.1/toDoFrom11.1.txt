@@ -1,0 +1,35 @@
+Speedtest mit 1,2,4,8 ducks
+  ...mit 1mio trianles würde es x sec brauchen
+samplepointbilder in verschieden auflösungen
+draft of document: outline + subsections + seitenzahl
+
+Treffen Mi 18.1. 9Uhr
+
+Report
+länge egal
+viele bilder
+Outline + Inhalt umreißen
+
+transforations (implemented): points, vec, homogen
+ray object intersec die man implemnetet hat: quadrix, triangle
+shading:phong
+  für alle 3 nicht viel machen: introduce, notation, equations, parameters beim phong
+
+shadows (vvlt)
+  algo beschrieben
+
+sampling & reconstruction
+  equations oder prinzipien; als intro das ziel der rekonstruktion (alasing), benefits and drawbacks, resultimages plus beschreiben was man sieht
+
+intersect. acceleration: implementation beschreiben
+  motivate, diverent teqniqes, build&query und wie das geht (prinzip beschrieben)
+  performanceGraph (priangles agian compTime)
+  bilder mit und ohne +zeit
+
+additional zeugs auch beschreiben
+
+--> why show an image, what do you see
+--> ilustarate what you have implemented (have you imple or not; dont talkabout what you dont did)
+--> short as possible, aber alles beschrieben
+
+deutsch, teX, grammar!!!!, typos!!!!
