@@ -232,7 +232,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				yPix = ((float)y) + ((rand() % 1000)/1000.0);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
 				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
-				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix-x, yPix-y);
 			}
 			return Reconstruct(col, kindOfReconstruction);
 			break;
@@ -247,7 +247,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 					yPix += (rand() % 1000)/(1000.0*((float)sampleCount));
 					dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
 					pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
-					col.at(i*sampleCount+j) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+					col.at(i*sampleCount+j) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix-x, yPix-y);
 				}
 			}
 			return Reconstruct(col, kindOfReconstruction);
@@ -265,7 +265,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				//take this sample
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
 				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
-				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix-x, yPix-y);
 				i++;
 			}
 			return Reconstruct(col, kindOfReconstruction);
@@ -277,7 +277,7 @@ CVector<float> RayTracer::Sample(int x, int y, char kindOfSampling, int sampleCo
 				yPix = ((float)y) + HammersleyValue(i,p2);
 				dir = myUtil::normalize(cameraMatrix * myUtil::PosHom(-abs(right) +((xPix+0.5)/((float)width)) *2*abs(right), abs(bottom)-((yPix+0.5)/((float)height))*2*abs(bottom), -near, 0));
 				pixelVal = graph->getColorForRay(origin, dir, recursionDepth);
-				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix, yPix);
+				col.at(i) = myUtil::Pos5D(pixelVal(0), pixelVal(1), pixelVal(2), xPix-x, yPix-y);
 			}
 			return Reconstruct(col, kindOfReconstruction);
 			break;
