@@ -1,0 +1,10 @@
++ 1,2,4 Ducks
++ 1,2,4 duckTimesPlot
++ bumpMap, noBumpMap
++ empty {}_m_4:64x48
++ coole Bilder:
+	erde
+	szene mit tisch
+	...
++ sphereMapping Formel
++ Lampe PolygonCount
