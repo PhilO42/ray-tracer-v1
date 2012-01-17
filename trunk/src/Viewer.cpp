@@ -86,6 +86,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	scene.addItem("2 Spheres");
 	scene.addItem("4 Spheres");
 	scene.addItem("new Spheres");
+	scene.addItem("Pool");
 	if (automation) {
 		scene.setCurrentIndex(3);
 	} else {
