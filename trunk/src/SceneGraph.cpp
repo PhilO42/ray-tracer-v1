@@ -161,7 +161,7 @@ void SceneGraph::addLightSource(Light light){
 	CVector<float> col = myUtil::color9D(100000,100000,100000,100000,100000,100000,100000,100000,100000);
 	if(!light.isDirectionalLight){
 		Sphere* s = new Sphere(0.1,pos,col,true);
-		//objects.push_back(s);
+		objects.push_back(s);
 	}
 	lightSources.push_back(light);
 }
@@ -742,7 +742,7 @@ void SceneGraph::loadScene(int scene){
 			//cool scene
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(4.2,2,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			objects.push_back(new Sphere(0.5, myUtil::PosHom(1.0,0.75,1.0), myUtil::color(127, 219, 255), 0, 0.7));
-			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.2,0.75,1.7), myUtil::color(0, 255, 30),0,0));
+			objects.push_back(new Sphere(0.5, myUtil::PosHom(0.2,0.75,1.7), myUtil::color(0, 255, 30),0,0, "earth.jpg"));
 			if(!presentation){
 				objects.push_back(new Sphere(0.8, myUtil::PosHom(-0.3,0.9,0.3), myUtil::color(0, 0, 0),0.8,0));
 			}else{
@@ -750,11 +750,11 @@ void SceneGraph::loadScene(int scene){
 			}
 			if(!presentation){
 				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg","tile_bump.jpg"));
-				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(-8,6.25,-14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(0,0,1),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//right
-				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(-8,-4.25,-14),myUtil::PosHom(1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
-				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,-4.25,14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//left
-				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
-				objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
+//				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(-8,6.25,-14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(0,0,1),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//right
+//				objects.push_back(new Plane(myUtil::PosHom(-8,-4.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(-8,-4.25,-14),myUtil::PosHom(1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+//				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,-4.25,14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//left
+//				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,14), myUtil::PosHom(8,6.25,14), myUtil::PosHom(8,-4.25,-14),myUtil::PosHom(-1,0,0),myUtil::PosHom(0,0,0),0,0,"wall.jpg", "wall_bump.jpg"));//back
+//				objects.push_back(new Plane(myUtil::PosHom(8,6.25,14), myUtil::PosHom(-8,6.25,14), myUtil::PosHom(8,6.25,-14),myUtil::PosHom(0,0,-1),myUtil::PosHom(0,0,0),0,0,"ceil.jpg"));
 			}else{
 				objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.2,"tile.jpg"));
 			}
