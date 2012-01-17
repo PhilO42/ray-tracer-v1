@@ -27,6 +27,7 @@ public:
 	CVector<float> castRay(CVector<float> origin, CVector<float> direction, int recursionDepth = 2, float reflection = 0.3, float transparency = 0.3);
 	CMatrix<float> getCameraMatrix();
 	BVH* loadObj(std::string pathToObj, CVector<float> color, CVector<float> origin, CVector<float> angles = CVector<float>(3,0), CVector<float> movement = CVector<float>(3,0));
+	BVH* loadObj2(string pathToObj, CVector<float> color, std::vector< CVector<float>  > originVec, int count);
 
 	CVector<float> getColorForRay(CVector<float> origin, CVector<float> direction, int recurionDepth);
 	CVector<float> Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency);

@@ -491,6 +491,93 @@ BVH* SceneGraph::loadObj(string pathToObj, CVector<float> color, CVector<float> 
 	return bvh2;
 }
 
+BVH* SceneGraph::loadObj2(string pathToObj, CVector<float> color, std::vector< CVector<float>  > originVec, int count){
+	vector< Triangle* > triangles;
+	for(int i = 0; i < count; i++){
+		CVector<float> origin = originVec.at(i);
+		//file load
+		std::vector<QString> text;
+		ifstream file;
+		file.open(pathToObj.c_str());
+		if (file) {
+			while (!file.eof()) {
+				string buffer;
+				getline(file, buffer);
+				text.push_back(QObject::tr(buffer.c_str()));
+			}
+			file.close();
+		} else {
+			cout << "cant open file \"" << pathToObj << "\"";
+		}
+
+		vector< CVector<float> > vertices;
+		vertices.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
+		vector< CVector<float> > normals;
+		normals.push_back(CVector<float>(3,0));//damit ab 1 gezählt werden kann
+
+		for(int i = 0; i < text.size(); i++){
+			if(text.at(i).size() < 2)
+				continue;//too short
+
+			//vertex
+			if(text.at(i)[0] == 'v' && !(text.at(i)[1] == 't') && !(text.at(i)[1] == 'n')){
+				QStringList list = text.at(i).split(" ");
+				float nums[3];
+				int ind = 0;
+				for(int j = 1; j < list.size() && ind < 3; j++){
+					if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+						continue;
+					nums[ind] = list.at(j).toFloat();
+					ind++;
+				}
+				vertices.push_back(myUtil::color(nums[0],nums[1],nums[2])+origin);
+			}
+
+			//texture coordinate
+			if(text.at(i)[0] == 'v' && text.at(i)[1] == 't'){
+				//TODO if needed
+			}
+
+			//normal
+			if(text.at(i)[0] == 'v' && text.at(i)[1] == 'n'){
+				QStringList list = text.at(i).split(" ");
+				float nums[3];
+				int ind = 0;
+				for(int j = 1; j < list.size() && ind < 3; j++){
+					if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+						continue;
+					nums[ind] = list.at(j).toFloat();
+					ind++;
+				}
+				normals.push_back(myUtil::PosHom(nums[0],nums[1],nums[2]));
+			}
+
+			//triangle
+			if(text.at(i)[0] == 'f'){
+				QStringList list = text.at(i).split(" ");
+				float verts[3];
+				float norms[3];
+				int ind = 0;
+				for(int j = 1; j < list.size() && ind < 3; j++){
+					if(list.at(j).toStdString() == " " || list.at(j).toStdString() == "  " || list.at(j).size() == 0)
+						continue;
+					QStringList list2 = list.at(j).split("/");
+					verts[ind] = list2[0].toInt();
+					norms[ind] = list2[2].toInt();
+					++ind;
+				}
+	//			objects.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normals.at(norms[0]), normals.at(norms[1]), normals.at(norms[2]), color));
+				triangles.push_back(new Triangle(vertices.at(verts[0]), vertices.at(verts[1]), vertices.at(verts[2]), normals.at(norms[0]), normals.at(norms[1]), normals.at(norms[2]), color));
+			}
+		}
+	}
+	BVH* bvh2 = new BVH(triangles);
+	cout << "build one BVH" << endl;
+	cout << endl;
+	objects.push_back(bvh2);
+	return bvh2;
+}
+
 CVector<float> SceneGraph::Recursion(CVector<float> color, CVector<float> originPoint, CVector<float> oldViewingDirection, CVector<float> normal, int recursionDepth, float reflection, float transparency){
 	if(color.size() != 9)
 		cerr << "Recursion: Color doesn't have 9 dimensions!" << endl;
@@ -701,6 +788,52 @@ void SceneGraph::loadScene(int scene){
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(0.3,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			addLightSource(Light(myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
 			objects.push_back(new Sphere(0.35, myUtil::PosHom(0,0.2,0.2), myUtil::color(255,0,0),0,0,"lines2.png"));
+			break;
+		case 6:
+		{
+			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
+			std::vector< CVector<float> > origins;
+			origins.push_back(myUtil::PosHom(0,2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
+			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,1);
+		}
+		break;
+		{
+		case 7:
+			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
+			std::vector< CVector<float> > origins;
+			origins.push_back(myUtil::PosHom(0,2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
+			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,2);
+		}
+		break;
+		case 8:
+		{
+			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
+			std::vector< CVector<float> > origins;
+			origins.push_back(myUtil::PosHom(0,2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
+			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
+			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
+			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,4);
+		}
+		break;
+		case 9:
+			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
+			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
+			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+			addLightSource(Light(myUtil::PosHom(-0.5,2.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+			objects.push_back(new Sphere(1.4, myUtil::PosHom(0.6,0,-2), myUtil::color(255, 0, 0), 0,0.8,"earth.jpg"));
+			objects.push_back(new Sphere(1.6, myUtil::PosHom(-0.6,1.75,-0.5), myUtil::color(255, 128, 0),0.8,0));
+			objects.push_back(new Sphere(1.5, myUtil::PosHom(0.1,0.9,2.3), myUtil::color(255, 0, 255),0,0,"earth.jpg"));
+			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.4,"tile.jpg"));
 		break;
 	}
 }
