@@ -82,6 +82,10 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	scene.addItem("table scene with duck");
 	scene.addItem("ground only");
 	scene.addItem("empty");
+	scene.addItem("1 Sphere");
+	scene.addItem("2 Spheres");
+	scene.addItem("4 Spheres");
+	scene.addItem("new Spheres");
 	if (automation) {
 		scene.setCurrentIndex(3);
 	} else {

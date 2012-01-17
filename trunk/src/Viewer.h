@@ -47,7 +47,7 @@ private:
 	QProgressBar progress;
 	RayTracer* core;
 	QImage image;
-	static const bool presentation = true;
+	static const bool presentation = false;
 	bool automation;
 	QApplication* appPtr;
 //	void draw();

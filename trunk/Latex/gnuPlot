@@ -1,0 +1,8 @@
+set terminal png
+set output "KDTimes.png"
+set title "Skalierung"
+set xlabel "Dreiecke"
+set ylabel "Zeit in Sekunden"
+set xtics 19800
+set ytics (6,53,419)
+plot "times.txt" with lines notitle

@@ -93,6 +93,11 @@ Hierbei ist $N$ die Normale am Objekt, $L$ die Richtung in welcher die Lichtquel
 \subsection*{Schatten}
 \subsection*{Punktlichtquellen und gerichtete Beleuchtung}
 Erweitert man obiges Modell um eine Prüfung ob die entsprechenden Lichtquellen gesehen werden, so kann man leicht Schatten erzeugen. Hierzu wird bei einer Punktlichtquelle ein Strahl vom Punkt des Objektes, dessen Farbe soeben bestimmt wird, zur Lichtquelle geschickt und überprüft ob dieser auf dem Weg zum Licht ein Objekt trifft, ist dies der Fall so wird das Licht nicht gesehen. Handelt es sich um eine gerichtete Beleuchtung so darf kein Objekt in diese Richtung liegen, egal in welchem positivem Abstand.
+\begin{center}
+ \includegraphics[width=0.6\textwidth]{s_m_16.png}\\
+\end{center}
+TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über scahtten.
+
 
 \subsection*{Texturen}
 Statt an einem Kollisionspunkt eines Strahles mit einem Objekt eine Objekt globale Farbe zurückzugeben kann diese auch aus einer Textur gelesen werden. Bei Drei- und Vierecken ist dies am einfachsten, da man hier die Baryzentrische Koordinaten bereits bei der Kollisionsberechnung ermittelt und diese direkt zum Zugriff auf ein Bild verwenden kann. Bei Kugeln bedarf es einer aufwendigeren Berechnung des Punktes auf der Kugel in Koordinaten des Bildes.
@@ -137,7 +142,7 @@ Bild mit $640 \times 480$ Pixeln:\\
 		\multicolumn{4}{l}{Bilder mit jeh einem Strahl pro Pixel und einer Auflösung von $64 \times 48$:}\\
 		\includegraphics[width=0.24\textwidth]{r_m_1.png}&\includegraphics[width=0.24\textwidth]{s_m_1.png}&\includegraphics[width=0.24\textwidth]{p_m_1.png}&\includegraphics[width=0.24\textwidth]{h_m_1.png}\\
 		\multicolumn{4}{l}{Bilder mit jeh 9 Strahlen pro Pixel und einer Auflösung von $64 \times 48$:}\\
-		\includegraphics[width=0.24\textwidth]{r_m_9.png}&\includegraphics[width=0.24\textwidth]{s_m_9.png}&\includegraphics[width=0.24\textwidth]{p_m_9.png}&\includegraphics[width=0.24\textwidth]{h_m_9.png}\\
+		\includegraphics[width=0.24\textwidth]{r_m_4.png}&\includegraphics[width=0.24\textwidth]{s_m_4.png}&\includegraphics[width=0.24\textwidth]{p_m_4.png}&\includegraphics[width=0.24\textwidth]{h_m_4.png}\\
 	\end{tabular}
 	}
 \end{center}
@@ -146,6 +151,11 @@ Zu sehen sind hier von links nach rechts: Random Sampling, Stratifeid Sampling, 
 Hier noch mehr Vergleiche, aber lieber mit 4 rays/pixel\\
 \\
 Ende Text.\\
+
+\begin{center}
+\includegraphics[width=0.45\textwidth]{s_m_16_areaPixel.png} \includegraphics[width=0.45\textwidth]{s_m_16_area1.png}\\
+\end{center}
+TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über verwaschen.
 
 \section*{Beschleunigung der Schnittpunktberechnung}
 Zur Beschleunigung der Schnittpunktberechnung mit komplexeren Objekten eignen sich neben den oben genannten Boundingvolumes hierarchische Zerlegungen der zu zeichnenden Objekte oder des Zeichenraumes. In dieser Implementierung wurden die Objekte zerlegt. Hierzu wurde eine kd-Baum ähnliche Boundingvolumen-Hierarchie implementiert. Diese zerteilt rekursiv das zu zeichnende Objekt in je zwei Teil-Hierarchien.
@@ -159,15 +169,19 @@ Des Weiteren wurde getestet wie die Laufzeit bei Verwendung von zusätlichen Prim
 \begin{center}
 \includegraphics[width=0.32\textwidth]{KD1.png} \includegraphics[width=0.32\textwidth]{KD2.png} \includegraphics[width=0.32\textwidth]{KD4.png}\\
 \end{center}
-Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 10, 12 bzw 15 Sekunden. $\left[\mbox{ANPASSEN!}\right]$\\
+Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 6, 53 bzw 419 Sekunden. $\left[\mbox{ANPASSEN!}\right]$\\
 \begin{center}
-\includegraphics[width=0.32\textwidth]{KDTimes.png}\\
+\includegraphics[width=0.5\textwidth]{KDTimes.png}\\
 \end{center}
 Trägt man diese Zeiten in ein Diagram ein so kann ein anähernd logarithmisches Verhalten in der Anzahl der Primitiven vermutet werden. $\left[\mbox{ANPASSEN!}\right]$\\
 
 \section*{Zusätzliche Funktionalität}
 \subsection*{Reflektionen und Transparenz}
-Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei weitere Strahlen so kann man einfache Transparenz und Reflektionen erzeugen. Hierzu wird ein Strahl in Reflektionsrichtung und ein Strahl durch das Objekt gesendet. Je nach Gewichtung der drei entstehenden Farben ensteht der Anschein von Reflektionen oder Transparenz.
+Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei weitere Strahlen so kann man einfache Transparenz und Reflektionen erzeugen. Hierzu wird ein Strahl in Reflektionsrichtung und ein Strahl durch das Objekt gesendet. Je nach Gewichtung der drei entstehenden Farben ensteht der Anschein von Reflektionen oder Transparenz.\\
+\begin{center}
+\includegraphics[width=0.9\textwidth]{picture_37.png}\\
+\end{center}
+TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über reflektion auch auf boden und transparenz.
 
 \subsection*{Bump-Mapping}
 Ähnlich wie bei der Verwendung von Texturen zur Bestimmung der Farbe können Grauwertbilder auch zur Modifikation der Objektnormale verwendet werden. Durch die neue Normale werden Licht- und Schattenefekte erzeugt die den Eindruck von Struktur auf einer glatten Fläche vermitteln.Links ein Bild ohne eine Bump-Map, rechts mit:\\
@@ -181,6 +195,10 @@ Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei 
 Ein Eindruck des implementierten Programmes:\\
 \begin{center}
 \includegraphics[width=0.9\textwidth]{GUI.png}
+\end{center}
+TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über szene, refl, trans bump, 2lichter, 2+polygone.
+\begin{center}
+\includegraphics[width=0.9\textwidth]{s_m_4_r6.png}\\
 \end{center}
 
 \section*{Quellen}

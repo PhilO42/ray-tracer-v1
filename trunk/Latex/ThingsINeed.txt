@@ -1,0 +1,10 @@
+o 1,2,4 Ducks
+o 1,2,4 duckTimesPlot
+o bumpMap, noBumpMap
+o empty {}_m_4:64x48
+o coole Bilder:
+o erde
+o szene mit tisch
+o ...
+o sphereMapping Formel = http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
+o Lampe PolygonCount = 840
