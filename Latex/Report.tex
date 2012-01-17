@@ -3,6 +3,7 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage[ngerman]{babel}
 \usepackage{graphicx}
+\usepackage{url}
 
 \usepackage{geometry}
 \geometry{a4paper, top=25mm, left=25mm, right=25mm, bottom=25mm, headsep=10mm, footskip=12mm}
@@ -96,8 +97,7 @@ Erweitert man obiges Modell um eine Prüfung ob die entsprechenden Lichtquellen g
 \begin{center}
  \includegraphics[width=0.6\textwidth]{s_m_16.png}\\
 \end{center}
-TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über scahtten.
-
+Im obigen Bild sind neben einer texturierten Kugel insbesondere Schatten zu sehen. Diese entstehen dadurch dass die Kugeln das Licht der weißen Lichtquelle (über der Erdkugel) sowie das eines gerichteten Lichtes von schräg oben rechts nicht auf die weiße Fläche durchlassen. So entstehen durch das Ausbleiben von Licht zwei unterschiedlich dunkle Schattenregionen.
 
 \subsection*{Texturen}
 Statt an einem Kollisionspunkt eines Strahles mit einem Objekt eine Objekt globale Farbe zurückzugeben kann diese auch aus einer Textur gelesen werden. Bei Drei- und Vierecken ist dies am einfachsten, da man hier die Baryzentrische Koordinaten bereits bei der Kollisionsberechnung ermittelt und diese direkt zum Zugriff auf ein Bild verwenden kann. Bei Kugeln bedarf es einer aufwendigeren Berechnung des Punktes auf der Kugel in Koordinaten des Bildes.
@@ -141,21 +141,17 @@ Bild mit $640 \times 480$ Pixeln:\\
 		\includegraphics[width=0.24\textwidth]{n_b_1.png}&&&\\
 		\multicolumn{4}{l}{Bilder mit jeh einem Strahl pro Pixel und einer Auflösung von $64 \times 48$:}\\
 		\includegraphics[width=0.24\textwidth]{r_m_1.png}&\includegraphics[width=0.24\textwidth]{s_m_1.png}&\includegraphics[width=0.24\textwidth]{p_m_1.png}&\includegraphics[width=0.24\textwidth]{h_m_1.png}\\
-		\multicolumn{4}{l}{Bilder mit jeh 9 Strahlen pro Pixel und einer Auflösung von $64 \times 48$:}\\
+		\multicolumn{4}{l}{Bilder mit je 4 Strahlen pro Pixel und einer Auflösung von $64 \times 48$:}\\
 		\includegraphics[width=0.24\textwidth]{r_m_4.png}&\includegraphics[width=0.24\textwidth]{s_m_4.png}&\includegraphics[width=0.24\textwidth]{p_m_4.png}&\includegraphics[width=0.24\textwidth]{h_m_4.png}\\
 	\end{tabular}
 	}
 \end{center}
-Zu sehen sind hier von links nach rechts: Random Sampling, Stratifeid Sampling, Poisson Sampling und Halton Sampling jeweils mit Mitchell Rekonstruktion. Es ist gut zu erkennen das da Auftreten und Ausbleiben der Lininen beim Random Sampling mit einem Strahl pro Pixel sehr zufällig ist und diese beim Halton Sampling bereits konsistenter Auftreten oder Ausbleiben. Mit mehreren Strahelmn pro Pixel verschwimmen die Lininen bei allen Verfahren.\\
-\\
-Hier noch mehr Vergleiche, aber lieber mit 4 rays/pixel\\
-\\
-Ende Text.\\
+Zu sehen sind hier von links nach rechts: Random, Stratified, Poisson und Halton Sampling jeweils mit Mitchell Rekonstruktion. Es ist gut zu erkennen das das Auftreten und Ausbleiben der Lininen beim Random Sampling mit einem Strahl pro Pixel sehr zufällig ist und diese beim Halton Sampling bereits konsistenter Auftreten oder Ausbleiben. Mit mehreren Strahlen pro Pixel gehen bei allen Verfahren weniger der Lininen verloren, diese verschwimmen jedoch auch je kleiner die Struktur wird. Mit nur einem Strahl pro Pixel erzeugen das Random sowie das Poisson Sampling noch die meißten der fluchtenden Linien. Mit 4 Strahlen können das Stratified und das Halton Sampling am besten mit diesen Lininen umgehen.\\
 
 \begin{center}
 \includegraphics[width=0.45\textwidth]{s_m_16_areaPixel.png} \includegraphics[width=0.45\textwidth]{s_m_16_area1.png}\\
 \end{center}
-TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über verwaschen.
+In diesen Zwei Bildern soll der Effekt des Aliasing aufgezeigt werden. So entstehen im linken Bild an den Polen und Seiten der Kugel Strukturen welche nicht erwünscht sind. Im rechten Bild wurden zusätzlich berechnete Farbwerte von Positionen der angrenzender acht Pixel bei der Berechnung der Farbe des zentralen Pixels beachtet. So verschwimmen die Strukturen leicht und der Effekt des Aliasing wird reduziert.
 
 \section*{Beschleunigung der Schnittpunktberechnung}
 Zur Beschleunigung der Schnittpunktberechnung mit komplexeren Objekten eignen sich neben den oben genannten Boundingvolumes hierarchische Zerlegungen der zu zeichnenden Objekte oder des Zeichenraumes. In dieser Implementierung wurden die Objekte zerlegt. Hierzu wurde eine kd-Baum ähnliche Boundingvolumen-Hierarchie implementiert. Diese zerteilt rekursiv das zu zeichnende Objekt in je zwei Teil-Hierarchien.
@@ -169,11 +165,11 @@ Des Weiteren wurde getestet wie die Laufzeit bei Verwendung von zusätlichen Prim
 \begin{center}
 \includegraphics[width=0.32\textwidth]{KD1.png} \includegraphics[width=0.32\textwidth]{KD2.png} \includegraphics[width=0.32\textwidth]{KD4.png}\\
 \end{center}
-Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 6, 53 bzw 419 Sekunden. $\left[\mbox{ANPASSEN!}\right]$\\
+Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 6, 53 bzw 419 Sekunden.\\
 \begin{center}
 \includegraphics[width=0.5\textwidth]{KDTimes.png}\\
 \end{center}
-Trägt man diese Zeiten in ein Diagram ein so kann ein anähernd logarithmisches Verhalten in der Anzahl der Primitiven vermutet werden. $\left[\mbox{ANPASSEN!}\right]$\\
+Trägt man diese Zeiten in ein Diagram ein so muss ein anähernd quadratisches Verhalten in der Anzahl der Primitiven vermutet werden. Dies ist der Fall da TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT scheiß Implementation.
 
 \section*{Zusätzliche Funktionalität}
 \subsection*{Reflektionen und Transparenz}
@@ -181,7 +177,7 @@ Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei 
 \begin{center}
 \includegraphics[width=0.9\textwidth]{picture_37.png}\\
 \end{center}
-TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über reflektion auch auf boden und transparenz.
+Dieses Bild soll den Effekt von Reflektionen und Transparenz aufzeigen. So ist die hintere Kugel eigentlich orange, da sie jedoch zu 80\% reflektiert, bildet sie die Umgebung ab. Der Boden reflektiert zu ebenfalls leicht und läßt so die Kugeln erahnen. In der reflektierenden Kugel ist auch zu erkennen, dass die zwei Erdkugeln auf Grund ihrer vorhandenn oder nicht vorhandenen Transparenz unterschiedlich stark zu erkennen sind.
 
 \subsection*{Bump-Mapping}
 Ähnlich wie bei der Verwendung von Texturen zur Bestimmung der Farbe können Grauwertbilder auch zur Modifikation der Objektnormale verwendet werden. Durch die neue Normale werden Licht- und Schattenefekte erzeugt die den Eindruck von Struktur auf einer glatten Fläche vermitteln.Links ein Bild ohne eine Bump-Map, rechts mit:\\
@@ -194,20 +190,33 @@ TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT 
 
 Ein Eindruck des implementierten Programmes:\\
 \begin{center}
-\includegraphics[width=0.9\textwidth]{GUI.png}
+\includegraphics[width=0.85\textwidth]{GUI.png}
 \end{center}
-TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT über szene, refl, trans bump, 2lichter, 2+polygone.
 \begin{center}
-\includegraphics[width=0.9\textwidth]{s_m_4_r6.png}\\
+\includegraphics[width=0.85\textwidth]{s_m_4_r6.png}\\
+\end{center}
+Die obere Szene besteht aus zwei triangulierten Dreiecken, der Ente mit 10432 und der Lampe mit 840 Dreiecken, je einer reflektierenden, transparenten sowie einer normalen Kugel, texturierten Flächen sowie reflektierenden Zylindern. In der Szene sind vor allem an den Wänden Schatten von zwei Lichtquellen, einer in der Lampe sowie einer unter dem Tisch zu erkennen. Der Boden erhält seine Struktur mit Hilfe von Bump-Mapping.\\
+Im unteren Bild sind ähnliche Objekte zu erkennen, wobei das Wasser unter Anwendung einer transparenten, reflektierenden, texturierten Fläche entstanden ist.
+\begin{center}
+\includegraphics[width=0.9\textwidth]{picture_67.png}\\
 \end{center}
 
 \section*{Quellen}
 \subsection*{C++Mathe-Bibliothek}
-Für die hier verwendete Mathematik wurde die in dieser Implementierung die Mathebibliothek des Lehrstuhles für Mustererkennung und Bildverarbeitung von Prof. Brox verwendet. Copyright: Prof. Brox
+Für die hier verwendete Mathematik wurde die in dieser Implementierung die Mathebibliothek des Lehrstuhles für Mustererkennung und Bildverarbeitung von Prof. Brox verwendet.\\
+Copyright: Prof. Brox (\url{http://lmb.informatik.uni-freiburg.de})
 
 \subsection*{Weiterer Code}
 Jeglicher weiterer Code wurde persönlich angefertigt. Qt und C++ wurden verwendet.
 
 \subsection*{Texturen und Modelle}
-
+\textbf{Modelle:}\\
+\url{http://www.oyonale.com/modeles.php?lang=en&page=53}\\
+\textbf{Texturen:}\\
+\url{http://fc03.deviantart.com/fs26/i/2008/042/e/d/Local_Texture__Three_by_One_by_Beyond_Oddities.jpg}\\%holz
+\url{http://www.seos-project.eu/modules/landuse/images/2_earth_2400_960.jpg}\\%erde
+\url{http://free-images-etc.rb-d.com/wp-content/uploads/IMG_9203.jpg}\\%boden
+\url{http://upload.wikimedia.org/wikipedia/commons/8/8e/Solna_Brick_wall_Stretcher_bond_variation1.jpg}\\%wand
+\url{http://4.bp.blogspot.com/-TNdnCVil1zE/TdbRmBO2L4I/AAAAAAAAAGE/ZGBehf57dQ0/s1600/Water_Texture_by_Wisdoms_Pearl07.jpg}\\%wasser
+\url{http://www.malertv.de/wp-content/uploads/2009/12/DSCF9223.jpg}\\%decke
 \end{document}
