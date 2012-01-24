@@ -4,5 +4,5 @@ set title "Skalierung"
 set xlabel "Dreiecke"
 set ylabel "Zeit in Sekunden"
 set xtics 19800
-set ytics (6,53,419)
+set ytics (6,8.833,11.639)
 plot "times.txt" with lines notitle
