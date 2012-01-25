@@ -189,7 +189,7 @@ Ein kd-Baum zerlegt eine das komplette Objekt umschließende AABB mit Hilfe versc
 \end{center}
 Des Weiteren wurde getestet wie die Laufzeit bei Verwendung von zusätlichen Primitiven skaliert. So wurden verschieden viele Instanzen des selben Objektes in ein und die selbe Datenstruktur integriert.\\
 \begin{center}
-\includegraphics[width=0.32\textwidth]{KD1.png} \includegraphics[width=0.32\textwidth]{KD2.png} \includegraphics[width=0.32\textwidth]{KD4.png}\\
+\includegraphics[width=0.24\textwidth]{KD1.png} \includegraphics[width=0.24\textwidth]{KD2.png} \includegraphics[width=0.24\textwidth]{KD3.png} \includegraphics[width=0.24\textwidth]{KD4.png}\\
 \end{center}
 Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 6, 53 bzw 419 Sekunden.\\
 \begin{center}
@@ -198,7 +198,7 @@ Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 6, 53 bzw
 Trägt man diese Zeiten in ein Diagram ein so muss ein anähernd quadratisches Verhalten in der Anzahl der Primitiven vermutet werden. Dies ist der Fall da TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT scheiß Implementation.
 
 \mysection{Zusätzliche Funktionalität}
-\mysubsection{Reflektionen und Transparenz}
+\mysubsection{Reflektionen und einfache Transparenz}
 Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei weitere Strahlen so kann man einfache Transparenz und Reflektionen erzeugen. Hierzu wird ein Strahl in Reflektionsrichtung und ein Strahl durch das Objekt gesendet. Je nach Gewichtung der drei entstehenden Farben ensteht der Anschein von Reflektionen oder Transparenz.\\
 \begin{center}
 \includegraphics[width=0.9\textwidth]{picture_37.png}\\
