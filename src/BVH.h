@@ -22,6 +22,7 @@ public:
 	CVector<float> collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans);
 	CVector<float> getCenter();
 	virtual ~BVH();
+	void printCount();
 private:
 	AABB boundingBox;
 	bool isLeaf;

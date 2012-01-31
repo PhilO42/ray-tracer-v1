@@ -168,6 +168,18 @@ CVector<float> Sphere::getColor(CVector<float> collisionPoint){//in globalen wer
     int b = (int)(v*image.height());
     a += image.width()/2.0;
     a = a % image.width();
+    if(a != a)
+    	a = 0;
+    if(b != b)
+    	b = 0;
+    if(a < 0)
+    	a = 0;
+    if(a >= image.width())
+    	a = image.width()-1;
+    if(b < 0)
+    	b = 0;
+    if(b >= image.height())
+    	b = image.height()-1;
     QRgb col = image.pixel(a,b);
 	return myUtil::color9D(qRed(col),qGreen(col),qBlue(col),qRed(col),qGreen(col),qBlue(col),qRed(col),qGreen(col),qBlue(col));
 }

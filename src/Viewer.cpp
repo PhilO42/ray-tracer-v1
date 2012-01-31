@@ -41,14 +41,14 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     core = new RayTracer(&img, presentation, width, height, argc, argv);
 
     //Buttons
-    QPushButton button1("Save Image",0);
-    QPushButton button2("Draw Image",0);
-    QPushButton button4("Draw Lightvisibility",0);
-    QPushButton button3("Debug",0);
+    QPushButton button1("Save image",0);
+    QPushButton button2("Draw image",0);
+    //QPushButton button4("Draw lightvisibility",0);
+    //QPushButton button3("Debug",0);
     QObject::connect(&button1, SIGNAL(clicked()), this, SLOT(saveImage()));
     QObject::connect(&button2, SIGNAL(clicked()), this, SLOT(draw()));
-    QObject::connect(&button3, SIGNAL(clicked()), core, SLOT(debug()));
-    QObject::connect(&button4, SIGNAL(clicked()), core, SLOT(seeTheLightMap()));
+    //QObject::connect(&button3, SIGNAL(clicked()), core, SLOT(debug()));
+    //QObject::connect(&button4, SIGNAL(clicked()), core, SLOT(seeTheLightMap()));
     QObject::connect(core, SIGNAL(getSamplingMethod()), this, SLOT(getSamplingMethod()));
     QObject::connect(core, SIGNAL(setProgress(int)), this, SLOT(setProgress(int)));
     QObject::connect(core, SIGNAL(saveImage()), this, SLOT(saveImage()));
@@ -59,34 +59,35 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
     //buttonGrid.addItem(new QSpacerItem(10,10),0,0);
     buttonGrid.addWidget(&button2);
     buttonGrid.addWidget(&button1);
-    buttonGrid.addWidget(&button4);
-    buttonGrid.addWidget(&button3);
+    //buttonGrid.addWidget(&button4);
+    //buttonGrid.addWidget(&button3);
 
     //RenderingOptions
     QLabel textSampling("Choose a sampling method:");
-    listSampling.addItem("Standart Sampling");
-    listSampling.addItem("Random Sampling");
-    listSampling.addItem("Stratified Sampling");
-    listSampling.addItem("Poisson Sampling");
-    listSampling.addItem("Halton Sampling");
+    listSampling.addItem("Standard sampling");
+    listSampling.addItem("Random sampling");
+    listSampling.addItem("Stratified sampling");
+    listSampling.addItem("Poisson sampling");
+    listSampling.addItem("Halton sampling");
     listSampling.setCurrentRow(0);
     listSampling.setSelectionMode(QAbstractItemView::SingleSelection);
     if(automation)
     	listSampling.setCurrentRow(3);//3
     QLabel textScene("Choose scene:");
-    scene.addItem("4 spheres");
-    scene.addItem("axis");
+    scene.addItem("Earth and shadows");
+    scene.addItem("Sphere with small pattern");
     buttonGrid.addWidget(&textScene);
     buttonGrid.addWidget(&scene);
-    scene.addItem("table scene");
-	scene.addItem("table scene with duck");
-	scene.addItem("ground only");
-	scene.addItem("empty");
-	scene.addItem("1 Sphere");
-	scene.addItem("2 Spheres");
-	scene.addItem("4 Spheres");
-	scene.addItem("new Spheres");
+    scene.addItem("Table scene");
+	scene.addItem("Table scene with duck");
+	scene.addItem("Ground only");
+	scene.addItem("Close sphere");
+	scene.addItem("Two earths");
 	scene.addItem("Pool");
+	scene.addItem("4 spheres");
+	scene.addItem("8 spheres");
+	scene.addItem("12 spheres");
+	scene.addItem("16 spheres");
 	if (automation) {
 		scene.setCurrentIndex(3);
 	} else {
@@ -99,8 +100,8 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 
     //ReconstructionOptions
     QLabel textReconstruction("Choose a reconstruction method:");
-    listReconstruction.addItem("Box Rekonstruktion");
-    listReconstruction.addItem("Mitchell Rekonstruktion");
+    listReconstruction.addItem("Box reconstruction");
+    listReconstruction.addItem("Mitchell reconstruction");
     if(automation)
     	listReconstruction.setCurrentIndex(1);
     //buttonGrid.addItem(new QSpacerItem(5,5),8,0);
@@ -130,7 +131,7 @@ Viewer::Viewer(QApplication* app, int argc, char *argv[]) {
 	if(automation)
 		recurs.setCurrentIndex(5);//5
 	if(!presentation){
-		buttonGrid.addWidget(new QLabel("Recursion Depth:"));
+		buttonGrid.addWidget(new QLabel("Recursion depth:"));
 		buttonGrid.addWidget(&recurs);
 	}
     progress.setRange(0,100);
@@ -213,27 +214,27 @@ void Viewer::setProgress(int val){
 char Viewer::getSamplingMethod(){
 	switch (listSampling.currentRow()) {
 		case 0:
-			cout << "Standart Sampling" << endl;
+			cout << "Standard sampling" << endl;
 			return 'n';
 			break;
 		case 1:
-			cout << "Random Sampling" << endl;
+			cout << "Random sampling" << endl;
 			return 'r';
 			break;
 		case 2:
-			cout << "Stratified Sampling" << endl;
+			cout << "Stratified sampling" << endl;
 			return 's';
 			break;
 		case 3:
-			cout << "Poisson Sampling" << endl;
+			cout << "Poisson sampling" << endl;
 			return 'p';
 			break;
 		case 4:
-			cout << "Halton Sampling" << endl;
+			cout << "Halton sampling" << endl;
 			return 'h';
 			break;
 		default:
-			cout << "Default Sampling (sorry)" << endl;
+			cout << "Default sampling (sorry)" << endl;
 			break;
 	}
 	return 'n';
@@ -242,15 +243,15 @@ char Viewer::getSamplingMethod(){
 char Viewer::getReconstructionMethod(){
 	switch (listReconstruction.currentIndex()) {
 		case 0:
-			cout << "Box Reconstruction" << endl;
+			cout << "Box reconstruction" << endl;
 			return 'b';
 			break;
 		case 1:
-			cout << "Mitchell Reconstruction" << endl;
+			cout << "Mitchell reconstruction" << endl;
 			return 'm';
 			break;
 		default:
-			cout << "Default Reconstruction (sorry)" << endl;
+			cout << "Default reconstruction (sorry)" << endl;
 			break;
 	}
 	return 'b';
