@@ -37,9 +37,10 @@ public:
 	static CMatrix<float> Rx(float angle);
 	static CMatrix<float> Ry(float angle);
 	static CMatrix<float> Rz(float angle);
+	std::vector<SceneObject*> objects;
 private:
 	std::vector<Light> lightSources;
-	std::vector<SceneObject*> objects;
+
 	CMatrix<float> cameraMatrix;
 	CMatrix<float> inverseCameraMatrix;
 	CMatrix<float> origin;

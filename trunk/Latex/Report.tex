@@ -10,12 +10,28 @@
 \geometry{a4paper, top=25mm, left=25mm, right=25mm, bottom=25mm, headsep=10mm, footskip=12mm}
 
 \begin{document}
+\pagestyle{empty}
 \begin{titlepage}
-\author{Autor}
-\title{Implementierung eines einfachen Raytracers \\ ~ \\ ~ \\ \includegraphics[width=0.8\textwidth]{finish.png} \\ ~ \\ ~ \\ ~ \\ Praktikum WS 2011/12}
-\author{Philipp Ruchti}
+\begin{center}
+~\\
+~\\
+~\\
+~\\
+~\\
+~\\
+\Huge{Implementierung eines Raytracers}\\
+~\\
+~\\
+~\\
+\includegraphics[width=0.8\textwidth]{finish.png}\\
+~\\
+~\\
+~\\
+\Large{Praktikum WS 2011/12}\\
+\Large{Philipp Ruchti}\\
+\normalsize
+\end{center}
 \end{titlepage}
-\maketitle
 \newpage
 \tableofcontents
 \newpage
@@ -61,18 +77,21 @@
 %deutsch, teX, grammar!!!!, typos!!!!\\
 %\newpage
 \setcounter{section}{-1}
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}
 \mysection{Einleitung}
-Im Verlaufe dieses Praktikums wurde ein einfacher Raytracer implementiert, welcher die grundlegenden Funktionalitäten bietet eine 3D-Szene abzubilden. Im folgenden werden die dafür verwendeten Techniken kurz erläutert und einige Ergebnisbilder gezeigt. Es wird hierbei ein besonder Augenmerk auf die in der Implementierung umgesetzten Methoden und Verfahren gelegt.\\
-Im ersten Kapitel wird einleitend diskutiert was einen Raytracer ausmacht. Danach werden in Kapitel 2 benötigte Transformationen und eine geeignete Notation eingeführt. Mit Hilfe dieser Transformationen lassen sich Objekte in einem einheitlichem Koordinatensystem plazieren. In Kapitel 3 werden die mathematischen Vorgehen besprochen, welche benötigt werden um Strahlen mit Objekten zu schneiden. Im folgenden vierten Kapitel wird die Lichtberechnung beschrieben, welche an den ermittelten Strahl-Objekt Schnittpunkten, zur Farbbestimmung, ausgewertet wird. In den Kapiteln 5 und 6 werden Sampling und Rekonstruktion besprochen um auch feine Strukturen darstellen zu können. Diese Methoden werden anschließend in Kapitel 7 evaluiert. In Kapitel 8 wird eine Datenstruktur zur Beschleunigung der Schnittpunktberechnung besprochen. In Kapitel 9 werden Reflektionen, einfache Transparenz und Bump-Mapping vorgestellt, Methoden welche ein Bild realistischer erscheinen lassen. Im letzten Kapitel sollen einige Ergebnisbilder gezeigt und beschrieben werden.
+Im Verlaufe dieses Praktikums wurde ein Raytracer implementiert, welcher die grundlegenden Funktionalitäten bietet eine 3D-Szene abzubilden. Im Folgenden werden die dafür verwendeten Techniken kurz erläutert und einige Ergebnisbilder gezeigt. Es wird hierbei ein besonderes Augenmerk auf die in der Implementierung umgesetzten Methoden und Verfahren gelegt.\\
+Im ersten Kapitel werden einleitend die Besonderheiten eines Raytracers diskutiert. Danach werden in Kapitel 2 benötigte Transformationen und eine geeignete Notation eingeführt. Mit Hilfe dieser Transformationen lassen sich Objekte in einem einheitlichen Koordinatensystem platzieren. In Kapitel 3 werden die mathematischen Vorgehen besprochen, welche benötigt werden um Strahlen (engl. \textit{rays}) mit Objekten zu schneiden. Im folgenden vierten Kapitel wird die Lichtberechnung beschrieben, welche an den ermittelten Strahl-Objekt Schnittpunkten zur Farbbestimmung ausgewertet wird. In den Kapiteln 5 und 6 werden Sampling und Rekonstruktion besprochen um auch feine Strukturen darstellen zu können. Diese Methoden werden anschließend in Kapitel 7 evaluiert. In Kapitel 8 wird eine Datenstruktur zur Beschleunigung der Schnittpunktberechnung besprochen. In Kapitel 9 werden Reflektionen, einfache Transparenz und Bump-Mapping vorgestellt, Methoden welche ein Bild realistischer erscheinen lassen. Im letzten Kapitel sollen einige Ergebnisbilder gezeigt und beschrieben werden.
 
-\mysection{Raytracing}
-Bei der Erstellung eines Bildes mit Hilfe von Rasterisierung, wie man es beispielsweise von OpenGL kennt werden die Vertices einer 3D-Szene mit Hilfe einer Projektionsmatrix auf eine Bildfläche projiziert und mit Hilfe dieser die Farbe eines Bildpunktes bestimmt. Beim Raytracing werden im Gegensatz hierzu Strahlen von der Kamera durch die Bildfläche geschickt und diese mit der 3D-Szene geschnitten. Diese Technik bietet die Möglichkeit auch Reflektionen, Schatten und viele andere Lichteffekte darzustellen. Im Gegensatz zur ersten Technik bietet Raytracing die Möglichkeit realistischere Bilder einer 3D-Szene zu berechnen ist jedoch rechenaufwendiger.
+\mysection{Raytracer}
+Bei der Erstellung eines Bildes mit Hilfe von Rasterisierung, wie man es beispielsweise von OpenGL kennt, werden die Vertices einer 3D-Szene mit Hilfe einer Projektionsmatrix auf eine Bildfläche projiziert und mit Hilfe dieser die Farbe eines Bildpunktes bestimmt. Beim Raytracing werden im Gegensatz hierzu Strahlen von der Kamera durch die Bildfläche geschickt und diese mit der 3D-Szene geschnitten. Diese Technik bietet die Möglichkeit auch Reflektionen, Schatten und viele andere Lichteffekte darzustellen. Im Gegensatz zur ersten Technik bietet Raytracing die Möglichkeit realistischere Bilder einer 3D-Szene zu erzeugen, ist jedoch rechenaufwendiger.
 
 \mysection{Transformationen}
 In diesem Kapitel wird zuerst die homogene Notation beschrieben. Anschließend werden die für den Raytracer verwendeten Transformationen erklärt. Diese werden benötigt um Objekte und Kamera in die korrekte Position zu bringen.
 
 \mysubsection{Homogene Notation}
-Um 3D-Positionen und Verschiebungen zu repräsentieren eignet sich die sogenannte homogene Notation. Hierzu werden 3D-Vektoren um eine vierte Komponente $w$ erweitert. Ein homogener Punkt $(x,y,z,w)$ repräsentiert hierbei den euklydischen Punkt $(\frac{x}{w}, \frac{y}{w}, \frac{z}{w})$. Diese vierte Komponente $w$ beschreibt eine Skalierung des Vektors. Punkte haben als 4.Komponente einen Wert $w \neq 0$. Vektoren welche eine 4. Komponente $w = 0$ aufweisen sind Richtungen, welchen eine unendliche Länge aufweisen und sich nicht verschieben lassen. Mit dieser Notation ist es möglich mit Hilfe von 4x4-Transformatrizen Punkte und Vektoren zu rotiern sowie Punkte zu verschieben. Eine Matrix $\mathbf{M}$ die einen Punkt mit einer Rotationsmatrix $\mathbf{R}$ rotiert und um $(x,y,z)$ verschiebt sieht homogen wie folgt aus:
+Um 3D-Positionen und Richtungsvektoren zu repräsentieren und zu unterscheiden eignet sich die sogenannte homogene Notation. Hierzu werden 3D-Vektoren um eine vierte Komponente $w$ erweitert. Richtungsvektoren erhalten hierbei eine 4. Komponente $w = 0$, Positionen erhalten als 4. Komponente $w \neq 0$. Diese vierte Komponente $w$ beschreibt eine Skalierung des Vektors. Ein homogener Punkt $(x,y,z,w)$ repräsentiert hierbei den euklidischen Punkt $(\frac{x}{w}, \frac{y}{w}, \frac{z}{w})$. Ist $w = 0$ so handelt es sich um einen Richtungsvektor, welcher eine unendliche Länge aufweist und sich nicht verschieben läßt. Mit Hilfe dieser Notation ist es möglich mit 4x4-Transformatrizen Positionen und Richtungsvektoren zu rotieren sowie Positionen zu verschieben. Eine Matrix $\mathbf{M}$, die einen Punkt mit einer Rotationsmatrix $\mathbf{R}$ rotiert und um $(x,y,z)$ verschiebt, sieht homogen wie folgt aus:
 
 \[
 \begin{array}{ccc}
@@ -89,59 +108,59 @@ Um 3D-Positionen und Verschiebungen zu repräsentieren eignet sich die sogenannte
 \]	 
 
 \mysubsection{Platzierung von Objekten und der Kamera}
-Um Objekte auf ein Bild abzubilden müssen sich alle Objekte und die Kamera in einem einheitlichem Koordinatensystem befinden. Hierzu werden zwei Arten von Transformationen benötigt, die erste ist die Model-Transformation, die zweite die View-Transformation. Die Model-Transformation transformiert die Modelle oder Objekte vom Objekt eigenem ins globale Koordinatensystem, sie verschiebt die Objekte an ihre Stelle in der Welt. Die zweite Transformation bringt alle Objekte in das Koordinatensystem der Kamera, so dass diese an der richtigen Stelle gesehen werden.
-Um Objekte und Kamera platzieren und verschieben zu können verwendet man homogene Matrizen. Man erhält das gleiche Ergebnis wenn man im zweiten Schritt die Kamera in einer Richtung bewegt, oder alle Objekte in die entgegengesetzte Richtung bewegt, da für die Sicht in die Szene lediglich die relative Position von Kamera und Objekten eine Rolle spielt.
-Um die Verwendung von AABBs zu vereinfachen wurde in dieser Implementierung die Kamera verschoben, beziehungsweise wurden die Strahlen nach Berechnung aus dem Ursprung mit Hilfe einer Transformationsmatrix in kanonische Richtung verschoben und rotiert.
+Um Objekte auf ein Bild abzubilden müssen sich alle Objekte und die Kamera in einem einheitlichen Koordinatensystem befinden. Hierzu werden zwei Arten von Transformationen benötigt, die erste ist die Model-Transformation, die zweite die View-Transformation. Die Model-Transformation transformiert die Objekte vom objekteigenen ins globale Koordinatensystem, sie verschiebt diese an ihre Stelle in der Welt. Die zweite Transformation bringt alle Objekte in das Koordinatensystem der Kamera, so dass diese an der richtigen Stelle gesehen werden.
+Um Objekte und Kamera platzieren und verschieben zu können, verwendet man homogene Matrizen. Man erhält das selbe Ergebnis, wenn man im zweiten Schritt die Kamera in einer Richtung oder alle Objekte in die entgegengesetzte Richtung bewegt, da für die Sicht in die Szene lediglich die relative Position von Kamera und Objekten eine Rolle spielt.
+Um die Verwendung von AABBs (siehe weiter unten) zu vereinfachen, wurde in dieser Implementierung die Kamera verschoben. Hierzu wurden die Strahlen nach Berechnung aus dem Ursprung mit Hilfe einer Transformationsmatrix in kanonische Richtung verschoben und rotiert.
 
-\mysection{Strahlen - Objekt Schnittpunkt}
-Um Objekte in einem Raytracer anzeigen zu können müßen Schnittpunkte von Strahlen (engl. \textit{rays}) mit den unterschiedlichen Objekten berechnet werden. Hierbei ist in der Regel lediglich der erste Schnittpunkt auf einem Strahl von Interesse. Hierbei sind die Verfahren um diese Schnittpunkte zu ermitteln je nach Objekt unterschiedlich.
+\mysection{Strahlen-Objekt Schnittpunkte}
+Um Objekte in einem Raytracer anzeigen zu können, müssen Schnittpunkte von Strahlen mit den unterschiedlichen Objekten berechnet werden. Hierbei ist in der Regel lediglich der erste Schnittpunkt auf einem Strahl von Interesse. Die Verfahren um diese Schnittpunkte zu ermitteln sind je nach Objekt unterschiedlich.
 
-\mysubsection{Implizite Oberflächen: hier Kugeln und Zylinder}
-Implizite Oberflächen werden durch mathematische Gleichungen $f(x,y,z)$ beschrieben, welche für alle Punkt die auf der Oberfläche liegen $f(x,y,z) = 0$ ergeben. Für Kugeln benötigt man hierzu lediglich den Mittelpunkt der Kugel, sowie einen Radius. Die Punkte $\left\{x,y,z\right\}$ welche die Gleichung
-\[f(x,y,z) = (x-u)^2 + (v-v)^2 + (z-w)^2 - r = 0\]
-erfüllen bilden die Oberfläche einer Kugel mit Radius $r$ und Mittelpunkt $\left\{u,v,w\right\}$. In dieser Arbeit wurden des weiteren Zylinder als Implizite Oberflächen implementiert. Auch hier kann die Oberfläche auf eine solche Weise beschrieben werden. 
+\mysubsection{Implizite Oberflächen: Hier Kugeln und Zylinder}
+Implizite Oberflächen werden durch mathematische Funktionen $f(x,y,z)$ beschrieben, welche für alle Punkte, die auf der Oberfläche liegen, $f(x,y,z) = 0$ ergeben. Für Kugeln benötigt man hierzu lediglich den Mittelpunkt der Kugel, sowie den Radius. Die Punkte $(x,y,z)$, welche die Gleichung
+\[f(x,y,z) = (x-u)^2 + (y-v)^2 + (z-w)^2 - r^2 = 0\]
+erfüllen, bilden die Oberfläche einer Kugel mit Radius $r$ und Mittelpunkt $(u,v,w)$. In dieser Arbeit wurden des Weiteren Zylinder als implizite Oberflächen implementiert. Auch hier kann die Oberfläche auf eine solche Weise beschrieben werden. 
 
-\mysubsection{Parametrische Oberflächen: hier Drei- und Vierecke}
-Parametrische Oberflächen sind Oberflächen für welche zur Berechnung der Oberflächenpunkte ein lineares Gleichungssystem gelöst werden muss. Für Dreiecke liegen die Punkte eines Strahles $o+t\cdot d$ welche die Gleichung
+\mysubsection{Parametrische Oberflächen: Hier Drei- und Vierecke}
+Zur Berechnung der Punkte von parametrischen Oberflächen muss ein lineares Gleichungssystem gelöst werden. Für Dreiecke liegen die Punkte eines Strahles $o+t\cdot d$, welche die Gleichung
 \[o+t\cdot d = (1 - b_1 - b_2)p_0 + b_1*p_1 + b_2*p_2\]
-unter der Bedingung $b_1 \geq 0$ und $b_2 \geq 0$ und $b_1 + b_2 \leq 1$ erfüllen auf der Oberfläche dieses. Hierbei ist $o$ der Startpunkt und $d$ die Richtung des Strahls. Für Vierecke ändert sich lediglich der letzte Teil der Bedingung zu $b_1 < 0$ und $b_2 < 0$.
+unter den Bedingungen $b_1 \geq 0$, $b_2 \geq 0$ und $b_1 + b_2 \leq 1$ erfüllen, auf der Oberfläche dieser. Hierbei ist $o$ der Startpunkt und $d$ die Richtung des Strahls. Für Vierecke ändert sich lediglich die letzte Bedingung zu $b_1 < 1$ und $b_2 < 1$.
 
 \mysubsection{AABBs}
-Zur Beschleunigung der Schnittpunktberechnung kann um komplexere Objekte ein Boundingvolume gelegt werden. Die Kollisionsberechnung mit diesem ist hierbei einfach und schnell zu berechnen und so müssen Strahlen, die das Boundingvolume nicht treffen nicht mit jedem Objekt des Inhaltes getestet werden. In der hier vorliegenden Implementierung wurden Axis-Aligned-Boundingboxes implementiert. Zur Kollisionsprüfung werden so genannte \textit{slabs} berechnet, Intervalle entlang einer Achse. Mit Hilfe dieser \textit{slabs} läßt sich feststellen ob die Linie das Boundingvolume schneidet.
+Zur Beschleunigung der Schnittpunktberechnung kann um komplexere Objekte ein Boundingvolumen gelegt werden. Die Kollisionsberechnung mit diesem ist hierbei einfach und schnell zu berechnen und so müssen Strahlen, die das Boundingvolumen nicht treffen, nicht mit jedem Objekt des Inhaltes getestet werden. In der hier vorliegenden Implementierung wurden Axis-Aligned-Boundingboxen implementiert. Zur Kollisionsprüfung werden so genannte \textit{slabs} berechnet. Mit Hilfe dieser Kollisions-Intervalle entlang der Hauptachsen lässt sich feststellen, ob die Linie das Boundingvolumen schneidet.
 
 \mysection{Phong Shading und Phong Beleuchtungsmodell}
-In diesem Kapitel wird erklärt, wie an einem ermittelten Strahl-Objekt Schnittpunkt die Farbe bestimmt wird. Dazu wird zuerst das Phong Beleuchtungsmodell erklärt. Anschließend wird beschrieben wie Schatten entstehen und wie die Farbe eines Objektes anhand einer Textur bestimmt werden kann.
+In diesem Kapitel wird erklärt, wie an einem ermittelten Strahl-Objekt Schnittpunkt die Farbe bestimmt werden kann. Dazu wird zuerst das Phong Beleuchtungsmodell erklärt. Anschließend wird beschrieben wie Schatten entstehen und wie die Farbe eines Objektes anhand einer Textur bestimmt werden kann.
 
 \mysubsection{Phong}
-Trift ein Strahl ein Objekt so wird an diesem Punkt zur Berechnung der "`gesehenen"' Objektfarbe sowohl die Farbe des Objektes beachtet als auch die Beleuchtung mit Hilfe der verschiedenen Lichtquellen und deren Farben berechnet, dies übernimmt das Beleuchtungsmodell. Hierbei entsteht das Licht aus drei verscheidenen Komponenten. Die erste Komponente ist hierbei das ambiente Umgebungslicht, die zweite ist das diffuse Richtungslicht, die dritte ist das spekulare Glanzlicht. Für die Berechnung des hier verwendeten Beleuchtungsmodells wird neben dem Kollisionpunkt auch die Normale $N$ des Punktes benötigt, dieses wird beim Phong Beleuchtungsmodell über das Objekt interpoliert. Zur Berechnung der Farbe werden sowohl die entsprechenden Komponenten der Farbe des Objektes $\mbox{Farbe}_{\mbox{Lichtart}}$ verwendet als auch die entsprechenden Farbkomponenten $E_{\mbox{Lichtart}}$ der Lichtquelle. Die Beleuchtung an einem Punkt wird nach folgenden Formel berechnet:
-\[\mbox{Farbe} = \mbox{Farbe}_{\mbox{ambient}} \otimes E_{\mbox{ambient}} + \mbox{Farbe}_{\mbox{diffus}} \otimes E_{\mbox{diffus}} \cdot (N \cdot L) + \mbox{Farbe}_{\mbox{spekular}} \otimes E_{\mbox{spekular}} \cdot (R \cdot V)^m\]
-Hierbei ist $N$ die Normale am Objekt, $L$ die Richtung in welcher die Lichtquelle liegt $R$ die Reflektionsrichtung des Strahles sowie $V$ die Sichtrichtung auf das Objekt, also der Richtungsvektor des Strahles. $\otimes$ ist die komponentenweise Multiplikation der einzelnen Vektorwerte der Farben. $m$ beeinflusst die Größe der Glanzlichtanteile. Hat die Szene mehr als eine Lichtquelle so entsteht die resultierende Farbe als Durchschnitt aller Farbbeiträge der einzelnen Lichtquellen.
+Trifft ein Strahl ein Objekt, so wird an diesem Punkt zur Berechnung der "`gesehenen"' Farbe sowohl die Objektfarbe beachtet, als auch die Beleuchtung mit Hilfe der verschiedenen Lichtquellen und deren Farben berechnet. Diese Berechnung übernimmt das Beleuchtungsmodell. Hierbei entsteht das Licht aus drei verschiedenen Komponenten. Die erste Komponente ist hierbei das ambiente Umgebungslicht, die zweite ist das diffuse Richtungslicht, die dritte ist das spiegelnde Glanzlicht. Für die Berechnung des hier verwendeten Beleuchtungsmodells wird neben dem Kollisionspunkt auch die Normale $N$ des Punktes benötigt. Zur Berechnung der Farbe werden sowohl die entsprechenden Komponenten der Farbe des Objektes $\mbox{Farbe}_{\mbox{Lichtart}}$, als auch die entsprechenden Farbkomponenten $E_{\mbox{Lichtart}}$ der Lichtquelle verwendet. Die Beleuchtung an einem Punkt wird nach folgender Formel berechnet:
+\[\mbox{Farbe} = \mbox{Farbe}_{\mbox{ambient}} \otimes E_{\mbox{ambient}} + \mbox{Farbe}_{\mbox{diffus}} \otimes E_{\mbox{diffus}} \cdot (N \cdot L) + \mbox{Farbe}_{\mbox{spiegelnd}} \otimes E_{\mbox{spiegelnd}} \cdot (R \cdot V)^m.\]
+Hierbei ist $N$ die Normale am Objekt, $L$ die Richtung, in welcher die Lichtquelle liegt, $R$ die Reflektionsrichtung des Strahles sowie $V$ die Sichtrichtung auf das Objekt. $\otimes$ ist in diesem Fall die komponentenweise Multiplikation der einzelnen Vektorwerte. $m$ beeinflusst die Größe der Glanzlichtanteile. Hat die Szene mehr als eine Lichtquelle, so entsteht die resultierende Farbe als Durchschnitt aller Farbbeiträge der einzelnen Lichtquellen.
 
 \mysubsection{Lichtquellen und Schatten}
-Erweitert man obiges Modell um eine Prüfung ob die entsprechenden Lichtquellen gesehen werden, so kann man leicht Schatten erzeugen. Hierzu wird bei einer Punktlichtquelle ein Strahl vom Punkt des Objektes, dessen Farbe soeben bestimmt wird, zur Lichtquelle geschickt und überprüft, ob dieser auf dem Weg zum Licht ein Objekt trifft, ist dies der Fall so wird das Licht nicht gesehen. Handelt es sich um eine gerichtete Beleuchtung so darf kein Objekt in diese Richtung liegen.
+Erweitert man obiges Modell um eine Prüfung, ob die entsprechenden Lichtquellen gesehen werden, so kann man leicht Schatten erzeugen. Hierzu wird bei einer Punktlichtquelle ein Strahl vom Punkt des Objektes, dessen Farbe soeben bestimmt wird, zur Lichtquelle geschickt und überprüft, ob dieser auf dem Weg zum Licht ein Objekt trifft. Ist dies der Fall so wird das Licht nicht gesehen. Handelt es sich um eine gerichtete Beleuchtung so darf kein Objekt in dieser Richtung liegen.
 
 \mysubsection{Texturen}
-Statt an einem Kollisionspunkt eines Strahles mit einem Objekt eine Objekt globale Farbe zurückzugeben kann diese auch aus einer Textur gelesen werden. Bei Drei- und Vierecken ist dies am einfachsten, da man hier die Baryzentrische Koordinaten bereits bei der Kollisionsberechnung ermittelt und diese direkt zum Zugriff auf ein Bild verwenden kann. Bei Kugeln bedarf es einer aufwendigeren Umrechnung des Punktes auf der Kugel in Koordinaten des Bildes. Hierbei werden Längen- und Breitengrad des Punktes auf der Kugel ermittelt und mit Hilfe dieser auf die Textur zugegriffen \footnote{Siehe: \url{http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html}}.
+Statt an einem Kollisionspunkt eines Strahles mit einem Objekt eine objektglobale Farbe zurückzugeben, kann diese auch aus einer Textur gelesen werden. Bei Drei- und Vierecken ist dies am einfachsten, da man hier die baryzentrischen Koordinaten bereits bei der Kollisionsberechnung ermittelt und diese direkt zum Zugriff auf ein Bild verwenden kann. Bei Kugeln bedarf es einer aufwendigeren Umrechnung des Punktes auf der Kugel in Koordinaten des Bildes. Hierbei werden Längen- und Breitengrad des Kollsionspunktes ermittelt und mit Hilfe dieser auf die Textur zugegriffen \footnote{Siehe: \url{http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html}}.
 
 \begin{center}
  \includegraphics[width=0.6\textwidth]{s_m_16.png}\\
 \end{center}
-Im obigen Bild sind neben einer texturierten Kugel insbesondere Schatten zu sehen. Diese entstehen dadurch dass die Kugeln das Licht der weißen Lichtquelle (über der Erdkugel) sowie das eines gerichteten Lichtes von schräg oben rechts verdecken. So entstehen durch das Ausbleiben von Licht zwei unterschiedlich dunkle Schattenregionen.
+Im obigen Bild sind neben einer texturierten Kugel insbesondere Schatten zu sehen. Diese entstehen dadurch, dass die Kugeln das Licht der weißen Lichtquelle (über der Erdkugel) sowie das Licht einer gerichteten Lichtequelle von schräg oben rechts verdecken. So entstehen durch das Ausbleiben von Licht zwei unterschiedlich dunkle Schattenregionen auf der weißen Ebene.
 
 \mysection{Sampling}
-Durch wenige oder gar nur einen Strahl welche durch die Region eines Pixels gesendet werden kann es bei kleinen Objekten oder feinen Strukturen dazu kommen, dass diese nicht oder Falsch dargestellt werden. Diesen Effekt kann man dadurch umgehen, dass man mehr Strahlen durch ein Region sendet und aus diesen einen Farbwert für das Pixel rekonstruiert. Um den Effekt des Aliasings, bei welchem bei zu geringer Abtastrate bzw. Zahl der Strahlen, statt einer feinen Struktur Muster entstehen welche nicht vorhanden sind, zu reduzieren ist es zudem ratsam die Strahlen nicht geordnet anzulegen. Für diesen hier erstellten Raytracer wurden verschiedene Samplingmethoden zum Vergleich implementiert.
+Wird durch die Region eines Pixels nur ein Strahl gesendet, so kann es dazu kommen, dass kleine Objekte oder feine Strukturen falsch oder nicht dargestellt werden. Diesen Effekt kann man dadurch umgehen, dass man mehrere Strahlen durch die Region eines Pixels sendet und aus diesen einen Farbwert für dieses Pixel rekonstruiert. Um den Effekt des Aliasings zu reduzieren, bei welchem bei zu geringer Abtastrate bzw. Zahl der Strahlen pro Pixelregion statt einer feinen Struktur unerwünschte Muster entstehen, ist es zudem ratsam die Strahlen nicht geordnet anzulegen. Für diesen hier implementierten Raytracer wurden verschiedene Samplingmethoden implementiert.
 
 \mysubsection{Random Sampling}
-Beim Random Sampling werden durch die Region eines Pixel mehrere Strahlen gesendet, die Position dieser in der Pixelregion ist hierbei zufällig und kann so dazu führen, dass eine unregelmäßige Abdeckung verschiedener Bereiche des Pixels erfolgt.
+Die Position der Strahlen beim Random Sampling wird in der Pixelregion zufällig gewählt. Dies kann dazu führen, dass eine unregelmäßige Abdeckung verschiedener Bereiche des Pixels erfolgt.
 
 \mysubsection{Stratified Sampling}
-Beim Stratified Sampling wird die Pixelregion in mehrere regelmäßige \textit{Strata} eingeteilt, in jedem dieser Subregionen wird nun zufällig eine Position für einen Strahl ermittelt. Im Gegensatz zum Random Sampling verbessert sich die Abeckung der Pixelregion, da so keines der \textit{Strata} ohne Sample bleiben kann.
+Beim Stratified Sampling wird die Pixelregion in mehrere regelmäßige \textit{Strata} eingeteilt, in jedem dieser Subregionen wird nun zufällig eine Position für einen Strahl ermittelt. Im Gegensatz zum Random Sampling verbessert sich die Abdeckung der Pixelregion, da so keines der \textit{Strata} ohne Sample bleiben kann.
 
 \mysubsection{Poisson Sampling}
 Beim Poisson Sampling werden zufällig über die Pixelregion verteilt Orte gewählt, durch welche Strahlen gesandt werden sollen. Es werden jedoch nur solche Positionen verwendet, die zu ihren Nachbarn einen gewissen Mindestabstand aufweisen. So wird die Häufung der Strahlen an einer Stelle reduziert.
 
 \mysubsection{Halton Sampling}
-Das ausgeklügeletste Sampling-Verfahren welches in dieser Arbeit implementiert wurde ist das sogenannte Halton Sampling. Bei diesem Verfahren wird die Missverteilung des Positionen für die Strahlen minimiert. Hierzu werden sowohl die X- als auch die Y-Komponenten der Position des Strahles anhand einer Hammerlesy Sequenz gewählt. Eine Hammerlesy Sequenz liefert Werte welche das Intervall zwischen 0 und 1 zu jedem Zeitpunkt möglichst gleichverteilt abgedecken. Mit diesem Verfahren wird gewährleistet das der Bereich des Pixels möglichst gleichmäßig abgedeckt wird.
+Das ausgeklügeltste Samplingverfahren, welches in dieser Arbeit implementiert wurde, ist das sogenannte Halton Sampling. Bei diesem Verfahren wird die Fehlverteilung der Positionen für die Strahlen minimiert. Hierzu werden sowohl die x- als auch die y-Komponenten der Position des Strahles anhand einer Hammersley Sequenz gewählt. Eine Hammersley Sequenz liefert Werte, welche das Intervall zwischen 0 und 1 zu jedem Zeitpunkt möglichst gleichverteilt abdecken. Mit diesem Verfahren wird gewährleistet, dass der Bereich des Pixels möglichst gleichmäßig abgedeckt wird.
 
 \newpage
 \mysubsection{Ergebnisse der verschiedenen Sampling Methoden}
@@ -149,19 +168,19 @@ Das ausgeklügeletste Sampling-Verfahren welches in dieser Arbeit implementiert w
 \includegraphics[width=0.45\textwidth]{random.png} \includegraphics[width=0.45\textwidth]{stratified.png}\\
 \includegraphics[width=0.45\textwidth]{poisson.png} \includegraphics[width=0.45\textwidth]{halton.png}\\
 \end{center}
-In obigen Bildern sind die von den verschieden Verfahren berechneten Positionen für Strahlen innerhalb eines Pixels dargestellt. Von oben links nach unten rechts: Random Sampling, Stratified Sampling, Poisson Sampling, Halton Sampling (mit $p_1 = 2$, $p_2 = 7$). Zusätlich wurden die Positionen auch auf die X- und Y-Achse projiziert, so das einfacher ersichtlich ist ob die Region des Pixels in beiden Dimensionen ausreichend und gleichverteilt abgedeckt wird. Es ist hierbei sofort ersichtlich, dass beim Random Sampling das die Region nicht gleichmäßig abgedeckt wird. Bei Stratified und Poisson Sampling wird die Region sehr viel gleichmäßiger abgedeckt. Im letzten Bild ist auf den Achsen die Hammerlesy Sequenz gut zu erkennen.
+In den obigen Bildern sind die von den verschieden Verfahren berechneten Positionen für Strahlen innerhalb eines Pixels dargestellt. Von oben links nach unten rechts: Random Sampling, Stratified Sampling, Poisson Sampling, Halton Sampling (mit $p_1 = 2$, $p_2 = 7$). Zusätzlich wurden die Positionen auch auf die x- und y-Achse projiziert, so dass einfacher ersichtlich ist, ob die Region des Pixels in beiden Dimensionen ausreichend und gleichverteilt abgedeckt wird. Es ist hierbei sofort ersichtlich, dass beim Random Sampling die Region nicht gleichmäßig abgedeckt wird. Bei Stratified und Poisson Sampling wird die Region sehr viel gleichmäßiger abgedeckt. Im letzten Bild ist auf den Achsen die Hammersley Sequenz gut zu erkennen.
 
 \mysection{Rekonstruktion}
-Um aus den Farbwerten, welche die verschiedenen Strahlen im Bereich um die Pixelmitte berechnen haben, einen konsistenten Farbwert zu wählen bedarf es einer Rekonstruktionstechnik. Diese Rekonstruktionstechnik gewichtet die Farbwerte anhand eines Kernels $f(d)$. Hierbei ist $d$ der Abstand der Sample-Position zur Pixelmitte.
+Um aus den Farbwerten, welche die verschiedenen Strahlen im Bereich um die Pixelmitte berechnet haben, einen konsistenten Farbwert zu wählen, bedarf es einer Rekonstruktionstechnik. Diese Rekonstruktionstechnik gewichtet die Farbwerte anhand eines Kernels $f(d)$ und summiert diese auf. Hierbei ist $d$ der Abstand der Sampleposition zur Pixelmitte. Nachfolgend werden zwei verschiedene Samplingverfahren vorgestellt.
 
 \mysubsection{Box Rekonstruktion}
-Ein einfaches Rekonstruktionsverfahren ist die Box-Rekonstruktion. Diese gewichtet alle Farbwerte gleich: $f(d) = \frac{1}{N}$. Hierbei ist $N$ die Anzahl der Samples welche für dieses Pixel beachtet werden. Es wird also ein Mittelwert über alle vorhandenen Farbwerte gebildet.
+Ein einfaches Rekonstruktionsverfahren ist die Box Rekonstruktion. Diese gewichtet alle Farbwerte gleich: $f(d) = \frac{1}{N}$. Hierbei ist $N$ die Anzahl der Samples, welche für dieses Pixel beachtet werden. Es wird also ein Mittelwert über alle vorhandenen Farbwerte gebildet.
 
 \mysubsection{Mitchell Rekonstruktion}
-Die Mitchell Rekonstruktion gewichtet die Farbwerte mit einer Standart-Normalverteilung ihres Abstandes zum Pixelzentrum: $f(d) = \frac{1}{N} \cdot \frac {1}{\sqrt{2\pi}}  e^{-\frac {d^2}{2}}$. Hierbei ist $N$ wieder die Anzahl der Samples welche beachtet werden. Durch dieses Verfahren werden Farbwerte die nah an der Pixelmitte liegen stärker gewichtet.
+Die Mitchell Rekonstruktion gewichtet die Farbwerte mit einer Standart-Normalverteilung ihres Abstandes zum Pixelzentrum: $f(d) = \frac{1}{N} \cdot \frac {1}{\sqrt{2\pi}}  e^{-\frac {d^2}{2}}$. Hierbei ist $N$ wieder die Anzahl der Samples, welche beachtet werden und $d$ der Abstand zur Pixelmitte. Durch dieses Verfahren werden Farbwerte, die nah an der Pixelmitte liegen, stärker gewichtet.
 
-\mysection{Vergleich verschiedener Sampling- und Rekonstruktionstechniken}
-In diesem Kapitel sollen die oben erwähnten Sampling- und Rekonstruktionsverfahren evaluiert werden. Hierzu wurde ein Bild mit normaler Auflösung erstellt. Dieses wird nun mit Bildern der selben Szene vergleichen welche mit einer sehr viel geringeren Auflösung erstellt wurden. Es wird hierbei geprüft wie gut diese Bilder das Vergleichsbild rekonstruieren.
+\mysection{Vergleich von Sampling- und Rekonstruktionstechniken}
+In diesem Kapitel sollen die oben erwähnten Sampling- und Rekonstruktionsverfahren evaluiert werden. Hierzu wurde ein Bild mit normaler Auflösung erstellt. Dieses wird nun mit Bildern der selben Szene vergleichen, welche mit einer sehr viel geringeren Auflösung erstellt wurden. Es wird hierbei geprüft wie gut diese Bilder das Vergleichsbild rekonstruieren.
 
 \begin{center}
 \resizebox{\textwidth}{!}{
@@ -170,65 +189,65 @@ In diesem Kapitel sollen die oben erwähnten Sampling- und Rekonstruktionsverfahr
 		\includegraphics[width=0.24\textwidth]{n_b_1.png}&&&\\
 		\multicolumn{4}{l}{Bilder mit je einem Strahl pro Pixel und einer Auflösung von $64 \times 48$ Pixeln:}\\
 		\includegraphics[width=0.24\textwidth]{r_m_1.png}&\includegraphics[width=0.24\textwidth]{s_m_1.png}&\includegraphics[width=0.24\textwidth]{p_m_1.png}&\includegraphics[width=0.24\textwidth]{h_m_1.png}\\
-		\multicolumn{4}{l}{Bilder mit je 4 Strahlen pro Pixel und einer Auflösung von $64 \times 48$ Pixeln:}\\
+		\multicolumn{4}{l}{Bilder mit je vier Strahlen pro Pixel und einer Auflösung von $64 \times 48$ Pixeln:}\\
 		\includegraphics[width=0.24\textwidth]{r_m_4.png}&\includegraphics[width=0.24\textwidth]{s_m_4.png}&\includegraphics[width=0.24\textwidth]{p_m_4.png}&\includegraphics[width=0.24\textwidth]{h_m_4.png}\\
 	\end{tabular}
 	}
 \end{center}
-Zu sehen sind hier von links nach rechts: Random, Stratified, Poisson und Halton Sampling jeweils mit Mitchell Rekonstruktion über die Region des entsprechenden Pixels. In der ersten Reihe ist gut zu erkennen das das Auftreten und Ausbleiben der Lininen beim Random Sampling mit einem Strahl pro Pixel sehr zufällig ist und diese beim Halton Sampling bereits konsistenter Auftreten oder Ausbleiben. Mit mehreren Strahlen pro Pixel gehen bei allen Verfahren weniger der Lininen verloren, diese verschwimmen jedoch auch je kleiner die Struktur wird. Mit nur einem Strahl pro Pixel erzeugen das Random sowie das Poisson Sampling noch die meißten der fluchtenden Linien. Mit 4 Strahlen können das Stratified und das Halton Sampling am besten mit diesen Lininen umgehen.\\
+Zu sehen sind hier von links nach rechts: Random, Stratified, Poisson und Halton Sampling jeweils mit Mitchell Rekonstruktion über die Region des entsprechenden Pixels. In der ersten Reihe ist gut zu erkennen, dass das Auftreten und Ausbleiben der Linien beim Random Sampling mit einem Strahl pro Pixel sehr zufällig ist. Die Linien treten beim Halton Sampling bereits konsistenter auf. Mit mehreren Strahlen pro Pixel (untere Reihe) gehen bei allen Verfahren weniger der Linien verloren. Die Linien verschwimmen jedoch auch je kleiner die Struktur wird. Mit nur einem Strahl pro Pixel erzeugen das Poisson sowie das Halton Sampling noch die meißten der horizontalen Linien. Mit vier Strahlen können das Stratified und das Halton Sampling am besten mit diesen Linien umgehen.\\
 
 \begin{center}
 \resizebox{\textwidth}{!}{
 	\begin{tabular}{cccc}
-	\multicolumn{4}{l}{Bilder mit je 4 Strahlen pro Pixel und unterschiedlicher Rekonstruktionsregionen:}\\
+	\multicolumn{4}{l}{Bilder mit je vier Strahlen pro Pixel und unterschiedlichen Rekonstruktionsregionen:}\\
 			\includegraphics[width=0.24\textwidth]{r_b_4_0.png}&\includegraphics[width=0.24\textwidth]{r_m_4_0.png}&\includegraphics[width=0.24\textwidth]{r_b_4_2.png}&\includegraphics[width=0.24\textwidth]{r_m_4_2.png}\\
 				\end{tabular}
 	}
 \end{center}
-Mit den obigen Bildern soll der Unterschied zwischen der Rekonstruktion über verschieden große Regionen pro Pixel aufgezeigt werden. Auch soll der Unterschied zwischen Box und Mitchell Rekonstruktion dargestellt werden. Die Bilder sind alle mit 4 Strahlen pro Pixel und Random Sampling erstellt worden. Es sind von links nach rechts zu sehen: Box Rekonstruktion über ein Pixel rekonstruiert, selbiges mit Mitchell Rekonstruktion, Box Rekonstruktion über vier Pixel und selbiges mit Mitchell Rekonstruktion. Man erkennt gut das die Rekonstruktion über eine größere Region das Bild stärker verschwimmen läßt. Auch ist gut erkenntlich, dass die Mitchell Rekonstruktion die Strukturen besser erhält, als dies mit der Box Rekonstruktion der Fall ist.
+Mit den obigen Bildern soll der Unterschied zwischen der Rekonstruktion über verschieden große Regionen pro Pixel aufgezeigt werden. Auch soll der Unterschied zwischen Box und Mitchell Rekonstruktion dargestellt werden. Die Bilder sind alle mit vier Strahlen pro Pixel und Random Sampling erstellt worden. Es sind von links nach rechts zu sehen: Box Rekonstruktion über ein Pixel rekonstruiert, selbiges mit Mitchell Rekonstruktion, Box Rekonstruktion über vier Pixel und selbiges mit Mitchell Rekonstruktion. Man erkennt gut, dass die Rekonstruktion über eine größere Region das Bild stärker verschwimmen lässt. Auch ist gut erkenntlich, dass die Mitchell Rekonstruktion die Strukturen besser erhält, als dies mit der Box Rekonstruktion der Fall ist.
 
 \begin{center}
 \includegraphics[width=0.45\textwidth]{s_m_16_areaPixel.png} \includegraphics[width=0.45\textwidth]{s_m_16_area1.png}\\
 \end{center}
-In obigen Bildern soll der Effekt des Aliasing und der Vorteil der Integration der Farbwerte angrenzender Pixel aufgezeigt werden. So entstehen im linken Bild, bei welchem nur Farbwerten der Region des eigenen Pixels verwendet wurden, an den Polen und Seiten der Kugel Strukturen welche nicht erwünscht sind. Im rechten Bild wurden zusätzlich berechnete Farbwerte aus Regionen der angrenzenden acht Pixel bei der Berechnung der Farbe des zentralen Pixels beachtet. So verschwimmen die Strukturen etwas und der Effekt des Aliasing wird reduziert.
+In obigen Bildern soll der Effekt des Aliasing und der Vorteil der Integration der Farbwerte angrenzender Pixel aufgezeigt werden. So entstehen im linken Bild, bei welchem nur Farbwerten der Region des eigenen Pixels verwendet wurden, an den Polen und Seiten der Kugel Strukturen, welche nicht erwünscht sind. Im rechten Bild wurden zusätzlich berechnete Farbwerte aus Regionen der angrenzenden acht Pixel bei der Berechnung der Farbe beachtet. So verschwimmen die Strukturen etwas und der Effekt des Aliasing wird reduziert.
 
 \mysection{Beschleunigung der Schnittpunktberechnung}
-Zur Beschleunigung der Schnittpunktberechnung mit komplexeren Objekten eignen sich neben den oben genannten Boundingvolumes hierarchische Zerlegungen der zu zeichnenden Objekte oder des Zeichenraumes. Hierzu wurde eine kd-Baum ähnliche Boundingvolumen-Hierarchie implementiert. Diese zerteilt rekursiv das zu zeichnende Objekt in je zwei Teil-Hierarchien.
+Zur Beschleunigung der Schnittpunktberechnung mit komplexeren Objekten eignen sich neben den oben genannten Boundingvolumen hierarchische Zerlegungen der zu zeichnenden Objekte oder des Zeichenraumes. Hierzu wurde eine k-d-Baum ähnliche Boundingvolumen-Hierarchie implementiert. Diese zerteilt rekursiv das zu zeichnende Objekt in je zwei Teilhierarchien.
 
-\mysubsection{kd-Baum-Hierarchie}
-Ein kd-Baum zerlegt eine das komplette Objekt umschließende AABB mit Hilfe verschiedener Ebenen rekursiv in zwei Teil kd-Bäume. Schneidet der Strahl einen solchen Teilbaum nicht, so kann dieser von der Schnittpunktberechnung komplett ausgeschlossen werden und so die Berechnung erheblich beschleunigt werden. Der kd-Baum trennt hierbei in wechselnder Reihenfolge das (Teil-)Objekt in Teilräume bezüglich einer zu einer der Achsen orthogonalen Ebene. Zur einfacheren Traversierung der Datenstruktur wurden statt die Teilbäume mit Hilfe einer Ebene zu trennen AABBs für die zwei Teil-Hierarchen berechnet und verwendet. So teilt auch die hier implementierte kd-Baum-Hierarchie das Objekt in oben genannter Weise in je zwei Teil-Hierarchien. Für beide Teileobjekte werden nun AABBs berechnet die alle Primitive umschließen. Durch diesen Trick kommt es dazu dass sich die AABBs zum Teil überlagern, jedes Primitiv aber nur in einem der zwei Teil-Hierarchen gespeichert werden muss. Wenn ein Strahl nun mit der Hierarchie geschnitten werden soll, so wird zuerst geprüft ob der Strahl die alles umschließende AABB schneidet, Wenn ja wird rekursiv jeweils geprüft mit welcher der zwei Teil-Hierarchien der Strahl schneidet. So können schnell große Teile des Objektes verworfen werden. In den Blättern der Struktur werden dann schlußendlich die dort gespeichrten Dreiecke mit dem Strahl auf Kollision geprüft.\\
-Um die Korrektheit der hier implementierten Datenstruktur zu überprüfen wurden folgende zwei Bilder gerendert. Die Lampe besteht hierbei aus 840 Dreiecken. Das linke Bild wurde hierbei ohne die Datenstruktur erstellt und benötigte 212 Sekunden zur Erstellung, das rechte Bild benötigte mit Datenstruktur lediglich 10 Sekunden. Beide Bilder weisen aber keinerlei Unterschiede auf.\\
+\mysubsection{K-d-Baum-Hierarchie}
+Ein k-d-Baum zerlegt eine, das komplette Objekt umschließende AABB, mit Hilfe verschiedener Ebenen rekursiv in zwei Teil-k-d-Bäume. Schneidet der Strahl einen solchen Teilbaum nicht, so kann dieser von der Schnittpunktberechnung komplett ausgeschlossen und so die Berechnung erheblich beschleunigt werden. Der k-d-Baum trennt hierbei in wechselnder Reihenfolge das (Teil-)Objekt in Teilräume bezüglich Ebenen, welche jeweils von zwei der Achsen aufgespannt werden. Zur einfacheren Traversierung der Datenstruktur wurden statt die Teilbäume mit Hilfe einer Ebene zu trennen AABBs für die zwei Teilhierarchien berechnet und verwendet. So teilt auch die hier implementierte k-d-Baum-Hierarchie das Objekt in oben genannter Weise in je zwei Teilhierarchien. Für beide Teileobjekte werden nun AABBs berechnet, die alle Objekte der Teilhierarchie umschließen. Durch diesen Trick kommt es dazu, dass sich die AABBs zum Teil überlagern, jedes Primitiv aber nur in einer der zwei Teilhierarchen gespeichert werden muss. Wenn ein Strahl nun mit der Hierarchie geschnitten werden soll, so wird zuerst geprüft, ob der Strahl die alles umschließende AABB schneidet. Wenn ja, wird jeweils rekursiv geprüft welche der zwei Teilhierarchien der Strahl schneidet. So können schnell große Teile der Primitive ausgeschlossen werden. In den Blättern der Struktur werden schlussendlich die dort gespeicherten Primitive mit dem Strahl auf Kollision geprüft.\\
+Um die Korrektheit der hier implementierten Datenstruktur zu überprüfen, wurden folgende zwei Bilder erzeugt. Die Lampe besteht hierbei aus 840 Dreiecken. Das linke Bild wurde hierbei ohne die Datenstruktur erstellt und benötigte 212 Sekunden zur Erstellung, das rechte Bild benötigte mit Datenstruktur lediglich 10 Sekunden. Beide Bilder weisen optisch aber keinerlei Unterschiede auf.\\
 \begin{center}
 \includegraphics[width=0.45\textwidth]{noKD.png} \includegraphics[width=0.45\textwidth]{KD.png}\\
 \end{center}
-Des Weiteren wurde getestet wie die Laufzeit bei Verwendung von zusätlichen Primitiven skaliert. So wurden verschieden viele Instanzen (je 480 Dreicke pro Objekt) des selben Objektes in ein und die selbe Datenstruktur integriert.\\
+Des Weiteren wurde getestet wie sich die Laufzeit bei Verwendung von zusätzlichen Primitiven verhält. So wurden verschieden viele Instanzen des selben Objektes (je 480 Dreiecke pro Objekt) in ein und die selbe Datenstruktur integriert.\\
 \begin{center}
 \includegraphics[width=0.24\textwidth]{KD1.png} \includegraphics[width=0.24\textwidth]{KD2.png} \includegraphics[width=0.24\textwidth]{KD3.png} \includegraphics[width=0.24\textwidth]{KD4.png}\\
 \end{center}
-Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 5, 15, 22 bzw 25 Sekunden. Beim Aufbau der Szenen wurde versucht die Region des Bildes möglichst gleichmäßig abzudecken.\\
+Hierbei benötigten die Bilder in der Erstellung von links nach rechts: 5, 15, 22 bzw. 25 Sekunden. Beim Aufbau der Szenen wurde versucht die Objekte möglichst gleichmäßig über das Bild zu verteilen.\\
 \begin{center}
 \includegraphics[width=0.5\textwidth]{KDTimes.png}\\
 \end{center}
-Trägt man diese Zeiten in ein Diagram ein so kann ein anähernd logarithmisches Verhalten in der Anzahl der Primitiven vermutet werden. Dieser Fakt deckt sich mit theoretischen Überlegungen, da es sich bei der Datenstruktur insbesondere um einen Binärbaum handelt. Da die Datenstruktur die Objekte immer in der Mitte der Anzahl der Dreicke teilt handelt es sich hierbei um einen bestmöglich balancierten Baum.
+Trägt man diese Zeiten in ein Diagramm ein, so kann ein annähernd logarithmisches Verhalten in der Anzahl der Primitiven vermutet werden. Diese Beobachtung deckt sich mit theoretischen Überlegungen, da es sich bei der Datenstruktur insbesondere um einen Binärbaum handelt. Da die Datenstruktur die Objekte immer in der Mitte der Anzahl der Primitive teilt, handelt es sich hierbei um einen best möglich balancierten Baum.
 
 \mysection{Zusätzliche Funktionalität}
 In diesem Kapitel werden drei einfache Methoden beschrieben um  das optische Resultat der Bilder zu verbessern.
 
 \mysubsection{Reflektionen und einfache Transparenz}
-Versendet man an einem Kollisionspukt eines Strahls mit der Szene rekursiv zwei weitere Strahlen so kann man einfache Transparenz und Reflektionen erzeugen. Hierzu wird ein Strahl in Reflektionsrichtung und ein Strahl durch das Objekt gesendet. Je nach Gewichtung der drei entstehenden Farben ensteht der Anschein von Reflektionen oder Transparenz.\\
+Versendet man an einem Kollisionspunkt eines Strahls mit der Szene rekursiv zwei weitere Strahlen, so kann man einfache Transparenz und Reflektionen erzeugen. Hierzu wird ein Strahl in Reflektionsrichtung und ein Strahl durch das Objekt gesendet. Je nach Gewichtung der drei entstehenden Farben entsteht der Anschein von Reflektionen oder Transparenz.\\
 \begin{center}
 \includegraphics[width=0.9\textwidth]{picture_37.png}\\
 \end{center}
-Dieses Bild soll den Effekt von Reflektionen und Transparenz aufzeigen. So ist die hintere Kugel eigentlich orange, da sie jedoch zu 80\% reflektiert, bildet sie statt dessen die Umgebung ab. Der Boden reflektiert ebenfalls leicht und läßt so die Kugeln erahnen. In der reflektierenden Kugel ist auch zu erkennen, dass die zwei Erdkugeln auf Grund ihrer vorhanden oder nicht vorhandenen Transparenz unterschiedlich abgedildet werden.
+Dieses Bild soll den Effekt von Reflektionen und Transparenz aufzeigen. So ist die mittlere Kugel eigentlich orange, da sie jedoch zu 80\% reflektiert, bildet sie statt dessen die Umgebung ab. Der Boden reflektiert ebenfalls leicht und lässt so die Kugeln erahnen. In der reflektierenden Kugel ist auch zu erkennen, dass die zwei Erdkugeln auf Grund ihrer vorhanden oder nicht vorhandenen Transparenz unterschiedlich abgebildet werden.
 
 \mysubsection{Bump-Mapping}
-Ähnlich wie bei der Verwendung von Texturen zur Bestimmung der Farbe von Objekten können Grauwertbilder zur Modifikation der Objektnormale verwendet werden. Durch die neue Normale werden Licht- und Schattenefekte erzeugt die den Eindruck von Struktur auf einer glatten Fläche vermitteln. Links ist ein Bild einer planaern Fläche ohne eine Bump-Map zu sehen, rechts das selbe Bild unter Verwendung einer Bump-Map. Man erkennt deutlich die Fugen des Bodens.\\
+Ähnlich der Verwendung von Texturen zur Bestimmung der Farbe von Objekten können Grauwertbilder zur Modifikation der Objektnormale verwendet werden. Durch die neue Normale werden Licht- und Schatteneffekte erzeugt, die den Eindruck von Struktur auf einer glatten Fläche vermitteln. Links ist ein Bild einer planaren, texturierten Fläche ohne eine Bump-Map zu sehen, rechts das selbe Bild unter Verwendung einer Bump-Map. Man erkennt deutlich die Fugen des Bodens.\\
 \begin{center}
 \includegraphics[width=0.45\textwidth]{noBump.png} \includegraphics[width=0.45\textwidth]{Bump.png}\\
 \end{center}
 
 \mysection{Ergebnisse}
-In diesem Kapitel sollen einige Ergebnisbilder vorgestellt und auf Besonderheiten und sichtbare Merkmale hingewiesen werden.\\
+In diesem Kapitel sollen einige Ergebnisbilder vorgestellt und auf Besonderheiten hingewiesen werden.\\
 Ein Eindruck des implementierten Programmes:\\
 \begin{center}
 \includegraphics[width=0.85\textwidth]{GUI.png}
@@ -236,7 +255,7 @@ Ein Eindruck des implementierten Programmes:\\
 \begin{center}
 \includegraphics[width=0.85\textwidth]{s_m_4_r6.png}\\
 \end{center}
-Die obere Szene besteht aus zwei triangulierten Objekten, der Ente mit 10432 und der Lampe mit 840 Dreiecken, je einer reflektierenden, transparenten sowie einer normalen Kugel, texturierten Flächen sowie reflektierenden Zylindern. In der Szene sind vor allem an den Wänden Schatten von zwei Lichtquellen, einer in der Lampe sowie einer unter dem Tisch zu erkennen. Der Boden erhält seine Struktur mit Hilfe einer Bump-Map.\\
+Die obere Szene besteht aus zwei triangulierten Objekten, der Ente mit 10432 und der Lampe mit 840 Dreiecken, je einer reflektierenden, transparenten sowie einer normalen Kugel, texturierten Flächen sowie reflektierenden Zylindern. In der Szene sind vor allem an den Wänden Schatten von zwei Lichtquellen, einer in der Lampe sowie einer unter dem Tisch, zu erkennen. Der Boden erhält seine Struktur mit Hilfe einer Bump-Map.\\
 Im unteren Bild sind ähnliche Objekte zu erkennen, wobei das Wasser unter Anwendung einer transparenten, reflektierenden, texturierten Fläche entstanden ist.
 \begin{center}
 \includegraphics[width=0.9\textwidth]{picture_67.png}\\
@@ -244,7 +263,7 @@ Im unteren Bild sind ähnliche Objekte zu erkennen, wobei das Wasser unter Anwend
 
 \mysection{Quellen}
 \mysubsection{C++Mathe-Bibliothek}
-Für die hier verwendete Mathematik wurde in dieser Implementierung die Mathebibliothek des Lehrstuhles für Mustererkennung und Bildverarbeitung von Prof. Brox verwendet.\\
+Für die hier verwendete Mathematik wurde in dieser Implementierung die Mathe-Bibliothek des Lehrstuhles für Mustererkennung und Bildverarbeitung von Prof. Brox verwendet.\\
 Copyright: Prof. Brox (\url{http://lmb.informatik.uni-freiburg.de})
 
 \mysubsection{Weiterer Code}

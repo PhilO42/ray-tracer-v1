@@ -789,43 +789,37 @@ void SceneGraph::loadScene(int scene){
 			addLightSource(Light(myUtil::PosHom(-0.5,2.7,0.0+0.5*sin(t)), CVector<float>(4,1), false, myUtil::color9D(0.4,0.4,0.4,0.5,0.5,0.5,2,2,2)));
 			objects.push_back(new Sphere(0.35, myUtil::PosHom(0,0.2,0.2), myUtil::color(255,0,0),0,0,"lines2.png"));
 			break;
-		case 6:
-		{
-			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
-			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
-			std::vector< CVector<float> > origins;
-			origins.push_back(myUtil::PosHom(0,2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
-			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,1);
-		}
-		break;
-		{
-		case 7:
-			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
-			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
-			std::vector< CVector<float> > origins;
-			origins.push_back(myUtil::PosHom(0,2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
-			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,2);
-		}
-		break;
 		case 8:
+		case 9:
+		case 10:
+		case 11:
 		{
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
 			std::vector< CVector<float> > origins;
-			origins.push_back(myUtil::PosHom(0,2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,2.5));
-			origins.push_back(myUtil::PosHom(0,2.5,-2.5));
-			origins.push_back(myUtil::PosHom(0,-2.5,-2.5));
-			loadObj2("models/sphere100x100.obj", myUtil::color(255,255,0), origins,4);
+			origins.push_back(myUtil::PosHom(2,2,3));//1,1
+			origins.push_back(myUtil::PosHom(2,-0.75,1));//2,3
+			origins.push_back(myUtil::PosHom(2,-2,-1));//3,4
+			origins.push_back(myUtil::PosHom(2,0.75,-3));//4,2
+
+			origins.push_back(myUtil::PosHom(2,-0.75,3));//1,3
+			origins.push_back(myUtil::PosHom(2,0.75,1));//2,2
+			origins.push_back(myUtil::PosHom(2,2,-1));//3,1
+			origins.push_back(myUtil::PosHom(2,-2,-3));//4,4
+
+			origins.push_back(myUtil::PosHom(2,-2,3));//1,4
+			origins.push_back(myUtil::PosHom(2,2,1));//2,1
+			origins.push_back(myUtil::PosHom(2,0.75,-1));//3,2
+			origins.push_back(myUtil::PosHom(2,-0.75,-3));//4,3
+
+			origins.push_back(myUtil::PosHom(2,0.75,3));//1,2
+			origins.push_back(myUtil::PosHom(2,-2,1));//2,4
+			origins.push_back(myUtil::PosHom(2,-0.75,-1));//3,3
+			origins.push_back(myUtil::PosHom(2,2,-3));//4,1
+			loadObj2("models/sphere32x32.obj", myUtil::color(255,255,0), origins,(scene-7)*4);
 		}
 		break;
-		case 9:
+		case 6:
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,0,0), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
 			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
 			addLightSource(Light(myUtil::PosHom(-0.5,-1,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
@@ -835,10 +829,10 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Sphere(1.5, myUtil::PosHom(0.1,0.9,2.3), myUtil::color(255, 0, 255),0,0,"earth.jpg"));
 			objects.push_back(new Plane(myUtil::PosHom(8,-4.25,-14), myUtil::PosHom(-8,-4.25,-14), myUtil::PosHom(8,-4.25,14),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0.4,"tile.jpg"));
 		break;
-		case 10:
+		case 7:
 			inverseCameraMatrix = InverseCameraMatrix(myUtil::PosHom(5,4,2), myUtil::PosHom(0,0,0), myUtil::PosHom(0,1,0));
-			addLightSource(Light(myUtil::PosHom(5.2,0,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
-			addLightSource(Light(myUtil::PosHom(-0.5,4.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
+			addLightSource(Light(myUtil::PosHom(10,2,0), CVector<float>(4,1), false, myUtil::color9D(0.5,0.5,0.5,0.4,0.4,0.4,0.1,0.1,0.1)));
+			addLightSource(Light(myUtil::PosHom(1.5,4.7,1.5), CVector<float>(4,1), false, myUtil::color(0.9,0.9,0.9)));
 			objects.push_back(new Box(myUtil::PosHom(0,0.5,-5.5), myUtil::PosHom(12,1,1), myUtil::color(1,1,12),0,0,"wood.jpg"));
 			objects.push_back(new Box(myUtil::PosHom(5.5,0.5,0), myUtil::PosHom(1,1,10), myUtil::color(1,12,1),0,0,"wood.jpg"));
 			objects.push_back(new Box(myUtil::PosHom(0,0.5,5.5), myUtil::PosHom(12,1,1), myUtil::color(1,1,12),0,0,"wood.jpg"));
@@ -846,12 +840,14 @@ void SceneGraph::loadScene(int scene){
 			objects.push_back(new Plane(myUtil::PosHom(6,-0,6), myUtil::PosHom(6,-0,-6), myUtil::PosHom(-6,-0,6),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,0),0,0,"wood.jpg"));
 			objects.push_back(new Plane(myUtil::PosHom(5.75,0.75,5.75), myUtil::PosHom(5.75,0.75,-5.75), myUtil::PosHom(-5.75,0.75,5.75),myUtil::PosHom(0,1,0),myUtil::PosHom(0,0,255),0.3,0.3,"water.jpg"));
 
-			loadObj("models/ducky2.obj", myUtil::color(255,255,0), myUtil::PosHom(1.5,0.75,-1.5));
-			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662+1,2.10338+0.5,-0.498035-0.5), myUtil::color(0,0,0),0,0));
-			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002+1,2.10338+0.5,-0.498035-0.5), myUtil::color(0,0,0),0,0));
+			CVector<float> orig = myUtil::PosHom(3,0.75,-1);
+			loadObj("models/ducky2.obj", myUtil::color(255,255,0), orig);
+			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.998662-0.5,2.10338-0.25,-0.498035+1)+orig, myUtil::color(0,0,0),0,0));
+			objects.push_back(new Sphere(0.06,myUtil::PosHom(0.002-0.5,2.10338-0.25,-0.498035+1)+orig, myUtil::color(0,0,0),0,0));
 
-			objects.push_back(new Sphere(0.8, myUtil::PosHom(2,0.75,1.5), myUtil::color(255, 0, 0),0,0.7));
-			objects.push_back(new Sphere(1.7, myUtil::PosHom(-2.5,1.25,2), myUtil::color(255, 0, 255),0,0,"earth.jpg"));
+			objects.push_back(new Sphere(1.5, myUtil::PosHom(-1.5,1,-1.5), myUtil::color(255, 0, 0),0.8,0));
+			objects.push_back(new Sphere(1.7, myUtil::PosHom(-2,1.25,2.5), myUtil::color(255, 0, 255),0,0,"earth.jpg"));
+			objects.push_back(new Sphere(0.9, myUtil::PosHom(3,0.75,2.5), myUtil::color(255, 0, 255),0,0,"lines.png"));
 		break;
 	}
 }

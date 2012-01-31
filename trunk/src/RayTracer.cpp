@@ -103,6 +103,13 @@ void RayTracer::run(){
 					col = Sample(x, y, sampling, rayCount, reconstruction);
 	//			}
 
+				//NaN-check
+				if(col(0) != col(0))
+					col(0) = 0;
+				if(col(1) != col(1))
+					col(1) = 0;
+				if(col(2) != col(2))
+					col(2) = 0;
 				QColor color = QColor(min((int)col(0),255),min((int)col(1),255),min((int)col(2),255),255);
 				#pragma omp critical
 					image.setPixel(x,y,color.rgba());
@@ -124,6 +131,8 @@ void RayTracer::run(){
 		gettimeofday(&t, NULL);
 		cout << "time needed: " << (t.tv_sec - start_time.tv_sec) << " sec" << endl;
 	}
+
+	//((BVH*)graph->objects[0])->printCount();
 }
 
 void RayTracer::run2(){
@@ -484,7 +493,7 @@ QImage RayTracer::Reconstruct2(char kindOfReconstruction, int sampleSize){
 
 					//#pragma omp critical
 					mutex.lock();
-					image.setPixel(x,y,qcolor.rgba());
+					image.setPixel(x,y,qcolor.rgb());
 					mutex.unlock();
 
 					break;
@@ -507,7 +516,7 @@ QImage RayTracer::Reconstruct2(char kindOfReconstruction, int sampleSize){
 
 					//#pragma omp critical
 					mutex.lock();
-					image.setPixel(x,y,qcolor.rgba());
+					image.setPixel(x,y,qcolor.rgb());
 					mutex.unlock();
 
 					break;

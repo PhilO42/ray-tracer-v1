@@ -99,12 +99,28 @@ CVector<float> Plane::collision(CVector<float> origin, CVector<float> direction,
 }
 
 CVector<float> Plane::getColor(float x, float y){
+	if(x != x)
+		x = 0;
+	if(y != y)
+		y = 0;
+	if(x < 0)
+		x = 0;
+	if(y < 0)
+		y = 0;
+	if(x > image.width()-1)
+		x = image.width()-1;
+	if(y > image.height()-1)
+		y = image.height()-1;
 	QRgb rgb = image.pixel(min((int)(x*image.width()),image.width()-1),min((int)(y*image.height()),image.height()-1));
 	return myUtil::color9D(qRed(rgb),qGreen(rgb),qBlue(rgb),qRed(rgb),qGreen(rgb),qBlue(rgb),qRed(rgb),qGreen(rgb),qBlue(rgb));
 }
 
 CVector<float> Plane::getNormal(float x, float y){
 	if(bumpy){
+		if(x != x)
+			x = 0;
+		if(y != y)
+			y = 0;
 		int pixelPosX = min((int)(x*bumpMap.width()),bumpMap.width()-1);
 		int pixelPosY = min((int)(y*bumpMap.height()),bumpMap.height()-1);
 		float center = qRed(bumpMap.pixel(pixelPosX, pixelPosY));

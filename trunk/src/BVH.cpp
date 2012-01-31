@@ -14,7 +14,7 @@ bool ysort (SceneObject* i, SceneObject* j) { return (i->getCenter()(1) < j->get
 bool zsort (SceneObject* i, SceneObject* j) { return (i->getCenter()(2) < j->getCenter()(2)); }
 
 BVH::BVH(std::vector< Triangle* > objects) {
-	cout << "number of faces = " << objects.size() << endl;
+	//cout << "number of faces = " << objects.size() << endl;
 	float minX = std::numeric_limits<float>::max();
 	float minY = std::numeric_limits<float>::max();
 	float minZ = std::numeric_limits<float>::max();
@@ -46,9 +46,10 @@ BVH::BVH(std::vector< Triangle* > objects) {
 
 	isLeaf = false;
 	boundingBox = AABB(minX, maxX, minY, maxY, minZ, maxZ);
+	//cout << minX << " - " << maxX << " # " << minY << " - " << maxY << " # " << minZ << " - " << maxZ << endl;
 	depth = 0;
 
-	sort(objects.begin(), objects.end(), xsort);
+	sort(objects.begin(), objects.end(), ysort);
 
 	std::vector<Triangle*> vecL;
 	std::vector<Triangle*> vecR;
@@ -103,11 +104,11 @@ BVH::BVH(std::vector< Triangle* > objects, int _depth) {
 		boundingBox = AABB(minX, maxX, minY, maxY, minZ, maxZ);
 
 		if(depth % 3 == 0)
-			sort(objects.begin(),objects.end(),xsort);
-		if(depth % 3 == 1)
 			sort(objects.begin(),objects.end(),ysort);
-		if(depth % 3 == 2)
+		if(depth % 3 == 1)
 			sort(objects.begin(),objects.end(),zsort);
+		if(depth % 3 == 2)
+			sort(objects.begin(),objects.end(),xsort);
 
 		std::vector<Triangle*> vecL;
 		std::vector<Triangle*> vecR;
@@ -126,6 +127,7 @@ BVH::BVH(std::vector< Triangle* > objects, int _depth) {
 	reflectionValue = 0;
 	trancparencyValue = 0;
 }
+static int bbbbb = 0;
 
 BVH::~BVH() {
 	if(isLeaf){
@@ -139,6 +141,7 @@ BVH::~BVH() {
 }
 
 CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, bool* collided, float* t_value, CVector<float>* collisionPoint, CVector<float>* normal, bool isLightRay, float* refl, float* trans){
+	bbbbb++;
 	*refl = reflectionValue;
 	*trans = trancparencyValue;
 	if(isLeaf){
@@ -224,4 +227,8 @@ CVector<float> BVH::collision(CVector<float> origin, CVector<float> direction, b
 
 CVector<float> BVH::getCenter(){
 	return boundingBox.getCenter();
+}
+
+void BVH::printCount(){
+	cout << "BVH collisionschecks: " << bbbbb << endl;
 }
